@@ -1,0 +1,148 @@
+{template 'common/header'}
+<style>
+	.form_duan{
+		width:93%;
+	}
+	#hiddenye{
+		height:765px;
+	}
+	.yincang{
+		width:100%;
+		height:100%;
+		position:fixed;
+		z-index: 2;
+		top:0;
+		left:0;
+		background:rgba(0,0,0,0.5);
+	}
+	.xiaofangd{
+		width: 35%;
+	    height: 638px;
+	    background: #fff;
+	    z-index: 2;
+	    position: absolute;
+	    top: 18%;
+	    left: 36%;	
+	}
+    .qu{
+    	display:block;
+    	margin:0 auto;
+    	width:60px;
+    	text-align: center;;
+    	padding: 6px 12px;
+    	color: #333;
+    	background-color: #fff;
+    	border-color: #e7e7eb;
+    	font-size: 14px;
+    	font-weight: 400;
+    	border: 1px solid transparent;
+    	border-color: #e7e7eb;
+    }
+    .tijiao{
+    	display:block;
+    	margin:0 auto;
+    	width:70px;
+    	line-height:30px;
+    	text-align: center;;
+    	color: #fff;
+    	border:0;
+    	border-radius:10px;
+	    background-color: #f37b1d;
+	    border-color: #f37b1d;
+	    margin-top:50px;
+	    
+}
+    }
+</style>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            添加题库
+        </h3>
+    </div>
+	<div class="panel-body">
+		<form class="form-horizontal" role="form" method="post" action="" name="submit">
+			<div class="form-group">
+				<label for="firstname" class="col-sm-2 control-label">题目</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  name="timu" value="{$tiku['timu']}">
+					<input type="hidden" name="token" value="{$_W['token']}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="lastname" class="col-sm-2 control-label">音乐</label>
+				<div class="col-sm-7">
+					{php echo tpl_form_field_audio('yinyue');}
+				</div>
+				<div class="clo-sm-3">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="firstname" class="col-sm-2 control-label">A选项</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  name="xxa" value="{$tiku['a']}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="firstname" class="col-sm-2 control-label">B选项</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  name="xxb" value="{$tiku['b']}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="firstname" class="col-sm-2 control-label">C选项</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  name="xxc" value="{$tiku['c']}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="firstname" class="col-sm-2 control-label">D选项</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  name="xxd" value="{$tiku['d']}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="firstname" class="col-sm-2 control-label">答案</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  name="daan" value="{$tiku['daan']}">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="submit" name="submit" class="btn btn-default">
+
+				</div>
+			</div>
+		</form>
+		{$page}
+	</div>
+</div>
+<div class="yincang" style="display:none" >
+	
+	<div class="xiaofangd">
+		
+		<form method="post" action="http://upload.qiniup.com/"
+		 enctype="multipart/form-data">
+		  <input name="key" type="hidden" value="<resource_key>">
+		  <input name="x:<custom_name>" type="hidden" value="<custom_value>">
+		  <input name="token" type="hidden" value="<upload_token>">
+		  <input name="crc32" type="hidden" />
+		  <input name="accept" type="hidden" />
+		  <input name="file" type="file" />
+		  <button type="submit" class="tijiao">提交</button>
+		</form>
+		<div class="modal-footer" style="position:absolute;bottom:0;width:100%;">
+			<div class="qu ">取消</div>
+		</div>
+		
+	</div>
+</div>
+	<script type="text/javascript">
+		$('#shag').click(function(){
+			$('.yincang').show()
+		})
+		$('.qu').click(function(){
+			$('.yincang').hide()
+		})
+	</script>
+{template 'common/footer'}

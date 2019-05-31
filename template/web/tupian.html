@@ -1,0 +1,64 @@
+{template 'common/header'}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            题库管理 <a href="{url 'site/entry/Addtupian',array('m'=>'hc_dati')}" style="margin-left: 10px; color: red;">添加题目</a>
+        </h3>
+    </div>
+    <div class="panel-body">
+       <form action="" method="post" class="form-horizontal form">
+       <div class="alert alert-info url_div hide" role="alert">
+       </div>
+            <input type="hidden" name="storeid" value="">
+            <div class="table-responsive panel-body">
+                <table class="table table-hover">
+                    <thead class="navbar-inner">
+                    <tr>
+                        <th>id</th>
+                        <th>题目</th>
+                        <th>A选项</th>
+                        <th>B选项</th>
+                        <th>C选项</th>
+                        <th>D选项</th>
+                        <th>答案</th>
+                        <th style="text-align:right;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="level-list">
+                    {loop $tiku $item}
+                     <tr>
+                         <td><div class="type-parent">{$item['id']}</div></td>
+                         <td><div class="type-parent" style="text-align: center;">{$item['timu']}</div></td>
+                         <td><div class="type-parent" style="text-align: center;">{$item['a']}</div></td>
+                         <td><div class="type-parent" style="text-align: center;">{$item['b']}</div></td>
+                         <td><div class="type-parent" style="text-align: center;">{$item['c']}</div></td>
+                         <td><div class="type-parent" style="text-align: center;">{$item['d']}</div></td>
+                         <td><div class="type-parent" style="text-align: center;">{$item['daan']}</div></td>
+                         <td style="text-align:right;">
+                             <a class="btn btn-default btn-sm" href="{url 'site/entry/Edittupian',array('id'=>$item['id'],'m'=>'hc_dati')}" title="编辑">改</a>&nbsp
+                             <a class="btn btn-default btn-sm" href="{url 'site/entry/Deletetupian',array('id'=>$item['id'],'m'=>'hc_dati')}" onclick="return confirm('确认删除此题吗？');return false;" title="删除">删</a>
+                         </td>
+                    </tr>
+                    {/loop}     
+                    </tbody>
+                </table>
+                 {$pager}   
+            </div>
+        </form>
+    </div>
+</div>
+<style type="text/css">
+    .hide{display: none}
+</style>
+<script type="text/javascript">
+    $(function(){
+        $('.url_btn').click(function(){
+            var str=$(this).children('.urlvalue').text();
+            $('.url_div').text('跳转地址：'+str);
+            $('.url_div').removeClass('hide');
+        })
+    })
+</script>
+
+{template 'common/footer'}
