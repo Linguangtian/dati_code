@@ -1,65 +1,0 @@
-{template 'common/header'}
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            中奖者管理
-        </h3>
-    </div>
-    <div class="panel-body">
-       <form action="" method="post" class="form-horizontal form">
-       <div class="alert alert-info url_div hide" role="alert">
-       </div>
-            <input type="hidden" name="storeid" value="">
-            <div class="table-responsive panel-body">
-                <table class="table table-hover">
-                    <thead class="navbar-inner">
-                    <tr>
-                        <th>id</th>
-                        <th>昵称</th>
-                        <th>名次</th>
-                        <th>成功次数</th>
-                        <th>奖项</th>
-                        <th>奖品名称</th>
-                        <th>奖品缩略图</th>
-                        <th>发放状态</th>
-                        <th style="text-align:right;">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody id="level-list">
-                    {loop $pxxiangqing $item}
-                     <tr>
-                         <td><div class="type-parent">{$item['id']}</div></td>
-                         <td><div class="type-parent">{$item['nick_name']}</div></td>
-                         <td><div class="type-parent">第{$item['mingci']}名</div></td>
-                         <td><div class="type-parent">{$item['max_success']}次</div></td>
-                         <td><div class="type-parent">{$item['jiangxiang']}</div></td>
-                         <td><div class="type-parent">{$item['goods_name']}</div></td>
-                         <td><div class="type-parent">{$item['lingjiang_status']}</div></td>
-                         <td><div class="type-parent"><img src="{php echo tomedia($item['goods_img']);}" width="60" height="40" /></div></td>
-                         <td style="text-align:right;">
-                             <a class="btn btn-default btn-sm" {$item['none']} href="{url 'site/entry/editpxlingjiang',array('id'=>$item['id'],'m'=>'hc_dati')}" title="编辑">发货</a>&nbsp
-                         </td>
-                    </tr>
-                    {/loop}     
-                    </tbody>
-                </table>
-                 {$pager}   
-            </div>
-        </form>
-    </div>
-</div>
-<style type="text/css">
-    .hide{display: none}
-</style>
-<script type="text/javascript">
-    $(function(){
-        $('.url_btn').click(function(){
-            var str=$(this).children('.urlvalue').text();
-            $('.url_div').text('跳转地址：'+str);
-            $('.url_div').removeClass('hide');
-        })
-    })
-</script>
-
-{template 'common/footer'}

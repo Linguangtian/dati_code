@@ -1,36 +1,0 @@
-{template 'common/header'}
-<style>
-	.qisjcd{
-		color: #ca4242;
-		padding:10px 0;
-		padding-left:50px;
-		font-size: 20px;
-	}
-</style>
-<div class="qisjcd">一旦发货，信息不能修改，请保证填写的信息准确无误</div>
-<div class="panel panel-default">
-    <div class="panel-body">
-        <form class="form-horizontal" role="form" method="post" action="" name="submit">
-			<div class="form-group">
-				<label for="firstname" class="col-sm-2 control-label">{$danhao}</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control"  name="kuaididan" value="{$jiangpin['kuaididan']}">
-					<input type="hidden" name="id" value="{$jiangpin['id']}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="firstname" class="col-sm-2 control-label">{$gongsi}</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control"  name="kuaidigongsi" value="{$jiangpin['kuaidigongsi']}">
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<input type="submit" name="submit" class="btn btn-default">
-				</div>
-			</div>
-	</form>
-	{$page}
-    </div>
-</div>
-{template 'common/footer'}
