@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta charset="UTF-8">
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<title>消息推送设置</title>
+<link rel="stylesheet" href="{RES}font/iconfont.css" />
+<link rel="stylesheet" href="{RES}css/style_index.css" />
+<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+<script type="text/javascript" src="{RES}js/script.js" ></script>
+{php echo register_jssdk(false);}
+<style>
+.adit_min .btn {
+	background:#d33d3e
+}
+.adit_list li .add_tit {
+	background:#fff
+}
+.adit_list li .add_tit h1 {
+	font-size:16px
+}
+.adit_list li .add_tit h3 {
+	color:#333;
+	float:left
+}
+.adit_list li {
+	margin:2px 0
+}
+label.bui-switch-label input {
+	position: absolute;
+	opacity: 0;
+	visibility: hidden;
+}
+label.bui-switch-label input:checked {
+	border-color: #d04542;
+	box-shadow: #d04542 0 0 0 16px inset;
+	background-color: #d04542;
+}
+label.bui-switch-label input:checked:before {
+	left: 27px;
+}
+label.bui-switch-label input:disabled + .bui-switch {
+	background-color: #e8e8e8;
+	border: solid 1px #dfdfdf;
+}
+label.bui-switch-label input:disabled + .bui-switch:before {
+	background-color: #c1c1c1;
+}
+label.bui-switch-label input:disabled:checked + .bui-switch {
+	background-color: #e8e8e8;
+	box-shadow: #e8e8e8 0 0 0 16px inset;
+	border: solid 1px #dfdfdf;
+}
+label.bui-switch-label input:disabled:checked + .bui-switch:before {
+	background-color: #c1c1c1;
+}
+label.bui-switch-label .bui-switch {
+	width: 50px;
+	height: 25px;
+	position: relative;
+	border: 1px solid #dfdfdf;
+	background-color: #fdfdfd;
+	box-shadow: #dfdfdf 0 0 0 0 inset;
+	border-radius: 20px;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	background-clip: content-box;
+	display: inline-block;
+	-webkit-appearance: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	outline: none;
+}
+label.bui-switch-label .bui-switch:before {
+	content: '';
+	width: 23px;
+	height: 23px;
+	position: absolute;
+	top: 1px;
+	left: 1px;
+	border-radius: 20px;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	background-color: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+label.bui-switch-label input:checked + .bui-switch {
+	border-color: #d04542;
+	box-shadow: #d04542 0 0 0 16px inset;
+	background-color: #d04542;
+}
+label.bui-switch-label input:checked + .bui-switch:before {
+	left: 27px;
+}
+label.bui-switch-label.bui-switch-anim {
+	-webkit-transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+	transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+}
+label.bui-switch-label.bui-switch-anim .bui-switch:before {
+	-webkit-transition: left 0.3s;
+	transition: left 0.3s;
+}
+label.bui-switch-label.bui-switch-anim input:checked + .bui-switch {
+	box-shadow: #d04542 0 0 0 16px inset;
+	background-color: #d04542;
+	-webkit-transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+	transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+}
+label.bui-switch-label.bui-switch-anim input:checked + .bui-switch:before {
+	-webkit-transition: left 0.3s;
+	transition: left 0.3s;
+}
+label.bui-switch-label.bui-switch-animbg {
+	-webkit-transition: background-color ease 0.4s;
+	transition: background-color ease 0.4s;
+}
+label.bui-switch-label.bui-switch-animbg .bui-switch:before {
+	-webkit-transition: left 0.3s;
+	transition: left 0.3s;
+}
+label.bui-switch-label.bui-switch-animbg input:checked + .bui-switch {
+	box-shadow: #dfdfdf 0 0 0 0 inset;
+	background-color: #d04542;
+	-webkit-transition: border-color 0.4s, background-color ease 0.4s;
+	transition: border-color 0.4s, background-color ease 0.4s;
+}
+label.bui-switch-label.bui-switch-animbg input:checked + .bui-switch:before {
+	-webkit-transition: left 0.3s;
+	transition: left 0.3s;
+}
+</style>
+</head><body>
+<div id="box">
+  <div class="adit">
+    <div class="adit_min">
+      <form action="">
+        <div class="adit_list">
+          <ul>
+            <li>
+              <div class="add_tit">
+                <h1><b>消息推送设置</b></h1>
+              </div>
+            </li>
+            <li>
+              <div class="add_tit">
+                <h3>早安推送设置</h3> <span style="font-size:10px; color:#7b7b7b;margin-left:10px">( 早晨8:00 - 10:00 )</span>
+                {if $info['push_hots'] == 1}<span onClick="changestatus('push_hots',0)" style=" float:right; padding:10px; color:#fff" >
+                <label class="bui-switch-label bui-switch-anim">
+                  <input type="checkbox" checked="" name="s">
+                  <i class="bui-switch"> </label>
+                </span> {else} <span onClick="changestatus('push_hots',1)" style=" float:right; padding:10px; color:#d33d3e" >
+                <label class="bui-switch-label bui-switch-anim">
+                  <input type="checkbox" name="s">
+                  <i class="bui-switch"></i> </label>
+                </span> {/if} </div>
+            </li>
+            <li>
+              <div class="add_tit">
+                <h3>晚安推送设置</h3> <span style="font-size:10px; color:#7b7b7b; margin-left:10px">( 晚间16:00 - 22:00 )</span>
+                {if $info['push_day_report'] == 1} <span onClick="changestatus('push_day_report',0)" style="float:right; padding: 10px; color:#fff" >
+                <label class="bui-switch-label bui-switch-anim">
+                  <input type="checkbox" checked="" name="s">
+                  <i class="bui-switch"> </label>
+                </span> {else} <span onClick="changestatus('push_day_report',1)" style=" float:right; padding:10px; color:#d33d3e" >
+                <label class="bui-switch-label bui-switch-anim">
+                  <input type="checkbox" name="s">
+                  <i class="bui-switch"></i> </label>
+                </span>{/if} </div>
+            </li>
+            <li>
+              <div class="add_tit">
+                <h3>周报推送设置</h3>
+                {if $info['push_week_report'] == 1}<span onClick="changestatus('push_week_report',0)" style="float:right; padding: 10px; color:#fff" >
+                <label class="bui-switch-label bui-switch-anim">
+                  <input type="checkbox" checked="" name="s">
+                  <i class="bui-switch"> </label>
+                </span>{else}<span onClick="changestatus('push_week_report',1)" style=" float:right; padding:10px; color:#d33d3e" >
+                <label class="bui-switch-label bui-switch-anim">
+                  <input type="checkbox" name="s">
+                  <i class="bui-switch"> </label>
+                </span>{/if}</i> </div>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div style="height: 60px;"></div>
+<!--foot start--> 
+{template footer} 
+<!--foot end-->
+</body>
+<script>
+function changestatus(citem,status){
+   
+/*	debugger;*/
+    $.ajax({
+        type:"post",
+        data:{"citem":citem,"status":status},
+        datatype:"json",
+        url:"{php echo $this->createmobileurl('push_message_set',array('op'=>'post'))}",
+        success:function(re){
+            if(re.success==1){
+                location.href="{php echo $this->createmobileurl('push_message_set')}";
+            }else{
+                alert(re.msg);
+				location.href="{php echo $this->createmobileurl('push_message_set')}";
+            }
+        }
+    });
+}
+
+ 
+	</script>
+<script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+</html>

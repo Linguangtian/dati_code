@@ -1,0 +1,156 @@
+{template 'header'}
+
+        <style>
+        .mui-card{ margin: 6px; }
+        .mui-card-footer{ background: #fff }
+       .mui-card-content{ padding-left: 80px; height: 70px; margin: 4px 0; position: relative; }
+       .mui-card-content .img{ position: absolute; top:0; left: 5px; height: 70px; width: 70px; background: #ccc }
+       .mui-card-content .img img{ width: 100%; height: 100% }
+       .mui-card-content .text1 {
+              
+               
+                line-height: 20px;
+                position: relative;
+                overflow: hidden;
+                height: 40px;
+                text-overflow: ellipsis;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                display: -webkit-box;
+            }
+            .mui-card-content .tm{ height: 24px; line-height: 24px; margin-top: 6px; font-size: 12px; color: #666; padding-right: 6px; }
+            .mui-card-content .tm .eye{ float: right; }
+            .mui-card-footer{  display: table;
+    width: calc(100% + 20px);
+    table-layout: fixed;}
+            .mui-card-footer span.item{  display: table-cell; text-align: center;padding-right: 20px;}
+            .del{ color: #dd524d }
+            .edit{color: #007aff}
+            .info{ color: #8a6de9 }
+
+          
+       </style>
+
+  {template 'actnav'}
+
+        
+
+         <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+            <div class="mui-scroll">
+             
+                 <div id="actcontent">
+                 </div>
+            </div>
+         </div>
+
+        
+ 
+  <script type="text/javascript">
+    var page = 1;
+      mui.init({
+        pullRefresh: {
+          container: '#pullrefresh',
+          
+          up: {
+            
+            auto:true,
+            contentrefresh: '正在加载...',
+            callback: getlst
+          }
+        }
+      });
+      
+      
+          function getlst(){
+
+ 
+                $.get('',{page:page},function(r){
+                         var r=json(r);
+                       
+                         mui('#pullrefresh').pullRefresh().endPullupToRefresh(r.length<10);
+                  
+                  if(!(r.length<10)){
+
+                    page++;
+                  }
+
+                    var str='';
+                             
+                       for(var i=0; i<r.length;i++){
+                     
+                         var v=r[i];
+                          str+=`<div class="mui-card">
+                                   <div class="mui-card-content click" data-url="{php echo $this->createMobileUrl('actinfo');}&id=`+v.id+`">
+                                      <div class="img"><img src="`+v.img+`" alt=""></div>
+                                      <div class="text1">`+v.title+`</div>
+                                      <div class="tm">
+                                          <span class="time">`+mytime(v.time)+`</span>
+                                          <span class="eye">`+v.eye+`人浏览</span>
+                                      </div>
+                                   </div>
+                                   <div class="mui-card-footer">
+                                      <span class="item info" data-id="`+v.id+`"><span class="mui-icon mui-icon-flag"></span>推广</span>
+                                      <span class="item edit" data-id="`+v.id+`"><span class="mui-icon mui-icon-compose"></span>编辑</span>
+                                      <span class="item del"  data-id="`+v.id+`"><span class="mui-icon mui-icon-trash"></span>删除</span>
+                                   </div>
+                                </div>`;
+                      
+                     }
+
+                       $('#actcontent').append(str);
+
+                });
+
+        }
+
+   mui("#actcontent").on("tap",".edit",function(){
+    
+        var url="{php echo $this->createMobileUrl('edit');}&id="+$(this).data('id');
+        window.location.href=url;
+   });
+ mui("#actcontent").on("tap",".click",function(){
+
+ window.location.href=$(this).data('url')
+ })
+
+     mui("#actcontent").on("tap",".del",function(){
+
+        if (!vip()) {
+
+          return false;
+
+        }
+
+
+        var t=$(this);
+    
+        var id=t.data('id');
+         mui.confirm('确认删除该文章吗？', '操作提示',['删除','取消'], function(e) {
+            if (e.index == 0) {
+              
+
+              $.post('',{id:id,type:'del'},function(r){
+
+                
+                  var r=json(r);
+
+                  if(r.code){
+                  
+                   t.parents('.mui-card').remove();
+
+                  }else{
+
+                    toast(r.msg);
+                  }
+              })
+
+            } 
+          })
+   });
+    mui("#actcontent").on("tap",".info",function(){
+
+         var url="{php echo $this->createMobileUrl('tui');}&type=1&id="+$(this).data('id');
+         window.location.href=url;
+   });
+   </script>
+  {template 'footer'}  

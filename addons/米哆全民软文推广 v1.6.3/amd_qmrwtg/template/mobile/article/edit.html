@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no, address=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<!-- apple devices fullscreen -->
+<meta name="apple-touch-fullscreen" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>文章编辑</title>
+{php $public=MODULE_URL.'style/res/app';}
+<script type="text/javascript" src="{$_W['siteroot']}app/resource/js/lib/jquery-1.11.1.min.js?v=20170802"></script>
+<script type="text/javascript" src="{$public}/lib/edit/Eleditor.min.js"></script>
+<script src="{$public}/lib/edit/webuploader.min.js"></script>
+<script src="{$public}/lib/layer/layer.js"></script>
+<link href="{$public}/css/edit.css" rel="stylesheet">
+<link href="{$public}/css/icons.css" rel="stylesheet">
+</head><body>
+<div > </div>
+<div class="fixedDiv text_title">
+  <div class="tinsert_head"> 修改内容 </div>
+  <div class="tinsert_body">
+    <textarea class="text_ct" placeholder="请输入内容文字" id="text_ct"></textarea>
+  </div>
+  <div class="boxCheck2 tinsert_foot">
+    <button type="button" class="boxYes">提交</button>
+    <button type="button" class="boxNo">取消</button>
+  </div>
+</div>
+<div class="mask"></div>
+
+<!-- 
+<header>
+
+     <div id="segmentedControl" class="mui-segmented-control">
+					<span class="mui-control-item mui-active" href="#item1">
+						文章编辑
+					</span>
+					<span class="mui-control-item" href="#item2">
+						文章设置
+					</span>
+	 </div>
+	<div class="sub" onclick="add()">保存</div>
+</header>
+ -->
+<p style="text-align:center; color:#f00;">点击内容即可编辑</p>
+<div class="content" style="margin-top: 0px; margin-bottom:150px"> 
+  
+  <!-- 111 -->
+  <div class="con" id="con0">
+    <div class="sharebox">
+      <div class="cai_head">
+        <div class="cai_title edit" id="title">{$act['title']}</div>
+        <div class="cai_info">
+          <div class="cai_img" id="img"><img src="{if $act['fx_img']}{$act['fx_img']}{else}{$public}{/if}" id="thumb"></div>
+          <div class="cai_desc edit" id="desc">{$act['fx_desc']}</div>
+        </div>
+      </div>
+    </div>
+    <div id="articleEditor" style="padding-bottom: 60px;"> {$act['content']} </div>
+    <style>
+    .layui-btn-sm {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+.layui-btn {
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #01AAED;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.foot{position: fixed;bottom: 0px;left: 0px;right: 0px;padding: 6px 15px;background: #fff;max-height: 50px;}
+.w100{width: 100%;}
+  </style>
+    <div class="foot">
+      <button class="layui-btn layui-btn-sm w100" onclick="add()" id="btnsave">保存文章</button>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+    var Edr = new Eleditor({
+                el: '#articleEditor', //容器
+                upload:{
+                   server: '{php echo $this->createMobileUrl('img');}', //填写你的后端上传路径
+                   fileSizeLimit: 2 //限制图片上传大小，单位M
+                },
+                //placeHolder: '请输入内容',
+        });
+
+    $('.mui-control-item').click(function(){
+
+          var t=$(this);
+          $('#con'+t.index()).show().siblings().hide();
+          t.addClass('mui-active').siblings().removeClass('mui-active');
+
+    })
+
+             var up= WebUploader.create({
+							auto: true, server:'{php echo $this->createMobileUrl('img');}&type=1',
+						    pick:$('#img'),
+						   
+						    accept: {
+						        title: 'Images',
+						         extensions: 'gif,jpg,jpeg,bmp,png,webp',
+						        mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png,image/webp'
+						    }
+						});
+
+             
+             up.on( 'uploadSuccess', function( file,r ) {
+			   $('#thumb').attr('src',r.url);
+			});
+
+var tims;
+
+  $('.edit').click(function(){
+
+     var t=$(this);
+     tims=t;
+     $('#text_ct').val($.trim(t.text()));
+
+     $('.fixedDiv').show();
+     $('.mask').show();
+
+  })
+
+  $('.boxNo').click(function(){
+
+     $('.fixedDiv').hide();
+     $('.mask').hide();
+
+  })
+
+   $('.boxYes').click(function(){
+
+   	var v=$('#text_ct').val();
+   	
+
+     tims.text($('#text_ct').val());
+     $('.fixedDiv').hide();
+     $('.mask').hide();
+
+  })
+
+ function openpage(){
+
+ 	$('#layui-m-layer0').show();
+ }
+  function col(){
+
+  
+
+    $('#layui-m-layer0').hide();
+
+  }
+
+  var adid=0;
+
+  $('.adsel').click(function(){
+
+
+       adid=$(this).data('id');
+     $('#ads').html($(this).html());
+     $('#layui-m-layer0').hide();
+
+  })
+var savestatus=0;
+
+   function add(){
+
+      
+    var data={};
+	    data.title=$('#title').text();
+	    data.description=$('#desc').text();
+	    data.thumb=$('#img img').attr('src');
+		data.fx_title=$('#title').text();
+	    data.fx_desc=$('#desc').text();
+	    data.fx_img=$('#img img').attr('src');
+	    data.content=$('#articleEditor').html();
+	   $('#btnsave').html('文章保存中');
+	   
+	   
+	   if(savestatus==0)
+	   {
+		   savestatus=1;
+	    $.post('',data,function(r){
+
+           window.location.href="{php echo $this->createMobileUrl('detail');}&id={php echo $_GPC['id']}";
+
+	    })
+	   }else
+	   {
+		   alert('保存中，请等待转换完');
+	   }
+
+   }
+
+ window.alert = function(name){
+  var iframe = document.createElement("IFRAME");
+  iframe.style.display="none";
+  iframe.setAttribute("src", 'data:text/plain,');
+  document.documentElement.appendChild(iframe);
+  window.frames[0].window.alert(name);
+  iframe.parentNode.removeChild(iframe);
+ };
+window.confirm = function (message) {
+   var iframe = document.createElement("IFRAME");
+   iframe.style.display = "none";
+   iframe.setAttribute("src", 'data:text/plain,');
+   document.documentElement.appendChild(iframe);
+   var alertFrame = window.frames[0];
+   var result = alertFrame.window.confirm(message);
+   iframe.parentNode.removeChild(iframe);
+   return result;
+ };
+
+</script>
+</html>

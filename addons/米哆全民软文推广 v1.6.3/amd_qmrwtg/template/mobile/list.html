@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head></head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0"/>
+<meta http-equiv="pragma" content="no-cache"/>
+<meta http-equiv="Cache-Control" content="no-store, must-revalidate"/>
+<title>{$_W['account']['name']}</title>
+<link rel="stylesheet" type="text/css" href="{RES}css/main.css?v=20150110" />
+<link rel="stylesheet" type="text/css" href="{RES}css/y.css?v=20150110"/>
+<link rel="stylesheet" type="text/css" href="{RES}css/gongyon.css?v=20150110"/>
+<script src="{RES}js/jquery.min.js?v=20150110" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="{RES}css/style_index.css"/>
+<link rel="stylesheet" type="text/css" href="{RES}css/swiper.min.css"/>
+<link rel="stylesheet" href="{RES}font/iconfont.css" />
+<style>
+    .homeTags li.active a{ color: #09BB07;}
+</style>
+<script type="text/javascript" src="{RES}js/script.js" ></script>
+
+<style>
+    .lazy {
+        display: none;
+    }
+    .time {
+        padding-left: 1em;
+        font-size: 0.8em;
+        color: #666
+    }
+    .fot {
+        font-weight: 700
+    }
+    .top {
+        font-size: 11pt ";color:#D40F0F
+    }
+</style>
+<body>
+<div id="box">
+    {if $catenum>1}
+    <div class="homeTags">
+        <div class="tagCon">
+            <div class="list">
+                <ul>
+                    <li class="active ac_"><a
+                            href="{php echo $_W['siteroot'].'app/'.substr($this->createMobileUrl('index',array('cid'=>$cid),true),2);}">全部</a></li>
+                    {loop $chcategroy $item}
+                    <li class="ac_{$item['id']}"><a
+                            href="{php echo $_W['siteroot'].'app/'.substr($this->createMobileUrl('index',array('cid'=>$item[parentid],'pid'=>$item[id]),true),2);}">{$item['name']}</a></li>
+                    {/loop}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {/if}
+    {if count($list)>0}
+    <div class="menu" id="menu">
+        <ul>
+            {loop $list $new}
+            <li style="margin-bottom: 5px;">
+                {if !empty($new['wailian'])}
+                <a href="{$new['wailian']}">
+                    {else}
+                    <a href="{php echo $this->createmobileurl('newdetail',array('id'=>$new['id']))}">
+                    {/if}
+                    <div class="menuL" style="background-image: url({php echo tomedia($new['thumb'])});"></div>
+                    <div class="menuR">
+                        <div class="menuR_wz">
+                            <h2>{$new['title']}</h2>
+                            <span class="date"><i class="iconfont">&#xe606;</i>
+                                {php echo date('Y-m-d',$new['createtime']);}
+                                {if !empty($new['aname'])}<em>{$new['aname']}</em>{/if}</span>
+                        </div>
+                        <div class="menu_up">
+                            <div class="menu_Part">
+                                <span><i class="iconfont">&#xe605;</i>{$new['clickNum']}</span>
+                                <span><i class="iconfont">&#xe600;</i>{$new['zanNum']}</span>
+                            </div>
+                            {if $new['pay_money']>0}
+                            <div class="menoy">
+                                <span><i class="iconfont">&#xe603;</i>{$new['pay_money']}</span>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {/loop}
+        </ul>
+    </div>
+    {else}
+    暂无数据。
+    {/if}
+</div>
+</div>
+
+</body>
+</html>
+<script>
+    $(document).ready(function(){
+        var pid="{$pid}";
+        var ac=".ac_"+pid;
+        if(pid>0){
+            $(".ac_").removeClass("active");
+            $(ac).addClass("active");
+        }
+    })
+</script>
+

@@ -1,0 +1,75 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li{if $_GPC['do'] == 'member' } class="active"{/if}><a href="{php echo $this->createWebUrl('member')}">会员管理
+    </a></li>
+        <li{if $_GPC['do'] == 'setmem' || $_GPC['do'] == '' } class="active"{/if}><a
+            href="{php echo $this->createWebUrl('setmem',array('id'=>$user['id']))}">会员信息</a></li>
+        <li class="active"><a
+            href="#">会员绑定关系</a></li>
+    </ul>
+    <form class="form-horizontal form" id="form2" action="" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                会员绑定关系
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">当前用户：</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <img alt="" src="{$user['avatar']}" width='auto' style="max-width:50px; max-height:50px;" height='auto'> ID：{$user['id']} 昵称：{$user['nickname']} 真实姓名：{$user['realname']} 手机号:{$user['realname']}
+                       
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">所属上级：</label>
+                    <div class="col-sm-8 col-xs-12">
+                    	<?php if(!empty($puser)){ ?>
+                        <img alt="" src="{$puser['avatar']}" width='auto' style="max-width:50px; max-height:50px;" height='auto'> ID：{$puser['id']} 昵称：{$puser['nickname']} 真实姓名：{$puser['realname']} 手机号：{$puser['realname']}
+                        <?php }else{ echo '无'; } ?>
+                    </div>
+                </div>
+                
+        </div>
+        
+        
+    </div>
+    <div class="panel panel-default">
+            <div class="panel-heading">
+               下级 共计 {$total} 条数据
+                
+            </div>
+            <div class="panel-body table-responsive">
+                <table class="table table-hover">
+                    <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:65px;" align="center">头像</th>
+                        <th>昵称</th>
+                        <th>真实姓名</th>
+                        <th>手机号</th>
+                        <th>添加时间</th>
+                        <th>到期时间</th>
+                    </tr>
+                    </thead>
+                    <tbody id="add_author">
+                    {loop $sons $row}
+                    <tr>
+                        <td><img alt="" src="{$row['avatar']}" width='auto' style="max-width:50px; max-height:50px;" height='auto'></td>
+                        <td>{$row['nickname']}</td>
+                        <td>{$row['realname']}</td>
+                        <td>{$row['mobile']}</td>
+                      
+                        <td>{php echo date('Y/m/d', $row['createtime']);}</td>
+                        <td>{if !empty($row['end_time'])}{if $row['end_time']==-1}永久{else}{php echo date('Y/m/d', $row['end_time']);}{/if}{/if}</td>
+             
+                       
+                    </tr>
+                    {/loop}
+                    </tbody>
+                </table>
+            </div>
+    	</div>
+    	{$pager}
+    </form>
+</div>
+{template 'common/footer'}

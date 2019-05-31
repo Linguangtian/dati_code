@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <title>我的营销数据</title>
+    <script src="{RES}js/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="{RES}new_style/css/base.css" />
+	<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+	{php echo register_jssdk();}
+</head>
+<script>
+	var pindex = 1;
+		function pageLoadCommon(a, b) {
+				a.scroll(function() {
+				distanceScrollCount = document.body.scrollHeight;
+				distanceScroll = document.body.scrollTop;
+				topicPageHight = document.body.clientHeight;
+				1 >= distanceScrollCount - distanceScroll - topicPageHight && b()
+			})
+		}
+		function userLoad(pindex){
+			$.post(location.href,{'pindex':pindex},function(res){
+				if(jQuery.isEmptyObject(res.list)) {
+					$("#next").html('已加载全部');
+					return false;
+				} else{
+					var html = "";
+					for(var i=0;i<res.list.length;i++){
+						html+='<li class="user-msg flexs"><div class="info sub"><div class="infotop"><img src="'+res.list[i].curmem.avatar+'" ><b>'+res.list[i].curmem.nickname+'</b><div class="btntel"><i class="icon iconfont icon-erweima"></i></div><div class="btntel"><i class="icon iconfont icon-dianhua1"></i></div></div><hr /><p class="infomid" style="width:auto">时长：'+res.list[i].curarttotalreadtime+'秒   次数：'+res.list[i].curarttotalreadnum+'次   分享：'+res.list[i].curarttotalreadnum+'次</p><p class="datas" style="height:auto"><span><i>'+res.list[i].curmemtotalreadnum+'</i><br />阅读文章数</span><span class="datasmid"><i>'+res.list[i].curmemtotalreadtime+'</i><br />总阅读时长</span> <span><i>'+res.list[i].curmemtotalsharenum+' </i><br />分享文章数</span> </p> </div></li>';
+						html+=' <li class="user-msg flexs"><div class="img"><img class="user-img" src="'+res.list[i].avatar+'" alt=""></div> <div class="info sub"><h2>'+res.list[i].nickname+'</h2></div></li>';
+					}
+					$(".user-box").append(html);
+					$("#next").html('<span class="loadding"></span>正在加载...');
+				}
+			})
+		}
+		pageLoadCommon($(document), function() {
+			pindex++;
+			userLoad(pindex);
+		});
+
+</script>
+<style type="text/css">
+			.still {
+				width: inherit;
+				height: 40px;
+				background: inherit;
+				-webkit-border-radius: inherit;
+				border-radius: inherit;
+				line-height: 40px;
+				color: #888;
+				margin: 0;
+				text-align: center;
+			}
+			
+			.loadding {
+				width: 16px;
+				height: 16px;
+				border: 2px solid #afafaf;
+				border-top: 2px solid #ddd;
+				border-radius: 50%;
+				display: inline-block;
+				vertical-align: -2px;
+				-webkit-animation: loadding 1s infinite linear;
+				animation: loadding 1s infinite linear;
+			}
+			
+			@keyframes loadding {
+				0% {
+					-webkit-transform: rotate(0deg);
+					transform: rotate(0deg);
+				}
+				100% {
+					-webkit-transform: rotate(360deg);
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+<body>
+
+	<style>
+	*{padding:0;margin:0;}
+	body{background: #f5f5f5;}
+	.tab-title{display: -webkit-box;display: -webkit-flex;  display: -ms-flexbox; display: flex; width: 100%;text-align:center;line-height:40px;}
+    .tab-title .tab-title-list{ -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1;}
+	.tab-title-list.active{border-bottom:1px solid #09bb07;color:#09bb07;}
+        .flexs{ display: -webkit-box;display: -webkit-flex;  display: -ms-flexbox; display: flex;/* width: 100%;*/}
+        .flexs .sub{ -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1;}
+		.user-title{padding-left:15px;line-height:30px;}
+		.user-title:before{content:"";display:inline-block;width:6px;height:14px;background:#09bb07;margin-right:10px;border-radius:4px;}
+        .user-box{padding:15px; background:#fff}
+		.user-box li p span{ width:33%; text-align:center; font-size:10px; color:#4a4949; float:left; }
+        .user-msg{padding:15px;margin-bottom: 10px;background: #fff;}
+		.user-msg .info{ border-bottom:1px solid #9a9a9a; margin-bottom:10px}
+        /*.user-msg:nth-child(n+2){border-top: 1px solid #eee;}
+        .user-img{width: 40px;height: 40px;border-radius: 50%;margin-right: 10px;}
+        .user-msg .info{display:flex;justify-content: space-between;}
+        .user-msg .info h2{font-size: 16px;line-height: 43px;}
+        .user-msg .info p{wdith:!00%;font-size: 14px; color:#888;line-height:24px; height:24px; overflow:hidden;padding-right:10px}*/
+        .my-link{color: #666;text-decoration: none;}
+        .my-link:nth-child(n+2){margin-left: 5px;}
+        .homeH{position: absolute;bottom: 10%;left: 10px;}
+        .homeH a{width:30px;height: 30px;line-height:30px;text-align:center;display: block;border-radius: 50%;background: rgba(0,0,0,.3);margin-bottom: 10px;color:#fff;text-decoration: none;}
+		.topm{ height:90px; width:100%; line-height:24px; background:#fff; padding:10px 0; border-bottom:1px solid #9a9a9a; margin-bottom:10px}
+		.topm p{ width:33%; float:left; text-align:center;line-height24px; margin-top:10px;}
+		.topm p span{ color:#d04542; font-size:24px;  }
+		.topm .datas span{border-right:1px solid #9a9a9a; font-weight:none}
+		.user-msg { }
+		
+	 .user-msg .info p{ overflow:hidden;width:100%;  line-height:24px; text-align:left; font-size:10px; border-bottom-left-radius:5px;border-bottom-right-radius:5px; text-align:center }
+	 .user-msg .info p i{ color:#d04542; font-weight:bold}
+ 	 .user-msg .info .datas{ height:auto; margin:10px auto; font-weight:none}
+	 .user-msg .btnentry{ width:10%; float:left}
+	  b, strong{ font-weight:bold}
+	  .user-msg .info .infotop img{ width:40px; height:40px; border-radius:40px; margin-right:10px; float:left;}
+	  .user-msg .info .infotop{ text-align:left; line-height:40px; margin-bottom:5px}
+	  .btntel{ background:#d8271c; height:36px; width:36px; border-radius:5px; margin-left:10px; float:right;text-align:center}
+	  .btntel i{ color:#fff; font-size:28px; line-height:38px;}
+	  .infomid{ text-align:center; padding:2px 20px; background:#d8271c;color:#fff; }
+	  .user-msg .info hr{ width:100%; height:1px; color:#d8271c;background-color:#d8271c; margin-bottom:0 }
+	  .datasmid{ border-right:1px solid #9a9a9a; border-left:1px solid #9a9a9a; width:34%}
+</style>
+<div  class="topm">
+<p>查看总数<br /><span>{$totalviewnum}</span></p>
+<p style="width:34%; border-left:1px solid #9a9a9a; border-right:1px solid #1b1b1b">分享总次数<br /><span>{$totalsharenum}</span></p>
+<p>阅读总时长<br /><span>{$totalread}</span></p>
+
+</div>
+<?php 
+if(intval($curadver['end_time'])<time())
+	{
+?>
+<style>
+		 
+		.thumb-inner-list span.active:after {
+			content: '';
+			background-image: url({RES}/qrcode/checked_678a9ca.png);
+			background-position: center;
+			-webkit-background-size: contain;
+			background-size: contain;
+			position: absolute;
+			right: .5rem;
+			bottom: .5rem;
+			width: 2rem;
+			height: 2rem
+		}
+		.share-card-container .btn{position: absolute;top: 15px;right: 0;background: #fff;height: 30px;line-height: 30px;padding: 0 10px;border-top-left-radius: 10px;border-bottom-left-radius: 10px;}
+		.share-card-container .btn a{color:#000;text-decoration: none;box-shadow: 10px 0 0 0  rgba
+			(0,0,0,.8) inset;}
+		.thumb-list-container{ padding:1rem}
+		.share-card-inner-container{ background:#fff; padding:0}
+		.catecc{width:100%; line-height:50px;}
+		.catecc a{ height:50px; line-height:50px; padding:10px ; margin:0 5px; text-decoration:none; color:#333}
+		.active{ background:#d33d3e; color:#fff}
+		.ttitle{ height:24px; line-height:24px;}
+		 .finger-guide{ color:#000;}
+		 ul{ margin:0; padding:0}
+		
+		 a{ text-decoration:none}
+		 .finger-guide p a{ color:#fff; padding:5px 10px; background:#C00}
+		
+		</style>
+        <div class="finger-guide" id="finger-guide" style="width:100%; height:100%; padding:0; margin:0; position:inherit; background:url('{RES}new_style/bg.jpg'); background-size: 100% 100% ">
+             
+             <div style="padding:0; margin:0 auto;  float:left">
+                <p style="position:fixed; top:200px; width:100%; text-align:center">你已错过 {$total} 次跟踪机会 <br />还有多少机会可以继续错过？</p> 
+                <p style="position:fixed; top:260px; width:100%; text-align:center"><A href="{php echo $this->createmobileurl('myintro')}">立即充值查看</A></p>   
+			
+            </div>	
+       </div>	
+<?php	
+	}else{
+?>
+<ul class="user-box">
+ 
+{loop $list $row}
+    <li class="user-msg flexs">
+        <div class="info sub">
+			<div class="infotop">
+            <img src="<?php echo tomedia($row['curmem']['avatar']);?>" ><b>{$row['curmem']['nickname']}</b><div class="btntel"><a href="{$row['curmem']['wechatewmpic']}"><i class="icon iconfont icon-erweima"></i></a></div><div class="btntel"><a href="tel:{$row['curmem']['mobile']}"><i class="icon iconfont icon-dianhua1"></i></a></div>
+            </div>
+            <hr />
+            <p class="infomid">时长：{$row['curarttotalreadtime']}秒   次数：{$row['curarttotalreadnum']}次   分享：{$row['curarttotalreadnum']}次</p>
+			<p class="datas" style="height:auto"><span><i>{$row['curmemtotalreadnum']}</i><br />阅读文章数</span><span class="datasmid"><i>{$row['curmemtotalreadtime']}</i><br />总阅读时长</span> <span><i>{$row['curmemtotalsharenum']}</i><br />分享文章数</span> </p> 
+        </div>
+    </li>
+{/loop}
+</ul>
+<div class="still tc mt10" id="next">
+		{if (int)$total > $psize}
+				<span class="loadding"></span> 正在加载...{else} 已加载全部{/if}
+</div>
+<?php } ?>
+<!--列表 end-->
+		<div style="height: 60px;"></div>
+		<!--{$pager}-->
+		{template footer}			
+</body>
+<script>
+	$(function() {
+		wx.ready(function() {
+			shareMeta = {
+				imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+				success: function() {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+				},
+				cancel: function() {
+					// alert("分享失败，可能是网络问题，一会儿再试试？");
+				}
+			};
+			wx.onMenuShareTimeline(shareMeta);
+			wx.onMenuShareAppMessage(shareMeta);
+			wx.onMenuShareWeibo(shareMeta);
+			wx.onMenuShareQQ(shareMeta);
+			wx.onMenuShareQZone(shareMeta);
+		});
+	});
+</script>
+</html>

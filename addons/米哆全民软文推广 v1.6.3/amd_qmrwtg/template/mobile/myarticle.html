@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta charset="UTF-8">
+        <meta name="keywords" content="" />
+        <meta name="description" content="" />
+        <title>软文列表</title>
+        {php echo register_jssdk(false);}
+        <link rel="stylesheet" href="{RES}new_style/css/style.css" />
+        <link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+        <link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+        <link rel="stylesheet" href="{RES}new_style/css/base.css" />
+        <script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="{RES}js/script.js"></script>
+        <script type="text/javascript" src="{RES}js/swiper.min.js"></script>
+    </head>
+    <style>
+        .top {
+            background: #07bb45;
+            padding: 10px;
+        }
+        
+        .searchMin button {
+            width: 36px;
+        }
+        
+        .searchMin button:active {
+            background: #fff;
+            color: #07bb45;
+        }
+        
+        .top .topNav {
+            width: 36px;
+        }
+        .choose .btn{
+            width:100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        
+        .choose .btn a:first-child {
+            background: #07bb45;
+            color:#fff;
+        }
+        .choose .btn a:last-child{
+            background: #f5f5f5;
+        }
+        .choose {
+            width: 80%;
+            height: 100vh;
+            overflow: hidden;
+            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            right: -80%;
+            z-index: 999;
+            -webkit-animation: popup 0.4s ease forwards;
+            -webkit-opacity: 0;
+            display: none;
+            padding: ;
+            
+        }
+        
+        .choose.active {
+            display: block;
+            right: 0%;
+        }
+        
+        .chooseMin dl {
+            flex-wrap: wrap;
+            width: 100%;
+            display: block;
+        }
+        
+        .chooseMin li dd {
+            width: 32%;
+            margin: 0;
+            display: inline-block;
+        }
+        
+        .chooseMin li dd a {
+            padding: 5px;
+            display: inline-block;
+        }
+        .popup .popup-box{ -webkit-animation: popup 0.4s ease forwards; -webkit-transform: translateY(36vh); -webkit-opacity: 0;}
+        @-webkit-keyframes popup {
+          0% { right:-80%; -webkit-opacity: 0;}
+          100%{right:0%; -webkit-opacity: 1;}
+        }
+        .catecolor{color: red;}
+    </style>
+    <script>
+        var serialize_url = "{php echo $this->createmobileurl('serialize_detail')}"
+        var articel_url = "{php echo $this->createmobileurl('detail')}"
+        var pindex = 1;
+        var postData = {};
+        var my_type = 'article';
+        function pageLoadCommon(a, b) {
+            a.scroll(function() {
+                distanceScrollCount = document.body.scrollHeight;
+                distanceScroll = document.body.scrollTop;
+                topicPageHight = document.body.clientHeight;
+                1 >= distanceScrollCount - distanceScroll - topicPageHight && b()
+            })
+        }
+        pageLoadCommon($(document), function() {
+            pindex++;
+            postData.pindex=pindex;
+            collectLoad(postData);
+        });
+        function articleHtml(List,Qindex){
+            var html='';
+            html += '<li class="gridXb"><a class="flex p15" href="' + articel_url + '&id=' + List[Qindex].id + '">';
+            html += '<div class="img imgWH bd3" style="background-image: url(' + List[Qindex].thumb + ');"></div><div class="info sub ml15 flex-column-c">';
+            html += '<h3 class="line-text f14">' + List[Qindex].title + '</h3><p class="line-text f12 mt5 grey">'+List[Qindex].description+'</p>';
+            html += ' <div class="flex grey mt5 f12"><span class="left line-text"><i class="iconfont icon-zuozhe f12"></i>单篇</span>';
+            html += '<div class="right sub flex tr"><span class="line-text sub"> <i class="iconfont icon-yanjing f12 pr5"></i>' + List[Qindex].clickNum + '</span><span class="line-text sub"><i class="iconfont icon-dianzan f12 pr5"></i>' + List[Qindex].zanNum + '</span></div>';
+           html += '</div></div></a></li>';
+           return html;
+        }
+        function serializeHtml(List,Qindex){
+            var html='';
+            html += '<li class="gridXb"><a class="flex p15" href="' + serialize_url + '&id=' + List[Qindex].id + '">';
+            html += '<div class="img imgWH bd3" style="background-image: url(' + List[Qindex].serialize_img + ');"></div><div class="info sub ml15 flex-column-c">';
+            html += '<h3 class="line-text f14">' + List[Qindex].serialize_title + '</h3><p class="line-text f12 mt5 grey">'+List[Qindex].serialize_desc+'</p>';
+            html += ' <div class="flex grey mt5 f12"><span class="left line-text"><i class="iconfont icon-zuozhe f12"></i>专栏</span>';
+            if(List[Qindex].clickNum==null){
+                List[Qindex].clickNum=0;
+            }
+             html += '<div class="right sub flex tr"><span class="line-text sub"> <i class="iconfont icon-yanjing f12 pr5"></i>' + List[Qindex].clickNum + '</span></div>';
+            html += '</div></div></a></li>';
+            return html;
+        }
+        function collectLoad(postData){
+            postData.my_type=my_type;
+
+            $.post(location.href,postData,function(res){
+                 //console.log(res.list)
+                if(jQuery.isEmptyObject(res.list)) {
+                        $("#next").html('已加载全部');
+                        return false;
+                    } else {
+                        var html='';
+                        if(my_type=='article'){
+                            for(var i=0;i<res.list.length;i++){
+                                
+                                html+=articleHtml(res.list,i);
+                            }     
+                            $(".NewMin > ul").append(html);
+                            $("#next").html('<span class="loadding"></span>正在加载...');
+                        }else{
+                            for(var i=0;i<res.list.length;i++){    
+                                html+=serializeHtml(res.list,i);
+                            }
+                            $(".NewMin > ul").append(html);
+                            $("#next").html('<span class="loadding"></span>正在加载...');
+                        }
+                    }
+            })
+        }
+        function typeClick(obj){
+            $(".tab a").removeClass('active');
+            my_type=$(obj).attr('data');
+            pindex=1;
+            $(obj).addClass('active');
+            $.post(location.href,{'my_type':my_type,'pindex':pindex},function(res){
+                $(".NewMin > ul").empty();
+                if(jQuery.isEmptyObject(res.list)) {
+                        $("#next").html('已加载全部');
+                        return false;
+                    } else {
+                        var html='';
+                        if(my_type=='article'){
+                            for(var i=0;i<res.list.length;i++){
+                                html+=articleHtml(res.list,i);
+                            }
+                            $(".NewMin > ul").append(html);
+                            if(parseInt(res.total)>parseInt(res.psize)){
+                                $("#next").html('<span class="loadding"></span>正在加载...');
+                            }else{
+                                $("#next").html('已加载全部');
+                            }
+                        }else{
+                            for(var i=0;i<res.list.length;i++){
+                                html+=serializeHtml(res.list,i);
+                            }
+                            $(".NewMin > ul").append(html);
+                            console.log(res.total)
+                            if(parseInt(res.total)>parseInt(res.psize)){
+                                $("#next").html('<span class="loadding"></span>正在加载...');
+                            }else{
+                                $("#next").html('已加载全部');
+                            }
+                        }
+                    }
+            })
+        }
+    </script>
+    <style type="text/css">
+        .tab{border-radius: 100px;}
+        .tab a{color:#07bb45;width:50%;display: block;}
+        .tab a.active{background: #07bb45;color:#fff;}
+    </style>
+    <body onbeforeunload="visit_log()">
+        
+        
+        <div class="content">
+           <div class="tab hi40 bWhite overflow tc flex">
+                <a class="active sub" data="article" onclick="typeClick(this)" href="javascript:;">单篇</a>
+                <a class="sub" data="serialize" onclick="typeClick(this)" href="javascript:;">专栏</a>
+           </div>
+            <!-- Swiper -->
+            <div class="Recommend bWhite mt10 f14">
+                <div class="NewMin">
+                    <ul>
+                    {loop $article_list $val}
+                       <li class="gridXb">
+                            <a class="flex p15" href="{php echo $this->createmobileurl('detail',array('id'=>$val['id']))}">
+                                <div class="img imgWH bd3" style="background-image: url({$val['thumb']});"></div>
+                                <div class="info sub ml15 flex-column-c">
+                                    <h3 class="line-text f14">{$val['title']}</h3>
+                                    <p class="line-text f12 mt5 grey">{php echo strip_tags(htmlspecialchars_decode($val['description']))}</p>
+                                    <div class="flex grey mt5 f12">
+                                        <span class="left line-text">
+                                            <i class="iconfont icon-zuozhe f12"></i>
+                                            单篇
+                                        </span>
+                                        <div class="right sub flex tr">
+                                            <span class="line-text sub">
+                                                    <i class="iconfont icon-yanjing f12 pr5"></i>{$val['clickNum']}
+                                            </span>
+                                            <span class="line-text sub">
+                                                    <i class="iconfont icon-dianzan f12 pr5"></i>{$val['zanNum']}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                     {/loop}
+                    </ul>
+                </div>
+                       
+            </div>
+            <div class="still tc mt10" id="next">
+            {if (int)$a_total>(int)$psize}
+                <span class="loadding"></span> 正在加载...{else}已加载全部
+            {/if}
+            </div>
+        </div>
+        <style type="text/css">
+            .still {
+                width: inherit;
+                height: 40px;
+                background: inherit;
+                -webkit-border-radius: inherit;
+                border-radius: inherit;
+                line-height: 40px;
+                color: #888;
+                margin: 0;
+            }
+            
+            .loadding {
+                width: 16px;
+                height: 16px;
+                border: 2px solid #afafaf;
+                border-top: 2px solid #ddd;
+                border-radius: 50%;
+                display: inline-block;
+                vertical-align: -2px;
+                -webkit-animation: loadding 1s infinite linear;
+                animation: loadding 1s infinite linear;
+            }
+            
+            @keyframes loadding {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(360deg);
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+        <!--列表 end-->
+        <div style="height: 60px;"></div>
+        <!--{$pager}-->
+       {template footer}
+       <script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+    </body>
+
+</html>

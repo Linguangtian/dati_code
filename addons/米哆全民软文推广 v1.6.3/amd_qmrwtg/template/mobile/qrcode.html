@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>邀请卡</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">    
+		<link rel="stylesheet" type="text/css" href="{RES}qrcode/qrcode.css" />
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+        
+</head>
+    <body>
+		<style>
+		.thumb-inner-list span.active:after {
+			content: '';
+			background-image: url({RES}/qrcode/checked_678a9ca.png);
+			background-position: center;
+			-webkit-background-size: contain;
+			background-size: contain;
+			position: absolute;
+			right: .5rem;
+			bottom: .5rem;
+			width: 2rem;
+			height: 2rem
+		}
+		.share-card-container .btn{position: absolute;top: 15px;right: 0;background: #fff;height: 30px;line-height: 30px;padding: 0 10px;border-top-left-radius: 10px;border-bottom-left-radius: 10px;}
+		.share-card-container .btn a{color:#000;text-decoration: none;box-shadow: 10px 0 0 0  rgba
+			(0,0,0,.8) inset;}
+		</style>		
+        <div class="share-card-container">
+            <div class="share-card-inner-container">
+                <img id="image" src="{$img}">
+            </div>
+            <div class="loading-bg hidden" id="loading">
+                <img class="loading-icon" src="{RES}/qrcode/loading.gif" />
+            </div>
+            <!-- <div class="finger-guide" id="finger-guide">
+                <img src="{RES}/qrcode/finger_faa6d9e.png" alt="">
+                <p>长按保存邀请卡</p>  
+                <p>或发送给朋友</p>
+            </div> -->
+            <div class="btn">
+				<a href="{php echo $this->createmobileurl('qrcode_list')}">我的邀请</a>
+            </div>
+        </div>
+
+        <div class="footer">   
+            <div class="thumb-list-container">
+                <div id="thumb-list" class="thumb-inner-list">
+                    <!--缩略图列表-->
+						{loop $chat_poster $k $v}
+						 {if $k==0}
+							<span class="active" attr-id="{$k}"><img src="{$url}{$v}" /></span>
+						 {else}
+							<span attr-id="{$k}"><img src="{$url}{$v}" /></span>
+						 {/if}
+						
+						{/loop}
+                </div>
+            </div>
+        </div>    
+<script>
+	$(function(){
+		$('#finger-guide').click(function(){
+			$(this).hide();
+		})
+		$('#thumb-list span').click(function(){
+			$('#finger-guide').hide();
+			$('#loading').css("display","flex");
+			$('#thumb-list span').removeClass('active');
+			$(this).addClass('active');
+			var id = $(this).attr('attr-id');
+			id = parseInt(id);
+			$.get(location.href,{'type':'img',code:id},function(data){
+				$('#loading').hide();
+				eval('data='+data);
+				console.log(data);
+				if(data.status==1){
+					$('#image').attr('src',data.content+'?a='+id);
+				}else{
+					alert(data.content);
+				}
+			})
+		})
+	})
+</script>
+<script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+</body>
+</html>

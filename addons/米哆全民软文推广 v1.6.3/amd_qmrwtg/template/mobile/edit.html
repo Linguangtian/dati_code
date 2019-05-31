@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <title>个人信息</title>
+    <link rel="stylesheet" href="{RES}font/iconfont.css" />
+    <link rel="stylesheet" href="{RES}css/style_index.css" />
+    <script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="{RES}js/script.js" ></script>
+    {php echo register_jssdk(false);}
+    <style>
+    .adit_min .btn{ background:#d33d3e}
+	.adit_list li .add_tit{ background:#eee}
+	.adit_list li .add_tit h3{ color:#d33d3e}
+    </style>
+</head>
+<body onbeforeunload="visit_log()">
+<div id="box">
+    
+    <div class="adit">
+<!--        <div class="adit_balance">
+            <p>您的余额还有<i>0.00</i>元</p>
+        </div>-->
+        <div class="adit_min">
+            <form action="">
+                <div class="adit_list">
+                    <ul>
+                        <li>
+                            <div class="add_tit">
+                                <h3>头像<i></i></h3>
+                            </div>
+                            <div class="add_input" style="height:60px">
+                               <div class="img" onclick="chooseImg()">
+                                    <img id="headimg" src="{$info['avatar']}" style="height:60px;width:60px;">
+                                    <a href="#">修改</a>
+                                </div>
+                                <input name="avatar" id="avatar" value="{$info['avatar']}" type="hidden">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="add_tit">
+                                <h3>二维码<i></i></h3>
+                            </div>
+                            <div class="add_input" style="height:60px">
+                               <div class="img" onclick="chooseImg2()">
+                                    <img id="ewmpic" src="{$info['wechatewmpic']}" style="height:60px;width:60px;">
+                                    <a href="#">修改</a>
+                                </div>
+                                <input name="wechatewmpic" id="wechatewmpic" value="{$info['wechatewmpic']}" type="hidden">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="add_tit">
+                                <h3>姓名<i>( 8个汉字，16个英文字符)</i></h3>
+                            </div>
+                            <div class="add_input">
+                                <input type="text" placeholder="8个字以内" name="realname" id="realname"  value="{$info['realname']}"/>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="add_tit">
+                                <h3>公司</h3>
+                            </div>
+                            <div class="add_input">
+                                <input type="text" placeholder="请所属公司" name="companyname" id="companyname" value="{$info['companyname']}" />
+                            </div>
+                        </li>
+						<li style="display:none;">
+                            <div class="add_tit">
+                                 <h3>性别</i></h3> 
+                            </div>
+                             <div class="add_input">
+								<label style="width:100px;display:inline-block;"><input name="sex" type="radio" value="1" {if $info['sex']==1}checked{/if} style="width:auto;height:auto;"/>男 </label> 
+								<label style="width:100px;display:inline-block;"><input name="sex" type="radio" value="0" {if $info['sex']==0}checked{/if} style="width:auto;height:auto;" />女 </label> 
+                            </div>
+                        </li>
+                        <li>
+                            <div class="add_tit">
+                                <h3>手机号</h3>
+                            </div>
+                            <div class="add_input">
+                                <input type="text" placeholder="请正确填写手机号" name="mobile" id="mobile" value="{$info['mobile']}" />
+                            </div>
+                        </li>
+						 
+                        <li>
+                            <div class="add_tit">
+                                <h3>详细介绍下自己<i>( 16个字以内)</i></h3>
+                            </div>
+                            <div class="add_input add">
+                                <textarea name="desc" cols ="40" rows = "3"  id="desc">{if empty($info['desc'])}{else}{$info['desc']}{/if}</textarea>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn">
+                    <a href="javascript:void(0);" onclick="add()" id="add">提交保存</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+<div style="height: 60px;"></div>
+		 <!--foot start-->
+	       {template footer}
+	        <!--foot end-->
+</body>
+<script>
+function add(){
+    var realname=$("#realname").val();
+    var mobile=$("#mobile").val();
+    var desc=$("#desc").val();
+	var zfb=$("#zfb").val();
+	var avatar=$("#avatar").val();
+	var companyname=$("#companyname").val();
+	var wechatewmpic=$("#wechatewmpic").val();
+	var sex=$("input[name='sex'][checked]").val();
+	
+/*	debugger;*/
+    $.ajax({
+        type:"post",
+        data:{"realname":realname,"mobile":mobile,"desc":desc,"zfb":zfb,"avatar":avatar,"wechatewmpic":wechatewmpic,"sex":sex,"companyname":companyname},
+        datatype:"json",
+        url:"{php echo $this->createmobileurl('edit',array('op'=>'post',array('fuser'=>$_GPC['fuser'])))}",
+        success:function(re){
+            if(re.success==1){
+                alert(re.msg);
+                location.href="{php echo $this->createmobileurl('center',array('fuser'=>$_GPC['fuser']))}";
+            }else{
+                alert(re.msg);
+            }
+        }
+    });
+}
+
+ 
+	var imgurls="";
+	
+	//选择照片
+	function chooseImg() {
+		var images = {localIds:[],serverId:[]};
+		wx.chooseImage({
+		    count: 1, // 默认9
+		    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+		    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+		    success: function (res) {
+		       images.localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		       var i = 0; var length = images.localIds.length;
+		       var upload = function() {
+			       wx.uploadImage({
+			    	    localId: images.localIds[i], // 需要上传的图片的本地ID，由chooseImage接口获得
+			    	    isShowProgressTips: 1, // 默认为1，显示进度提示
+			    	    success: function (res) {
+			    	    	images.serverId.push(res.serverId); // 返回图片的服务器端ID
+			    	    	var serverIds=images.serverId.join(',');
+			    	    	//如果还有照片，继续上传
+                            i++;
+                            if (i < length) {
+                                upload();
+                            }else{
+                            	postimg(serverIds);
+                            }
+			    	    }
+			    	});
+		       }
+		       upload();
+		    }
+		});
+	}
+	//保存照片
+	function postimg(serverIds){
+		var posturl = "{php echo $this->createMobileUrl('treg', array('uid'=>$user['id']))}";
+        $.getJSON(posturl,{"mediaids":serverIds}, function(result){
+        	if(result.success==1){
+				imgurls=result.imgurl.substring(0,result.imgurl.length-1);
+				$("#headimg")[0].src=imgurls;
+				$("#avatar").val(imgurls);
+				
+        	}else if(result.success==-2){
+        		alert("图片上传失败，请重试！");
+        	}
+         });
+	}
+	function chooseImg2() {
+		var images = {localIds:[],serverId:[]};
+		wx.chooseImage({
+		    count: 1, // 默认9
+		    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+		    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+		    success: function (res) {
+		       images.localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		       var i = 0; var length = images.localIds.length;
+		       var upload = function() {
+			       wx.uploadImage({
+			    	    localId: images.localIds[i], // 需要上传的图片的本地ID，由chooseImage接口获得
+			    	    isShowProgressTips: 1, // 默认为1，显示进度提示
+			    	    success: function (res) {
+			    	    	images.serverId.push(res.serverId); // 返回图片的服务器端ID
+			    	    	var serverIds=images.serverId.join(',');
+			    	    	//如果还有照片，继续上传
+                            i++;
+                            if (i < length) {
+                                upload();
+                            }else{
+                            	postimg2(serverIds);
+                            }
+			    	    }
+			    	});
+		       }
+		       upload();
+		    }
+		});
+	}
+	//保存照片
+	function postimg2(serverIds){
+		var posturl = "{php echo $this->createMobileUrl('treg', array('uid'=>$user['id']))}";
+        $.getJSON(posturl,{"mediaids":serverIds}, function(result){
+        	if(result.success==1){
+				imgurls=result.imgurl.substring(0,result.imgurl.length-1);
+				$("#ewmpic")[0].src=imgurls;
+				$("#wechatewmpic").val(imgurls);
+				
+        	}else if(result.success==-2){
+        		alert("图片上传失败，请重试！");
+        	}
+         });
+	}
+	</script>
+    <script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+</html>

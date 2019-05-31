@@ -1,0 +1,30 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li{if $_GPC['do'] == 'grouping' } class="active"{/if}><a href="{php echo $this->createWebUrl('grouping')}">分组管理
+    </a></li>
+        <li{if $_GPC['do'] == 'addgroup' || $_GPC['do'] == '' } class="active"{/if}><a
+            href="{php echo $this->createWebUrl('grouping')}">用户组信息</a></li>
+    </ul>
+    <form class="form-horizontal form" id="form2" action="" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                分组信息
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">分组名称</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" name="groupname" id="nickname" value="" />
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-12">
+            <input type="submit" class="btn btn-primary col-lg-1 pull-right" name="submit" value="提交" />
+            <input type="hidden" name="token" value="{$_W['token']}" />
+        </div>
+    </form>
+</div>
+{template 'common/footer'}

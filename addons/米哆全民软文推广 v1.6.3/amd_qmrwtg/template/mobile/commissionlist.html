@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta charset="UTF-8">
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<title>我的分享收益</title>
+		{php echo register_jssdk(false);}
+		<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+		<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="{RES}js/script.js"></script>
+		<script type="text/javascript" src="{RES}js/swiper.min.js"></script>
+	</head>
+	<style>
+		.top {
+			background: #07bb45;
+			padding: 10px;
+		}
+		
+		.searchMin button {
+			width: 36px;
+		}
+		
+		.searchMin button:active {
+			background: #fff;
+			color: #07bb45;
+		}
+		
+		.top .topNav {
+			width: 36px;
+		}
+		.choose .btn{
+			width:100%;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+		}
+		
+		.choose .btn a:first-child {
+			background: #07bb45;
+			color:#fff;
+		}
+		.choose .btn a:last-child{
+			background: #f5f5f5;
+		}
+		.choose {
+			width: 80%;
+			height: 100vh;
+			overflow: hidden;
+			overflow-y: auto;
+			position: fixed;
+			top: 0;
+			right: -80%;
+			z-index: 999;
+			-webkit-animation: popup 0.4s ease forwards;
+			-webkit-opacity: 0;
+			display: none;
+			padding: ;
+			
+		}
+		
+		.choose.active {
+			display: block;
+			right: 0%;
+		}
+		
+		.chooseMin dl {
+			flex-wrap: wrap;
+			width: 100%;
+			display: block;
+		}
+		
+		.chooseMin li dd {
+			width: 32%;
+			margin: 0;
+			display: inline-block;
+		}
+		
+		.chooseMin li dd a {
+			padding: 5px;
+			display: inline-block;
+		}
+		.popup .popup-box{ -webkit-animation: popup 0.4s ease forwards; -webkit-transform: translateY(36vh); -webkit-opacity: 0;}
+		@-webkit-keyframes popup {
+		  0% { right:-80%; -webkit-opacity: 0;}
+		  100%{right:0%; -webkit-opacity: 1;}
+		}
+		.catecolor{color: red;}
+		.gridXb{ padding:10px }
+	</style>
+	<script>
+		var post_url = "{php echo $this->createmobileurl('serialize_detail')}"
+		var pindex = 1;
+		
+		function pageLoadCommon(a, b) {
+			a.scroll(function() {
+				distanceScrollCount = document.body.scrollHeight;
+				distanceScroll = document.body.scrollTop;
+				topicPageHight = document.body.clientHeight;
+				1 >= distanceScrollCount - distanceScroll - topicPageHight && b()
+			})
+		}
+		function collectLoad(pindex){
+			$.post(location.href,{'page':pindex},function(res){
+				var list_collect = res.list;
+				console.log(list_collect)
+				var html = '';
+				if(jQuery.isEmptyObject(list_collect)) {
+						$("#next").html('已加载全部');
+						return false;
+					} else {
+						for(var i=0;i<list_collect.length;i++){
+							
+								html += '<li class="gridXb"><div class="info sub ml15 flex-column-c"><h3 class="line-text f14">订单号：' + list_collect[i].out_trade_no + ' </h3><p class="line-text f12 mt5 grey">' + list_collect[i].remark + ' ' + list_collect[i].money + '元</p><div class="flex grey mt5 f12"><span class="left line-text">' + list_collect[i].addtime + '</span></div></div></li>';
+															
+						}
+						$(".NewMin > ul").append(html);
+						$("#next").html('<span class="loadding"></span>正在加载...');
+					}
+			})
+		}
+		pageLoadCommon($(document), function() {
+			pindex++;
+			collectLoad(pindex);
+		});
+		
+	</script>
+	
+
+	<body onbeforeunload="visit_log()">
+		
+		
+		<div class="content">
+			<!-- Swiper -->
+			<div class="Recommend bWhite mt10 f14">
+				<div class="NewMin">
+					<ul>
+						{loop $list $val}
+						
+						<li class="gridXb">
+								<div class="info sub ml15 flex-column-c">
+									<h3 class="line-text f14">订单号：{$val['out_trade_no']}  </h3>
+									<p class="line-text f12 mt5 grey">{$val['remark']} {$val['money']}元</p>
+									<div class="flex grey mt5 f12">
+										<span class="left line-text">
+                                            {$val['addtime']}
+                                        </span>	
+									</div>
+								</div>
+
+							</li>
+						
+						{/loop}
+					</ul>
+				</div>
+				{if !empty($list)}				
+			</div>
+			<div class="still tc mt10" id="next">
+
+				{if (int)$total > $psize}
+				<span class="loadding"></span> 正在加载...{else} 已加载全部{/if}
+			</div>
+		</div>
+		<style type="text/css">
+			.still {
+				width: inherit;
+				height: 40px;
+				background: inherit;
+				-webkit-border-radius: inherit;
+				border-radius: inherit;
+				line-height: 40px;
+				color: #888;
+				margin: 0;
+			}
+			
+			.loadding {
+				width: 16px;
+				height: 16px;
+				border: 2px solid #afafaf;
+				border-top: 2px solid #ddd;
+				border-radius: 50%;
+				display: inline-block;
+				vertical-align: -2px;
+				-webkit-animation: loadding 1s infinite linear;
+				animation: loadding 1s infinite linear;
+			}
+			
+			@keyframes loadding {
+				0% {
+					-webkit-transform: rotate(0deg);
+					transform: rotate(0deg);
+				}
+				100% {
+					-webkit-transform: rotate(360deg);
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+		{/if}
+		<!--列表 end-->
+		<div style="height: 60px;"></div>
+		<!--{$pager}-->
+		{template footer}
+        <script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+	</body>
+
+</html>

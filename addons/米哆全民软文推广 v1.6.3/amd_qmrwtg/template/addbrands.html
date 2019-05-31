@@ -1,0 +1,49 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li{if $_GPC['do'] == 'brandsmanage' } class="active"{/if}><a href="{php echo $this->createWebUrl('brandsmanage')}">品牌管理
+    </a></li>
+        <li{if $_GPC['do'] == 'addbrands' || $_GPC['do'] == '' } class="active"{/if}><a
+            href="{php echo $this->createWebUrl('addbrands')}">添加品牌</a></li>
+    </ul>
+    <form class="form-horizontal form" id="form2" action="" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                分组信息
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">品牌名称</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" name="brandtitle" id="brandtitle" value="" />
+                      
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">排序</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" name="displayorder" id="displayorder" value="" />
+                      
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">启用状态</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <label for="status_01">
+                            <input type="radio" class="form-control status" name="status" value="1" id="status_01"{if $item['status']==1}checked{/if}/>开启
+                        </label>
+
+                        <label for="status_01">
+                            <input type="radio" class="form-control status" name="status" value="2"  id="status_02" {if $item['status']==2}checked{/if}/>关闭</label>
+              
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-12">
+            <input type="submit" class="btn btn-primary col-lg-1 pull-right" name="submit" value="提交" />
+            <input type="hidden" name="token" value="{$_W['token']}" />
+        </div>
+    </form>
+</div>
+{template 'common/footer'}

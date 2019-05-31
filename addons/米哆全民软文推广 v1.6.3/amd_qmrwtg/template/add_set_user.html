@@ -1,0 +1,207 @@
+{template 'common/header'}
+
+<div class="main">
+
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="./index.php" method="get" class="form-horizontal" role="form">
+                <input type="hidden" name="c" value="site"/>
+                <input type="hidden" name="a" value="entry"/>
+                <input type="hidden" name="m" value="amd_qmrwtg"/>
+                <input type="hidden" name="do" value="add_set_user"/>
+                <input type="hidden" name="op" value="display"/>
+                <input type="hidden" name="a_id" value="{php echo $_GPC['a_id']}"/>
+
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 control-label">用户昵称</label>
+
+                    <div class="col-sm-8 col-md-8 col-lg-8 col-xs-12">
+                        <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}" placeholder="请输入用户昵称（只可搜索不在此分组的用户）">
+                    </div>
+                    <div class="pull-right col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row-fluid">
+                <div class="span8 control-group">
+                    共计 {$total} 条数据
+                </div>
+            </div>
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th>全选&nbsp;&nbsp;&nbsp;&nbsp;<input name="" type="checkbox" id="checkall" /></th>
+                    <th style="width:65px;" align="center">头像</th>
+                    <th>昵称</th>
+                    <th>真实姓名</th>
+                    <th>手机号</th>
+<!--                    <th>添加时间</th>-->
+<!--                    <th>操作</th>-->
+                </tr>
+                </thead>
+                <tbody id="add_author" class="tablist">
+                {loop $result1 $row}
+                <tr>
+                    <td><input type="checkbox" name="name" value="{$row['id']}" /></td>
+                    
+                    <td><img alt="" src="{$row['avatar']}" width='auto' style="max-width:50px; max-height:50px;" height='auto'></td>
+                    <td>{$row['nickname']}</td>
+                    <td>{$row['realname']}</td>
+                    <td>{$row['mobile']}</td>
+<!--                    <td>{php echo date('Y/m/d H:i:s', $row['createtime']);}</td>-->
+<!--                    <td>{if !empty($row['end_time'])}{php echo date('Y/m/d H:i:s', $row['end_time']);}{/if}</td>
+                    <td>{if $row['setmem']==1}<span class="label label-success ">后台设置</span>{else}<span
+                            class="label label-success ">微信支付</span>{/if}</td>-->
+<!--                    <td data="{$row['id']}">
+                        <a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="javascript:" onclick="return del(this)" title="删除">
+                            <i class="fa fa-times"></i></a>
+                    </td>-->
+                </tr>
+                {/loop}
+                <tr>
+                    <td><input class="button" type="button" name="" value="提交" onclick="checkbox_submit()" /></td>
+                    <td colspan="4"><input class="txtValue" type="hidden" name="acheckboxval" value="" /></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {$pager}
+</div>
+<div id="modal-module-menus"  class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×
+            </button><h3>选择用户</h3></div>
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value="" id="search-kwd" placeholder="请输入粉丝昵称" />
+                        <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_members()">搜索</button></span>
+                    </div>
+                </div>
+                <div id="module-menus" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+        </div>
+
+    </div>
+</div>
+<!--多选开始-->
+<script type="text/javascript">
+$(function(){
+	$(".tablist :checkbox[name='name']").click(function(){
+        var v=$(this).val();
+        var values='';
+        var aa = document.getElementsByName('name');
+        var mnum = aa.length;
+        for(i = 0; i < mnum; i++) {
+            if(aa[i].checked){
+            values+=aa[i].value+',';
+            }
+        }
+        if(values!=''){
+             values=values.substring(0,values.length);
+        }
+        $('.txtValue').val(values)
+//            alert(values);
+        })
+        //全选
+        $("#checkall").click(function() {
+            var ischeck = $("#checkall").is(":checked");
+            checkvotethis(ischeck);
+	})
+});
+
+function checkvotethis(ischeck){
+        if(ischeck){
+            var aa = document.getElementsByName('name');
+            var mnum = aa.length;
+            var values='';
+            for(i = 0; i < mnum; i++) {
+                    aa[i].checked = ischeck;
+                    values+=aa[i].value+',';
+            }
+            values=values.substring(0,values.length);
+            } 
+            $('.txtValue').val(values)
+}
+// 多选或者全选提交
+function checkbox_submit(){
+    var checkbox_val=$('.txtValue').val();
+   
+    if(checkbox_val==''){
+        alert('请选择后再提交');
+    }else{
+        $.post("", {
+            'checkbox_val': checkbox_val,'a_id': {$_GPC['a_id']}
+        }, function (data) {
+            if(data.success==1){
+                alert('添加成功');
+                 window.location.href="{php echo $this->createWebUrl('set_user',array('a_id'=>$_GPC['a_id']))}";
+            }
+               
+            
+        });
+    }
+   
+}
+                
+</script>
+<!--多选结束-->
+<script language='javascript'>
+
+    function search_members() {
+        if ($.trim($('#search-kwd').val()) == '') {
+            Tip.focus('#search-kwd', '请输入关键词');
+            return;
+        }
+        $("#module-menus").html("正在搜索....");
+        $.get("{php echo $this->createWebUrl('fans',array('op'=>'mem'))}", {
+            keyword: $.trim($('#search-kwd').val())
+        }, function (dat) {
+            $('#module-menus').html(dat);
+        });
+    }
+    function select_member(o) {
+        $.ajax({
+            type:"post",
+            data:o,
+            url:"{php echo $this->createweburl('add',array('op'=>'mem'))}",
+            datatype:"json",
+            success:function(res){
+                if(res.success==1){
+                    var html='<tr><td><img alt="" src="' + res.avatar + '" width="auto" style="max-width:50px; max-height:50px;" height="auto"></td> ';
+                    html+=' <td>' + res.nickname + '</td>';
+                    html+=' <td>' + res.money + '</td>';
+                    html+=' <td>'+ res.createtime+'</td> ';
+                    html+=' <td data="'+res.id+'"> <a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="javascript:" onclick="return del(this)" title="删除"><i class="fa fa-times"></i></a> </td> </tr>';
+                    $("#add_author").append(html);
+                    $('#modal-module-menus').modal('hide');
+                    location.reload();
+                }else{
+                    alert("他已经是用户了！");
+                }
+            }
+        });
+    }
+    function del(obj){
+        var conf=confirm("确定删除吗？");
+        var id=$(obj).parents('td').attr('data');
+        $.post(location.href,{del:true,id:id},function(result){
+            location.reload();
+        });
+    }
+
+</script>
+{template 'common/footer'}

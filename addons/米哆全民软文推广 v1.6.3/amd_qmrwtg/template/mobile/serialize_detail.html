@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta charset="UTF-8">
+		<title>专栏详情</title>
+		<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+		<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+		{php echo register_jssdk(false);}   
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="{RES}js/script.js" ></script>
+    <script type="text/javascript" src="{RES}js/swiper.min.js" ></script>
+    <script> 
+			 var mini_pay = false; 
+			 var pay_type='uni';
+		 </script>
+    <style type="text/css">
+			.still {
+				width: inherit;
+				height: 40px;
+				background: inherit;
+				-webkit-border-radius: inherit;
+				border-radius: inherit;
+				line-height: 40px;
+				color: #888;
+				margin: 0;
+			}
+			
+			.loadding {
+				width: 16px;
+				height: 16px;
+				border: 2px solid #afafaf;
+				border-top: 2px solid #ddd;
+				border-radius: 50%;
+				display: inline-block;
+				vertical-align: -2px;
+				-webkit-animation: loadding 1s infinite linear;
+				animation: loadding 1s infinite linear;
+			}
+			
+			@keyframes loadding {
+				0% {
+					-webkit-transform: rotate(0deg);
+					transform: rotate(0deg);
+				}
+				100% {
+					-webkit-transform: rotate(360deg);
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+		<script type="text/javascript">
+		var serialize_id="{$serialize_id}";
+		var serialize_title="{$serialize['serialize_title']}";
+		var pindex = 1;
+		var dis_url = "{php echo $this->createmobileurl('discuss_detail')}";
+		var send_url = "{php echo $this->createmobileurl('pay_sendnotice')}";
+			$(function(){
+				function pageLoadCommon(a, b) {
+					a.scroll(function() {
+						distanceScrollCount = document.body.scrollHeight;
+						distanceScroll = document.body.scrollTop;
+						topicPageHight = document.body.clientHeight;
+						1 >= distanceScrollCount - distanceScroll - topicPageHight && b()
+					})
+				}
+				pageLoadCommon($(document), function() {
+					pindex++;
+					discussLoad(pindex);
+				});
+				function discussLoad(pindex){
+					$.post(location.href,{'page':pindex},function(res){
+						var dis_list = res.list;
+						if(jQuery.isEmptyObject(dis_list)) {
+							$("#next").html('已加载全部');
+							return false;
+						}else{
+							var html = "";
+							for(var i=0;i<dis_list.length;i++){
+								html+='<li class="gridXb"><a class="flex p15" href="'+dis_url+'&dis_id='+dis_list[i].id+'">';
+								html+='<div class="img" style="background-image: url('+dis_list[i].avatar+');"></div>';
+								html+='<div class="info sub ml15"><p class="line-text flex-jb">'+dis_list[i].nickname+'<i class="iconfont icon-xiaoxi"></i></p>';
+								html+='<p class="time f12 grey">'+dis_list[i].createtime+'</p>';
+								html+='<p class="f14  mt5">'+dis_list[i].discuss+'</p>';
+								html+='</div></a></li>';
+								
+							}
+							$('.reviewMin > ul').append(html);
+							$("#next").html('正在加载...');
+						} 
+					})
+				}
+				$('.infoIn i').click(function(){
+					$('.infoIn p,.infoIn span,.infoIn i.pabbr').addClass('active');
+				})
+				$('.infoIn span').click(function(){
+					$('.infoIn p,.infoIn i.pabbr,.infoIn span').removeClass('active');
+
+				})
+				$('.review .title p').click(function(){
+					$('.Elastic,.ElasticMin').addClass('active');
+				})
+				$('.ElasticMin .close').click(function(){
+					$('.Elastic').removeClass('active');
+				})
+				$(".back").click(function(){
+					history.back();
+				})
+				$('.xia').hide();
+			
+				if("{$length}">180){
+					$('.xia').show();
+				}
+				
+			})
+		</script>
+	</head>
+	<body>
+		<div class="column pr before p10">
+			<div class="tit black">
+				<a class="pr disb back" href="javascript:;">
+					<i class="iconfont icon-fanhui blank">返回</i>
+					
+				</a>
+			</div>
+			<div class="columnHeaer bWhite bd8 pr overflow">
+				<div class="info flex">
+					<div class="img bd3 imgWH" style="background-image: url({$serialize['serialize_img']});"></div>
+					<div class="infoR f12 sub ml15">
+						<h3 class="f16">{$serialize['serialize_title']}</h3>
+						<p class="grey">{$serialize['author_name']}</p>
+						<p class="grey">{$pcate['name']}/{$ccate['name']}</p>
+						<p class="grey flex">
+							<span class="line-text sub">
+	        					<i class="iconfont icon-dianzan f12 pr5"></i>{if $serialize['clickNum']}{$serialize['clickNum']}{else}0{/if}
+	        				</span>
+							<span class="line-text sub">
+								<i class="iconfont icon-renshu f12 pr5"></i>{$serialize['pay_num']}
+							</span>
+						</p>
+						<div class="seal pabt tc before">
+							<p class="pabt f18">{if $serialize['serialize_price']}￥{$serialize['serialize_price']}{/if}</p>
+						</div>
+					</div>
+				</div>
+				{if empty($is_author)}
+				<div class="btn flex tc mt15">
+						<!-- <a class="sub gridFour active bd3" href="javascript:;">免费试读</a> -->
+						{if floatval($serialize['serialize_price'])>0 && empty($is_pay) && $is_vip!=true}
+						<a class="sub gridFour bd3" href="javascript:;" data="{$serialize['serialize_price']}" onclick="pay(this)">购买</a>
+						{/if}
+						{if floatval($serialize['serialize_price'])>0 && !empty($is_pay) && $is_vip!=true}
+							<a class="sub gridFour bd3" href="javascript:;" >已购买</a>
+						{/if}
+						{if floatval($serialize['serialize_price'])==0 || $is_vip==true}
+							<a class="sub gridFour bd3" href="javascript:;" >免费</a>
+						{/if}
+						<a class="sub gridFour {if $collect}active{/if} bd3" data='{if $collect}1{else}2{/if}' id="collect" href="javascript:;">{if $collect}已收藏{else}收藏{/if}</a>
+				</div>
+				{/if}
+				{if $serialize['serialize_desc']}
+				<div class="infoIn mt10 pt5 pr">
+					<p class="transition">
+						{$serialize['serialize_desc']}
+					</p>
+					<i class="iconfont grey pabbr xia">&#xe600;</i>
+					<span class="tc grey disb sq">
+						<p>收起<i class="iconfont">&#xe696;</i></p>
+					</span>
+				</div>
+				{/if}
+				<div class="CatalogL bd8 bWhite hi46 mt20 gridXt">
+					<a class="arrow-r disb" href="{php echo $this->createmobileurl('cata_list',array('serialize_id'=>$serialize_id))}">
+						<div class="info flex">
+						<p class="mr20 f16">目录</p>
+						<p class="line-text tr pr10 grey">更新至 第{$new_serialize['displayorder']}章 {$new_serialize['title']}</p>
+						</div>
+					</a>
+				</div>
+			</div>
+			<!--书评区 start-->
+			<div class="review bd8 bWhite mt10">
+				<div class="title pl15 pr15 hi46 flex-jb gridXb">
+					<h3 class="f16">评论区<i class="f14 grey  ml5">{$total}条评论</i></h3>
+					<p class="f14 grey">发表评论<i class="iconfont icon-bianji"></i></p>
+				</div>
+				<div class="reviewMin">
+				{if $dis_list}
+					<ul>
+					{loop $dis_list $val}
+						<li class="gridXb">
+							<a class="flex p15" href="{php echo $this->createmobileurl('discuss_detail',array('dis_id'=>$val['id']))}">
+								<div class="img" style="background-image: url({$val['avatar']});"></div>
+								<div class="info sub ml15">
+									<p class="line-text flex-jb">{$val['nickname']}<i class="iconfont icon-xiaoxi"></i></p>
+									<p class="time f12 grey">{$val['createtime']}</p>
+									<p class="f14  mt5">{$val['discuss']}</p>
+								</div>
+							</a>
+						</li>	
+					{/loop}
+					</ul>
+					<div class="still tc mt10" id="next">
+
+						{if (int)$total > $psize}
+						<span class="loadding"></span> 正在加载...{else} 已加载全部{/if}
+					</div>
+					{else}
+					<div class="noInfo tc pb15">
+							<i class="iconfont icon-meiyougengduo"></i>
+							<p class="grey">暂无评论信息~</p>
+					</div>
+					{/if}
+			</div>
+			<!--书评区 end-->			
+			<!--弹层 start-->
+			<div class="Elastic transition">
+				<div class="ElasticMin w100 bWhite pabbl transition">
+					<span class="close"><i class="iconfont icon-2 blank"></i></span>
+					<div class="title  f18">发表软文评论</div>
+					<div class="info">
+						<div class="textarea">
+							<textarea class="w100 p10" rows="3" id="discuss" placeholder="请输入您要输入的评论~"></textarea>
+						</div>
+						<div class="btn mt20">
+							<button id="tj">提交</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!--弹层 end-->
+		</div>
+		<div style="height: 60px;"></div>
+		 <!--foot start-->
+	      {template footer}
+	        <!--foot end-->
+	</body>
+	<script>
+	$(function(){
+		wx.ready(function() {
+			shareMeta = {
+				imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+				success: function() {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+				},
+				cancel: function() {
+					// alert("分享失败，可能是网络问题，一会儿再试试？");
+				}
+			};
+			wx.onMenuShareTimeline(shareMeta);
+			wx.onMenuShareAppMessage(shareMeta);
+			wx.onMenuShareWeibo(shareMeta);
+			wx.onMenuShareQQ(shareMeta);
+			wx.onMenuShareQZone(shareMeta);
+			mini_pay=window.__wxjs_environment === 'miniprogram'; 
+			if(mini_pay){
+					pay_type='mini_pay';
+					
+				 }else{
+				 	pay_type='uni';
+				}
+		});
+	})
+	
+	 function jsApiCall(pay)
+    {
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+        pay,
+        function(res){
+            WeixinJSBridge.log(res.err_msg);
+            if(res.err_msg == "get_brand_wcpay_request:ok") {
+                $.post(send_url,{'type':pay.type,'id':pay.id,'title':pay.title,'money':pay.money,'out_trade_no':pay.out_trade_no},function(res){
+                	location.reload();
+                })
+            } else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                alert("已取消付费!");
+            }else{
+                alert(res.err_code+res.err_desc+res.err_msg);
+            }
+        }
+    );
+    }
+
+	function pay(obj){
+		var money = $(obj).attr('data');
+		$.post(location.href,{'type':'pay','pay_type':pay_type,'money':money},function(json){
+			
+			if(mini_pay){ 
+			 //小程序支付 
+			 var mini_url=encodeURIComponent("{$send_url}"+"&id="+"{$serialize_id}");
+			 wx.miniProgram.navigateTo({url:'/dg_costreadsimple/pages/pay/index?num='+json.out_trade_no+'&uniacid='+'{$_W["uniacid"]}'+'&mini_url='+mini_url}) 
+			 }else{ 
+			 	jsApiParameters=JSON.parse(json.jsApiParameters);
+				jsApiParameters.money=json.money;
+				jsApiParameters.out_trade_no=json.out_trade_no;
+				jsApiParameters.title=serialize_title;
+				jsApiParameters.id=serialize_id;
+				jsApiParameters.type='zl';
+			 	callpay(jsApiParameters);
+			 } 
+			
+		})
+	}
+	function callpay(pay)
+    {
+       if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall(pay);
+       }
+    }
+	$("#tj").click(function(){
+		var discuss = $("#discuss").val();
+		if(discuss==''){
+			alert("请输入评论内容");	
+			return false;
+		}
+		$.post(location.href,{'type':'discuss','id':serialize_id,"discuss":discuss},function(res){
+			if(res.con==1){
+				alert("发布成功");
+				$('.infoIn p,.infoIn i.pabbr,.infoIn span').removeClass('active');
+				location.reload();
+			}
+		})
+	});
+	$('#collect').click(function(){
+		var status = $(this).attr('data');
+		if($(this).attr('data')==2){
+			$(this).addClass('active');
+			$(this).attr('data',1);
+			$(this).text('已收藏');
+		}else if($(this).attr('data')==1){
+			$(this).removeClass('active');
+			$(this).text('收藏');
+			$(this).attr('data',2);
+		}
+		$.post(location.href,{'type':'collect','serialize_id':serialize_id,'status':status},function(res){
+			alert(res.con);
+		})
+	})
+	</script>
+</html>

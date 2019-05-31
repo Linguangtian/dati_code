@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+		<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+		<style>
+			.jz_copy{  
+			    -webkit-touch-callout:none;  /*系统默认菜单被禁用*/  
+			    -webkit-user-select:none; /*webkit浏览器*/  
+			    -khtml-user-select:none; /*早期浏览器*/  
+			    -moz-user-select:none;/*火狐*/  
+			    -ms-user-select:none; /*IE10*/  
+			    user-select:none;  
+			}
+		</style>
+		<script>
+		var serialize_id="{$serialize_id}";
+		var serialize_free_chapter="{$serialize['free_chapter']}";
+		var is_pay ="{$is_pay}";
+		var serialize_price ="{$serialize['serialize_price']}";
+		var is_author ="{$is_author}";
+		var is_vip ="{$is_vip}";
+		var serialize_url="{php echo $this->createmobileurl('serialize_detail',array('id'=>$serialize_id))}";
+		console.log(serialize_url)
+		function cata(){
+			history.back();
+		}
+		function chapter(obj){
+				var displayorder = $(obj).attr('data');
+				var chapter = $(obj).attr('chapter');
+				if(chapter=="last"){
+					displayorder=parseInt(displayorder)-1;
+				}
+				if(chapter=="next"){
+					displayorder=parseInt(displayorder)+1;
+				}
+				$.post(location.href,{'type':'chapter',"displayorder":displayorder,"serialize_id":serialize_id},function(res){
+					var html='';
+					html+='<h2>第'+res.chapter.displayorder+'章 '+res.chapter.title+'</h2>';
+					html+='<div class="info mt10 f16">'+res.chapter.content+'</div>';
+					if((parseInt(res.chapter.displayorder)>parseInt(serialize_free_chapter)) && (is_author!=true && is_pay!=true && is_vip!=true)){
+						html+='<div class="size tc mt20 mb20"><p class="grey">本书价格<i class="red">'+serialize_price+'元</i></p><a class="hi36 pl20 pr20 blank disb mt10" href="'+serialize_url+'">去购买</a></div>';
+					}
+					html+='<div class="btn flex tc">';
+					if(res.chapter.displayorder!=1){
+						html+='<a class="sub hi36" onclick="chapter(this)" chapter="last" data="'+res.chapter.displayorder+'" href="javascript:;">上一章</a>';
+					}
+					html+='<a class="sub hi36" onclick="cata()" href="javascript:;">目录</a>';
+					if(parseInt(res.chapter.displayorder)<parseInt(res.num)){
+						html+='<a class="sub hi36" onclick="chapter(this)" chapter="next" data="'+res.chapter.displayorder+'" href="javascript:;">下一章</a>';
+					}
+					$("#cont").empty();
+					$("#cont").append(html);
+				});
+			}
+		</script>
+	</head>
+	<style type="text/css">
+    .ChapterMin .btn{position: fixed;bottom:0;left: 0;width:100%;}
+	</style>
+	<body style="background: #ede7da">
+		<div class="Chapter w100 h100 jz_copy" >
+					<div class="ChapterMin p15" id="cont">
+							<h2>第{$cata_detail['displayorder']}章 {$cata_detail['title']}</h2>
+							<div class="info mt10 f16">
+								{$cata_detail['content']}
+							</div>
+
+							{if ((int)$cata_detail['displayorder']>(int)$serialize['free_chapter']) && ($is_author!=true && $is_pay!=true && $is_vip!=true)}
+							<div class="size tc mt20 mb20">
+								<p class="grey">本书价格<i class="red">{$serialize['serialize_price']}元</i></p>
+								<a class="hi36 pl20 pr20 blank disb mt10" href="{php echo $this->createmobileurl('serialize_detail',array('id'=>$serialize_id))}">去购买</a>
+							</div>
+							{/if}
+							<div style="height: 50px"></div>
+							<div class="btn flex tc">
+								{if $cata_detail['displayorder']!=1}
+									<a class="sub hi36" onclick="chapter(this)" chapter="last" data="{$cata_detail['displayorder']}" href="javascript:;">上一章</a>
+								{/if}
+									<a class="sub hi36" onclick="cata()" href="javascript:;">目录</a>
+								{if (int)$cata_detail['displayorder']<(int)$max['num']}
+									<a class="sub hi36" onclick="chapter(this)" chapter="next" data="{$cata_detail['displayorder']}" href="javascript:;">下一章</a>
+								{/if}
+							</div>
+					</div>
+		</div>
+        <script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+	</body>
+</html>

@@ -1,0 +1,679 @@
+{template 'common/header'}
+<ul class="nav nav-tabs">
+    <li {if $op == 'post' && empty($id)}class="active"{/if}><a href="{php echo $this->createWebUrl('article', array('op' => 'post'));}">添加软文</a>
+    </li>
+    <li {if $op == 'display'}class="active"{/if}><a href="{php echo $this->createWebUrl('article',array('op'=>'display'));}">管理软文</a>
+    </li>
+    <li {if $operation == 'hot'}class="active"{/if}><a href="{php echo $this->createWebUrl('collect', array('op' => 'hot'))}">软文采集</a></li>
+    {if !empty($id) && $op == 'post'}
+    <li class="active">  <a href="{php echo $this->createWebUrl('article',array('op'=>'post','id'=>$id));}">编辑软文</a> </li> {/if}
+	{if $op == 'order'}
+    <!--<li class="active">  <a href="#">付费记录</a> </li> -->
+	{/if}
+	{if $op == 'discuss'}
+    <li class="active">  <a href="#">留言记录</a> </li> 
+	{/if}
+    <li{if $_GPC['do'] == 'brandsmanage' } class="active"{/if}><a href="{php echo $this->createWebUrl('brandsmanage')}">品牌管理
+    </a></li>
+</ul>
+<!--<style>
+    .table td span {
+        display: inline-block;
+        margin-top: 4px;
+    }
+
+    .table td input {
+        margin-bottom: 0;
+    }
+</style>-->
+{if $op == 'display'}
+
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form">
+            <input type="hidden" name="c" value="site"/>
+            <input type="hidden" name="a" value="entry"/>
+            <input type="hidden" name="m" value="amd_qmrwtg"/>
+            <input type="hidden" name="do" value="article"/>
+            <input type="hidden" name="op" value="display"/>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 control-label">关键字</label>
+
+                <div class="col-sm-8 col-md-8 col-lg-8">
+                    <input class="form-control" name="akeyword" id="" type="text" value="{$_GPC['akeyword']}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 control-label">软文分类</label>
+
+                <div class="col-sm-8 col-md-8 col-lg-8 col-xs-12">
+                    {php echo tpl_form_field_category_2level('catagroy', $parent, $children, $pcate, $ccate)}
+                </div>
+                <div class="pull-right col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<form action="" method="post" onsubmit="return formcheck(this)">
+    <div class="panel panel-default">
+        <div class="table-responsive panel-body">
+            <table class="table">
+                <thead>
+                <tr>
+                	<th style="width:5%;" class="row-first">选择</th>
+                    <th style="width:10%;">顺序</th>
+                    <th style="width:60%;">标题</th>
+                    <th style="width:25%;">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {loop $list $item}
+                <tr>
+					<td class="row-first"><input type="checkbox" name="select[]" value="{$item['id']}" /></td>
+                    <td>
+                        <input type="text" class="form-control" name="displayorder[{$item['id']}]" value="{$item['displayorder']}"></td>
+                    <td>
+                        {if !empty($item['pcate'])}<span class="text-error">[{$category[$item['pcate']]['name']}]</span>{/if}
+                        {if !empty($item['ccate'])}<span class="text-info">[{$category[$item['ccate']]['name']}]</span>{/if}
+                        <a href="{php echo $this->createWebUrl('article', array('op' => 'post', 'id' => $item['id']))}"
+                           style="color:#333;">{$item['title']}
+                        </a><?php if($item['userid']){ ?>【{$item['user']['nickname']}({$item['user']['realname']})采集】<?php } ?>
+                    </td>
+
+                    <td>
+                        <a href="{php echo $_W['siteroot'].'app/'.substr($this->createMobileUrl('detail',array('id'=>$item[id]),true),2);}" target="_blank" class="btn btn-mini" style="display:none;">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <label style="cursor:pointer;" data="{$item[id]}" class="label label-default {if $item['recommend']==2}label-info{/if}" onclick="tuijian({$item['id']})">推荐</label>
+                        <label style="cursor:pointer;" data="{$item[id]}" class="label label-default {if $item['status']==2}label-info{/if}" onclick="setUserStatus(this,'on');">全站展示</label>
+                        <!--<label style="cursor:pointer;" data="{$item[id]}" class="label label-default {if $item['appoint']==2}label-info{/if}" onclick="setUserAppoint(this,'appo');">指定用户</label>-->
+<!--                        <a class="btn btn-primary" href="###" onclick="popwin = $('#modal-module-menus').modal();">
+                                            <i class="fa fa-plus"></i>添加指定人员</a>-->
+                        <!--<a href="{php echo $this->createWebUrl('article', array('op' => 'appoint', 'id' => $item['id']))}">添加制定人员</a>-->                   
+                        <!--<a href="{php echo $this->createweburl('appoint',array(id=>$item['id']))}">添加</a>-->
+						<br>
+                        <a href="{php echo $this->createWebUrl('article', array('op' => 'post', 'id' => $item['id']))}"
+                           title="编辑" data-toggle="tooltip" data-placement="top" class="btn btn-default btn-sm"><i class="fa fa-edit"></i>
+                        </a>
+						
+                        {if $item['pay_money']>0}
+						<!--<a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="{php echo $this->createWebUrl('dolloer',array('article_id'=>$item['id'],'op'=>'order'))}"  title="付费人员"><i class="fa fa-usd"></i></a>-->
+						{/if}	
+						<a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="{php echo $this->createWebUrl('discuss',array('article_id'=>$item['id'],'op'=>'discuss'))}"  title="留言记录"><i class="fa fa-comments-o"></i></a>
+                        <a onclick="return confirm('此操作不可恢复，确认吗？'); return false;"
+                           href="{php echo $this->createWebUrl('article', array('op' => 'delete', 'id' => $item['id']))}"
+                           title="删除" data-toggle="tooltip" data-placement="top" class="btn btn-default btn-sm"><i
+                                class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                {/loop}
+                <tr>
+                	<td><input type="checkbox" id="checkall" onclick="var ck = this.checked;$(':checkbox').each(function () {this.checked = ck});"></td>
+                    <td >
+                            <input name="Deleteall" class="btn btn-primary" value="删除" type="submit"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </td>
+                    <td colspan="3">
+                        <input name="submit" type="submit" class="btn btn-primary" value="批量更新排序">
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    </td>
+                    
+                        
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{$pager}
+ <div id="modal-module-menus"  class="modal fade" tabindex="-1">
+        <div class="modal-dialog" style='width: 920px;'>
+            <div class="modal-content">
+                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择作者</h3></div>
+                <div class="modal-body" >
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="keyword" value="" id="search-kwds" placeholder="请输入粉丝昵称" />
+                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_appoints()">搜索</button></span>
+                        </div>
+                    </div>
+                    <div id="module-menus" style="padding-top:5px;"></div>
+                </div>
+                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+            </div>
+
+        </div>
+    </div>
+<script type="text/javascript">
+	function tuijian(sy_id){
+		$.post(location.href,{"type":"sy","sy_id":sy_id},function(res){
+			if(res.success==1){
+				alert("设置成功");
+				location.reload();
+			}
+		})
+	}
+
+	<!-- $("#sy").click(function(){ -->
+		<!-- var sy_id=$(this).attr('data'); -->
+
+		<!-- console.log(sy_id) -->
+		 <!-- $.post(location.href,{"type":"sy","sy_id":sy_id},function(res){ -->
+			<!-- if(res.success==1){ -->
+				<!-- alert("设置成功"); -->
+				<!-- location.reload(); -->
+			<!-- } -->
+		 <!-- }) -->
+	<!-- }) -->
+    var category = {php echo json_encode($children)};
+    require(['bootstrap'], function ($) {
+        $('.btn').hover(function () {
+            $(this).tooltip('show');
+        }, function () {
+            $(this).tooltip('hide');
+        });
+    });
+
+    function setUserStatus(obj,op){
+        var id=$(obj).attr('data');
+        var url="{php echo $this->createWebUrl('article')}";
+        $.post(url,{id:id,op:op},function(result){
+            if(op=='on'){
+                if(result.res==1){
+                    $(obj).addClass('label-info');
+                }else{
+                    $(obj).removeClass('label-info');
+                }
+            }
+        });
+    }
+    
+    function setUserAppoint(obj,op){
+        var id=$(obj).attr('data');
+        var url="{php echo $this->createWebUrl('article')}";
+        $.post(url,{id:id,op:op},function(result){
+            if(op=='appo'){
+                if(result.res==1){
+                    $(obj).addClass('label-info');
+                }else{
+                    $(obj).removeClass('label-info');
+                }
+            }
+        });
+    }
+  //添加指定人员
+    function search_appoints() {
+        if ($.trim($('#search-kwds').val()) == '') {
+            Tip.focus('#search-kwds', '请输入关键词');
+            return;
+        }
+        $("#module-menus").html("正在搜索....");
+        $.get("{php echo $this->createWebUrl('fans')}", {
+            keyword: $.trim($('#search-kwds').val())
+        }, function (dat) {
+            $('#module-menus').html(dat);
+        });
+    }
+  
+</script>
+{elseif $op == 'post'}
+<div class="clearfix">
+    <form class="form-horizontal form" action="" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-heading">软文管理</div>
+            <div class="panel-body">
+                <input type="hidden" name="id" value="{$item[id]}">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">访问地址</label>
+                    <div class="col-sm-8">
+                        <p class="form-control-static">
+                            <a class="preview_url"
+                               href="{php echo $_W['siteroot'].'app/'.substr($this->createMobileUrl('detail',array('id'=>$item[id]),true),2);}"
+                               target="_blank">
+                                {php $ewmurl = $_W['siteroot'].'app/'.substr($this->createMobileUrl('detail',array('id'=>$item[id]),true),2); echo $ewmurl;}
+                            </a>
+                        </p>
+                        <div class="input-group" style="margin-top:.5em;">
+                            <img id="erw" src="<?php echo $this->createWebUrl('createcode',array('url'=>$ewmurl)); ?>">
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">软文类别</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {php echo tpl_form_field_category_2level('catagroy', $parent, $children, $pcate, $ccate)}
+                    </div>
+                </div>
+                <?php if(!empty($brands)){ ?>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">所属品牌库</label>
+                    <div class="col-sm-8">
+                    	<label for="status_00">
+                            <input type="radio" name="brandid" value="0" class="brandid" {if $item['brandid']==0}checked{/if}/>全站
+                        </label>
+                        <?php foreach($brands as $key){ ?>
+                        <label for="status_01">
+                            <input type="radio" name="brandid" value="<?php echo $key['id']; ?>" class="brandid" {if $item['brandid']==$key['id']}checked{/if}/><?php echo $key['brandtitle']; ?>
+                        </label>
+
+                            
+                        <!--<input value="<?php echo $key['id']; ?>" type="checkbox" name="brands[]"  <?php if(strpos($item['brands'],','.$key['id'].',')!==false){ ?> checked <?php } ?> /><?php echo $key['brandtitle']; ?>-->
+                        <?php } ?>
+                        <span class="help-block">
+                            不选择品牌库则代表文章为公共品牌库，即所有微站都会显示
+                        </span>
+                    </div>
+                </div>
+                <?php } ?>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">标题</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" name="title" value="{$item['title']}">
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">描述</label>
+                    <div class="col-sm-8">
+                   
+                        <textarea class="form-control"  name="description" >{$item['description']}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">缩略图</label>
+                    <div class="col-sm-9">
+                        {php echo tpl_form_field_image('thumb', $item['thumb'])}
+                        <span class="help-block">
+                            建议图片大小为：640*350
+                        </span>
+                    </div>
+                </div>
+               <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">分享标题</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" placeholder="" name="fx_title" value="{$item['fx_title']}">
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">分享描述</label>
+                    <div class="col-sm-8">
+                   
+                        <textarea class="form-control"  name="fx_desc" >{$item['fx_desc']}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享图</label>
+                    <div class="col-sm-9">
+                        {php echo tpl_form_field_image('fx_img', $item['fx_img'])}
+                        <span class="help-block">
+                            建议图片大小为：200*150
+                        </span>
+                    </div>
+                </div>
+
+                <!--<div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">软文触发关键字</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" placeholder="" name="akeyword" value="{$akeywords}">
+                        <div class="help-block">添加关键字以后,系统将生成一条图文规则,用户可以通过输入关键字来阅读软文</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">付费金额(元)</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" placeholder="" name="pay_money" value="{$item['pay_money']}">
+                        <span class="help-block">如果大于0元,此软文只显示简介,需付费后才能全文.此功能用到微信支付订阅号需要借用服务号支付</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">虚拟付费人数设置</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" placeholder="" name="pay_num" value="{$item['pay_num']}">
+                        <span class="help-block">设置软文已有多少人付费，注意设置的人数不要大于软文阅读浏览数</span>
+                    </div>
+                </div>-->
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">排序</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" placeholder="" name="displayorder" value="{$item['displayorder']}">
+                        <span class="help-block">软文的显示顺序，越大则越靠前</span>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启音频</label>
+                    <div class="col-sm-9">
+                        <label for="status_01">
+                            <input type="radio" name="bg_music_set" value="1" class="js_music_open" id="status_01"{if $item['bg_music_set']==1}checked{/if}/>开启
+                        </label>
+
+                        <label for="status_01">
+                            <input type="radio" name="bg_music_set" value="2" class="js_music_close" id="status_02" {if $item['bg_music_set']==2}checked{/if}/>关闭</label>
+                        <span class="help-block">如果关闭的话，前端不会出现音乐播放器</span>
+                    </div>
+                </div>
+                <div class="form-group" id="js_music_div">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">音频链接</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {php echo tpl_form_field_audio('bg_music', $item['bg_music']);}
+                    </div>
+                </div>
+
+
+
+                <!--<div class="form-group">-->
+                    <!--<label class="col-xs-12 col-sm-3 col-md-2 control-label">来源</label>-->
+                    <!--<div class="col-sm-9 col-xs-12">-->
+                        <!--<div class="input-group">-->
+                            <!--<input type="text" class="form-control" placeholder="图文消息的来源地址" name="outLink" value="{$item['outLink']}"/>-->
+                            <!--<span class="input-group-btn">-->
+                                <!--<button class="btn btn-default link_select" type="button"><i class="fa fa-external-link"></i> 系统链接</button>-->
+                            <!--</span>-->
+
+                        <!--</div>-->
+                        <!--<span>-->
+                            <!--也可以填写外表连接。如果填写连接，会跳转到此连接,转成短地址。<a target="_blank" href="http://www.dwz.cn/">短网址转换</a>-->
+                             <!--</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+               
+
+                {if empty($item['outLink'])}
+                <!--<div class="form-group">-->
+                    <!--<label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">软文作者</label>-->
+                    <!--<div class="col-sm-8 col-xs-12">-->
+                        <!--<input type="text" class="form-control" id="author" name="author" value="{$item['author']}">-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <div class="form-group" style="display:none">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">软文作者</label>
+                    <div class="col-sm-9 col-xs-12">
+
+                        <div class='input-group'>
+                            <input type="text" id='salers' name="salers" maxlength="30" value="{$saler['nickname']}" class="form-control" readonly />
+                            <div class='input-group-btn'>
+                                <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus').modal();">选择作者</button>
+                            </div>
+                        </div>
+
+                        <div class="input-group multi-img-details" id='saler_container'>
+                            {if !empty($saler)}
+                            <div class="multi-item saler-item" openid='{$saler['openid']}'>
+                            <img class="img-responsive img-thumbnail" src='{$saler['avatar']}' onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
+                            <div class='img-nickname'>{$saler['nickname']}</div>
+                            <input type="hidden" value="{$saler['id']}" name="sid">
+                            <em onclick="remove_member(this)"  class="close">×</em>
+                            {/if}
+                        </div>
+
+                    </div>
+
+                    <div id="modal-module-menus"  class="modal fade" tabindex="-1">
+                        <div class="modal-dialog" style='width: 920px;'>
+                            <div class="modal-content">
+                                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择作者</h3></div>
+                                <div class="modal-body" >
+                                    <div class="row">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="keyword" value="" id="search-kwd" placeholder="请输入粉丝昵称/姓名/手机号" />
+                                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_members();">搜索</button></span>
+                                        </div>
+                                    </div>
+                                    <div id="module-menus" style="padding-top:5px;"></div>
+                                </div>
+                                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">软文内容</label>
+                    <div class="col-sm-8">
+                        {php echo tpl_ueditor('content', $item['content']);}
+                        <span class="help-block">的软文，没有付费展示的内容是简介里的内容，如果是软文，需要把简介里的内容也放在这里</span>
+                    </div>
+                </div>
+                <!--<div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">联系客服</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" id="tel" name="tel" value="{$item['tel']}">
+                    </div>
+                </div>-->
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">阅读量</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" id="clickNum" name="clickNum" value="{$item['clickNum']}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">点赞量</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" id="zanNum" name="zanNum" value="{$item['zanNum']}">
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <input name="submit" type="submit" value="提交" class="btn btn-primary col-lg-1">
+                <input type="hidden" name="token" value="{$_W['token']}"/>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    require(['jquery', 'util'], function ($, u) {
+
+
+        $(".js_music_close").on("change", function () {
+            $("#js_music_div").toggleClass('hide', $(this).prop("checked"));
+        });
+        $(".js_music_open").on("change", function () {
+            $("#js_music_div").toggleClass('hide', !$(this).prop("checked"));
+        });
+        $('#credit1').click(function () {
+            $('#credit-status1').show();
+        });
+        $('#credit0').click(function () {
+            $('#credit-status1').hide();
+        });
+
+        $('.link_select').unbind('click').click(function(){
+            var ipt = $(this).parent().prev();
+            util.linkBrowser(function(href){
+                ipt.val(href);
+            });
+        });
+    });
+</script>
+<script type="text/javascript">
+    //放大图片
+    $(function () {
+        // 链接二维码
+       var er ="{php echo $_W['siteroot'].'app/'.substr($this->createMobileUrl('detail',array('id'=>$item[id]),true),2);}";
+       var erw = er.replace(/&/g, "%26");
+	   <?php $ewmurl=$_W['siteroot'].'app/'.substr($this->createMobileUrl('detail',array('id'=>$item[id]),true),2); ?>
+       
+
+    });
+</script>
+<script language='javascript'>
+    function search_members() {
+        if ($.trim($('#search-kwd').val()) == '') {
+            Tip.focus('#search-kwd', '请输入关键词');
+            return;
+        }
+        $("#module-menus").html("正在搜索....");
+        $.get('{php echo $this->createWebUrl('author')}', {
+            keyword: $.trim($('#search-kwd').val())
+        }, function (dat) {
+            $('#module-menus').html(dat);
+        });
+    }
+    function select_member(o) {
+
+        if ($('.multi-item[openid="' + o.openid + '"]').length > 0) {
+            return;
+        }
+        $("#saler_container").empty();
+        var html = '<div class="multi-item" openid="' + o.openid + '">';
+        html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'">';
+        html += '<div class="img-nickname">' + o.nickname + '</div>';
+        html += '<input type="hidden" value="' + o.id + '" name="sid">';
+        html += '<em onclick="remove_member(this)"  class="close">×</em>';
+        html += '</div>';
+        $("#saler_container").append(html);
+        refresh_members();
+    }
+
+    function remove_member(obj) {
+        $(obj).parent().remove();
+        refresh_members();
+    }
+    function refresh_members() {
+        var nickname = "";
+        $('.multi-item').each(function () {
+            nickname += " " + $(this).find('.img-nickname').html() + "; ";
+        });
+        $('#salers').val(nickname);
+    }
+
+</script>
+{else if $op=="order"}
+
+<div class="main panel panel-default">
+    <div class="panel-body table-responsive">
+        <div style="font-weight:bold;color:red;margin:10px;">共计 {$total} 个,合计{$sum} 元</div>
+        <table class="table table-hover">
+            <thead class="navbar-inner">
+            <tr>
+                <th>昵称</th>
+				<th>头像</th>
+                <th style="width:10%">金额(￥)</th>
+                <th>支付时间</th>
+                <th>交易流水号</th>
+            </tr>
+            </thead>
+            <tbody>
+            {loop $list $slide}
+            <tr>
+                <td>
+                    {$slide['nickname']}</td>
+				<td>
+					<img src="{$slide['avatar']}" style="width:40px;"/>
+                </td>
+                </td>
+                <td>
+                    {$slide['pay_money']}</td>
+                </td>
+                <td>
+                    {php echo date('Y-m-d H:i:s', $slide['pay_time']);}</td>
+                </td>
+                <td>
+                    {$slide['transaction_id']}</td>
+                </td>
+            </tr>
+            {/loop}
+            </tbody>
+        </table>
+        <div style="margin:0 auto;margin-right: auto;vertical-align: middle;text-align: center;" >
+            {$pager}
+        </div>
+    </div>
+</div>
+<script>
+    $("td.qrcode").tooltip({
+        items:'img',
+        content: function() {
+            return "<img width='300px' height='300px' src='"  + $(this).attr("src") + "'></img>";
+        },
+        position: {
+            my : "right bottom-300",
+            collision: "fit"
+        }
+    });
+</script>
+{else if $op="discuss"}
+<div class="main panel panel-default">
+    <div class="panel-body table-responsive">
+        <div style="font-weight:bold;color:red;margin:10px;">共计 {$total} 条留言</div>
+        <table class="table table-hover">
+            <thead class="navbar-inner">
+            <tr>
+                <th>留言人</th>
+                <th style="width:20%">留言内容</th>
+                <th>留言时间</th>
+                <th>留言回复</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {loop $list $slide}
+            <tr>
+                <td >
+                    {$slide['nickname']}</td>
+                </td>
+                <td>
+                    {$slide['discuss']}</td>
+                </td>
+                <td>
+                    {php echo date('Y-m-d H:i:s', $slide['createtime']);}</td>
+                </td>
+                <td>
+                    {if !empty($slide['reply'])}
+                    <label style="cursor:pointer;" class="label label-default label-info">已回复</label>
+                    {else}
+                    <label style="cursor:pointer;" class="label label-default">未回复</label>
+                    {/if}
+                </td>
+                <td>
+                    <label style="cursor:pointer;" data="{$slide['id']}" class="label label-default {if $slide['ispubluc']==0}label-info{/if}" onclick="setUserStatus(this,'on');">全站展示</label>
+                    <a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="{php echo $this->createweburl('reply',array(id=>$slide['id']))}"  title="回复"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="javascript:" onclick="return del('delete',{$slide['id']})" title="删除"><i class="fa fa-times"></i></a>
+                </td>
+                </td>
+            </tr>
+            {/loop}
+            </tbody>
+        </table>
+            {$pager}
+    </div>
+</div>
+<script type="text/javascript">
+    function setUserStatus(obj,op){
+        var id=$(obj).attr('data');
+        $.post(location.href,{id:id,op:op},function(result){
+            if(op=='on'){
+                if(result.res==1){
+                    $(obj).addClass('label-info');
+                }else{
+                    $(obj).removeClass('label-info');
+                }
+            }
+        });
+    }
+    function del(op,id){
+        var conf=confirm('确定删除吗？');
+        $.post(location.href,{op:op,id:id},function(result){
+            location.reload();
+        })
+    }
+</script>
+{/if}
+{template 'common/footer'}

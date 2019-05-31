@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta charset="UTF-8">
+		<title>个人中心  {$cfg['projecttitle']}</title>
+		{php echo register_jssdk(false);}
+		<link rel="stylesheet" href="{RES}css/style_index.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+ 
+     <script> 
+			 var mini_pay = false; 
+			 var pay_type='uni'; 
+		 </script>
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+		<script type="text/javascript">
+        var send_url = "{php echo $this->createmobileurl('pay_sendnotice')}";
+			$(function(){
+				$('.infoIn i').click(function(){
+					$('.infoIn p,.infoIn span,.infoIn i.pabbr').addClass('active');
+				})
+				$('.infoIn span').click(function(){
+					$('.infoIn p,.infoIn i.pabbr,.infoIn span').removeClass('active');
+
+				})
+				$('.review .title p').click(function(){
+					$('.Elastic,.ElasticMin').addClass('active');
+				})
+                 $('#recmember').click(function(){
+                        $('.Elastic').show();
+                })
+                $('#close').click(function(){
+                    $('.Elastic').hide();
+                })
+				$('.ElasticMin .close').click(function(){
+					$('.Elastic').removeClass('active');
+				})
+			})
+		</script>
+        <style>
+        .column:before, .Catalog:before, .comment:before, .my:before{ background:none}
+		.myHeader .info p{ line-height:24px}
+		.myHeader .img{ width:80px; height:80px}
+		.myList li i{ color:#666; font-size:16px; float:left; margin-right:5px;}
+	.myList ul{ margin-top:20px;}
+		.myList ul li{ width:100%; text-align:left; padding:5px 10px; border-bottom:1px #eee solid}
+		ul li .arrow-r{ float:right; margin-top:10px}
+		.myList ul li:onhover{ background:#eee}
+		.pt15{ padding-top:5px;}
+		.pb15{ padding-bottom:5px}
+		.columnHeaer, .myHeader{ padding:15px;}
+		#recmember{ background:#ccc; padding:5px 10px}
+		.foot a.active{ color:#fff; height:auto}
+        </style>
+	</head>
+	<body onbeforeunload="visit_log()"> 
+		<div class="my before p10">			
+			<div class="myHeader bWhite bd8 pr overflow">
+				<div class="myHeaderMin flex-jb">
+					<div class="info flex">
+						<div class="img">
+							<img id="headimg" src="{$avatar}" style="height:80px;width:80px;">
+						</div>
+						<p class="f16 ml10">
+                        	<strong>
+							<?php 
+                            	if(!empty($user['realname']))
+                                {
+                                	echo $user['realname'];
+                                }else
+                                {
+                                    if($nickname==base64_encode(base64_decode($nickname))){
+                                        $nickname = base64_decode($nickname);
+                                    }
+                                    echo $nickname;
+                                }
+							?></strong>
+                            <br />
+                            电话：{$user['mobile']}
+                            <br />
+                            到期：
+                          
+                                {if $user['end_time']==-1}
+                                  永久
+                                  {else}
+                                  {php echo date("Y-m-d",$user['end_time'])}
+                                  {/if}
+                             
+                        
+                        <span  id="recmember" href="javascript:;">
+                         {if $user['end_time']!=-1}续费/开通{/if}
+                        </span>
+						</p>
+					</div>				
+					
+				</div>
+				
+			</div>
+            <style type="text/css">
+              .Elastic_min .icon{width:2rem;height: 2rem;line-height: 2rem;font-size: 16px;}
+              .Radio_list input[type=radio]:after{display: none;}
+              .Elastic_min .Radio_list .radio,input[type=radio], input[type=checkbox] {width:1.9rem;height: 1.9rem;top:0;background-size: 23px;}
+              .Elastic_min .btn span i{font-size: 30px;color:#888;vertical-align: -5px;}
+              .foot{box-shadow: inherit;}
+            </style>
+            <div class="Elastic">
+                <div class="Elastic_min">
+                    <i class="icon iconfont icon-guanbi" id="close"></i>
+                    <p>您需要支付<i class="money">{$configlist[0]["money"]}</i>元</p>
+					<i class="day" style="display:none;">{$configlist[0]["day"]}</i>
+                    <div class="Radio_list gridXb">
+                       {loop $configlist $i $config}                      
+                        <label>
+                            <input class="radio radio2" type="radio" value="" attr-id="{$config["id"]}" attr-day="{$config["day"]}" attr-money="{$config["money"]}" name="name1" {if $i==0}checked{/if}/>
+                            <span class="wz">{$config["title"]}</span>
+                        </label>
+                        {/loop}
+                    </div>
+                   
+                    <div class="btn gridXt">
+                        <span class="span1"><i class="iconfont icon-jia" onclick="add()"></i></span>
+                        <span class="span2" id="number">1</span>
+                        <span class="span3"><i class="iconfont icon-jian" onclick="cut()"></i></span>
+                    </div>
+                    <div class="tijiao">
+                        <a href="###" onclick="pay()">提交</a>
+                    </div>
+                </div>
+            </div>
+			<div class="myList">
+				
+				<ul class="bWhite bd8 tc flex" style="border-top:1px solid #eee">
+               
+                	<li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('edit')}">
+							<i class="iconfont icon-mydata disb"></i>
+							我的资料
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('push_message_set')}">
+							<i class="iconfont icon-shezhi disb"></i>
+							消息推送
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('mybrand')}">
+							<i class="iconfont icon-liebiao disb"></i>
+							我的品牌库
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('statistics')}">
+							<i class="iconfont icon-web-icon- disb"></i>
+							我的客户
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('myadvs')}">
+							<i class="iconfont icon-haibao disb"></i>
+							我的海报
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('intro')}">
+							<i class="iconfont icon-xinshouzhinan disb"></i>
+							新手指南
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+					<li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('feedback')}">
+							<i class="iconfont icon-fankuiguanli disb"></i>
+							意见反馈
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    <?php if(($user['cancai']==1)){ ?>
+					<li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('cai')}">
+							<i class="iconfont icon-caiji1 disb"></i>
+							采集软文
+                            <span class="arrow-r"></span>
+						</a>
+                        
+					</li>
+					
+					<li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('myactlst')}">
+							<i class="iconfont icon-liebiao1 disb"></i>
+							我的软文
+                            <span class="arrow-r"></span>
+						</a>
+                        
+					</li>
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('qrcode_list')}">
+							<i class="iconfont icon-web-icon- disb"></i>
+							我的分享
+                            <span class="arrow-r"></span>
+						</a>
+                        
+					</li>
+                    <li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('sharep')}">
+							<i class="iconfont icon-jiage disb"></i>
+							我的收益
+                            <span class="arrow-r"></span>
+						</a>
+                        
+					</li>
+                    <?php } ?>
+                    <?php if(!empty($author)&&($user['canpublish']==1)){ ?>
+					<!--<li>
+						<a class="disb pt15 pb15" href="{$pubarticle}">
+							<i class="iconfont icon-fankuiguanli disb"></i>
+							发布软文
+                            <span class="arrow-r"></span>
+						</a>
+                        
+					</li>-->
+					<!--<li>
+						<a class="disb pt15 pb15" href="{$authorurl}">
+							<i class="iconfont icon-shouyi- disb"></i>
+							我的收益
+						</a>
+					</li>
+					<li>
+						<a class="disb pt15 pb15" href="{$myarticle}">
+							<i class="iconfont icon-wenzhang1 disb"></i>
+							我的软文
+						</a>
+					</li>-->
+                    <?php } ?>
+                    {if !empty($user)}
+					
+					<li>
+						<a class="disb pt15 pb15" href="{php echo $this->createmobileurl('new_collect')}">
+							<i class="iconfont icon-shoucang1 disb"></i>
+							我的收藏
+                            <span class="arrow-r"></span>
+						</a>
+					</li>
+                    {/if}
+                    
+				</ul>
+			</div>
+		</div>
+		<div style="height: 60px;"></div>
+		 <!--foot start-->
+	       {template footer}
+	        <!--foot end-->
+            
+	</body>
+    <script type="text/javascript">
+    wx.ready(function() {
+			shareMeta = {
+				imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+				success: function() {
+					$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>'center'),true),2); ?>", function(res){
+                        })
+				},
+				cancel: function() {
+					// alert("分享失败，可能是网络问题，一会儿再试试？");
+				}
+			};
+			wx.onMenuShareTimeline(shareMeta);
+			wx.onMenuShareAppMessage(shareMeta);
+			wx.onMenuShareWeibo(shareMeta);
+			wx.onMenuShareQQ(shareMeta);
+			wx.onMenuShareQZone(shareMeta);
+			mini_pay=window.__wxjs_environment === 'miniprogram'; 
+			if(mini_pay){
+					pay_type='mini_pay';
+					
+				 }else{
+				 	pay_type='uni';
+				}
+		});
+    function jsApiCall(pay)
+    {
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                pay,
+                function(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    if(res.err_msg == "get_brand_wcpay_request:ok") {
+                        $.post(send_url, {'type': pay.type,'id': pay.id,'title': pay.title,'money': pay.money,'out_trade_no': pay.out_trade_no}, function(res){
+                            location.reload();
+                        })   
+                    } else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                        alert("已取消付费!");
+                    }else{
+                        alert(res.err_code+res.err_desc+res.err_msg);
+                    }
+                }
+        );
+    }
+
+    function callpay(pay)
+    {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall(pay);
+        }
+    }
+</script>
+<script>
+    function cut(){
+		if(parseInt($("#number").text())==1){
+			return;
+		}else{
+			$("#number").text(parseInt($("#number").text())-1);
+			$money=parseFloat($("input[name='name1']:checked").attr("attr-money"));
+			$day=parseFloat($("input[name='name1']:checked").attr("attr-day"));
+			
+			$(".money").html(($money*parseInt($("#number").text())).toFixed(2));
+			$(".day").html($day*parseInt($("#number").text()));
+		}
+    }
+    function add(){
+		$("#number").text(parseInt($("#number").text())+1);
+        $money=parseFloat($("input[name='name1']:checked").attr("attr-money"));
+		$day=parseFloat($("input[name='name1']:checked").attr("attr-day"));
+		
+		$(".money").html(($money*parseInt($("#number").text())).toFixed(2));
+		$(".day").html($day*parseInt($("#number").text()));
+    }
+    function pay(){
+        //var money=$(".money").text();
+        var day=$(".day").text();
+		var id=$("input[name='name1']:checked").attr("attr-id");
+		var num=$("#number").text();
+        //var mode=$("input[name='name1']:checked").val();
+        $.ajax({
+            type:"post",
+            data:{"id":id,"num":num,'pay_type':pay_type},
+            url:"{php echo $this->createmobileurl('center',array('op'=>'post'))}",
+            datatype:"json",
+            success:function(data){
+                $('.Elastic').hide();
+                
+                if(mini_pay){ 
+				 //小程序支付
+				 var mini_url=encodeURIComponent("{$send_url}")
+				 wx.miniProgram.navigateTo({url:'/dg_costreadsimple/pages/pay/index?vip=true&num='+data.out_trade_no+'&uniacid='+'{$_W["uniacid"]}'+'&mini_url='+mini_url}) 
+				 }else{ 
+				 	jsApiParameters = JSON.parse(data.jsApiParameters);
+	                jsApiParameters.money = data.money;
+	                jsApiParameters.out_trade_no = data.out_trade_no;
+	                jsApiParameters.type = 'vip';
+				 	callpay(jsApiParameters);
+				 }
+                //callpay(jsApiParameters);
+            }
+        });
+    }
+    function collect(op){
+        var colurl="{php echo $this->createmobileurl('collect')}";
+        var c=op;
+        $.post(colurl,{op:c},function(res){
+            if(res.result==1){
+                alert(res.msg);
+            }else{
+                location.href=colurl;
+            }
+        });
+    }
+    $(".radio").change(function(){
+		$(".money").html(parseFloat($(this).attr("attr-money"))*parseInt($("#number").text()));
+		$(".day").html(parseInt($(this).attr("attr-day"))*parseInt($("#number").text()));
+    });
+	
+</script>
+<script>
+	var imgurls="";
+	
+	//选择照片
+	function chooseImg() {
+		var images = {localIds:[],serverId:[]};
+		wx.chooseImage({
+		    count: 1, // 默认9
+		    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+		    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+		    success: function (res) {
+		       images.localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		       var i = 0; var length = images.localIds.length;
+		       var upload = function() {
+			       wx.uploadImage({
+			    	    localId: images.localIds[i], // 需要上传的图片的本地ID，由chooseImage接口获得
+			    	    isShowProgressTips: 1, // 默认为1，显示进度提示
+			    	    success: function (res) {
+			    	    	images.serverId.push(res.serverId); // 返回图片的服务器端ID
+			    	    	var serverIds=images.serverId.join(',');
+			    	    	//如果还有照片，继续上传
+                            i++;
+                            if (i < length) {
+                                upload();
+                            }else{
+                            	postimg(serverIds);
+                            }
+			    	    }
+			    	});
+		       }
+		       upload();
+		    }
+		});
+	}
+	//保存照片
+	function postimg(serverIds){
+		var posturl = "{php echo $this->createMobileUrl('treg', array('uid'=>$user['id']))}";
+        $.getJSON(posturl,{"mediaids":serverIds}, function(result){
+        	if(result.success==1){
+				imgurls=result.imgurl.substring(0,result.imgurl.length-1);
+				$("#headimg")[0].src=imgurls;
+				
+        	}else if(result.success==-2){
+        		alert("图片上传失败，请重试！");
+        	}
+         });
+	}
+	</script>
+</html>

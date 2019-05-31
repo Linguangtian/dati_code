@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html data-embedded="">
+    <head>
+ 
+    <title>意见反馈</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta charset="UTF-8">
+ 
+		{php echo register_jssdk(false);}
+		<link rel="stylesheet" href="{RES}css/style_index.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+		<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+    <style>
+body {
+	margin:0;
+	padding:0;
+	font-size:14px;
+	background:#ededed
+}
+b, strong{ font-weight:bold}
+.mcont {
+	width:100%;
+	margin:10px auto;
+	padding:20px;
+	float:left
+}
+.mcont ul {
+	width:100%;
+}
+.mcont ul li {
+	list-style:none;
+	margin-bottom:15px;
+}
+.ctitle {
+	width:30%;
+	float:left;
+	height:36px; line-height:36px;
+	font-size:15px
+}
+.ccont {
+	width:70%;
+	float:left
+}
+input, select, textarea{ border:1px solid #ccc; border-radius:3px; width:85%; line-height:36px; height:36px; padding:0 5px}
+textarea{ height:100px}
+.submit{  width:auto;border:1px solid #d04542; height:auto;  border-radius:5px;   background:#d04542;  padding:3px 40px; color:#fff }
+</style>
+    </head>
+    <body onbeforeunload="visit_log()">
+    <div style="background:#f6f6f6; height:430px">
+<div style="width:100%; color:#000; font-size:24px; height:60px; line-height:60px; text-align:center; border-bottom:#b2b0b0 solid 2px"> 意见反馈 </div>
+<p style=" font-size:14px; text-align:center; margin-top:20px"><strong>非常感谢您的意见反馈，我们会尽快处理</strong></p>
+<form  action="{$url}" method="post">
+      <input type="hidden" name="type" value="add"/>
+      <div class="mcont">
+    
+  
+    <ul>
+          <li class="ctitle">标题：</li>
+          <li class="ccont">
+        <input type="text" value="" name="title" />
+      </li>
+          <li class="ctitle">联系方式：</li>
+          <li class="ccont">
+        <input type="text" value="{$curadver['mobile']}" name="tel" />
+      </li>
+          <li class="ctitle">问题描述：</li>
+          <li class="ccont">
+        <textarea name="content"></textarea>
+      </li>
+       
+    </ul>
+ 
+      <div style="width:100%;background:#f6f6f6 color:#000; font-size:20px; height:60px; line-height:60px; text-align:center; float:left">
+    <input type="submit" name="commit" value="提交" class="submit" />
+  </div> 
+  </div>
+    </form>
+</div>
+		 <!--foot start-->
+	       {template footer}
+	        <!--foot end-->
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="{$sharedesp}" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<title>{$detail['title']}</title>
+{php echo register_jssdk(false);}
+<link rel="stylesheet" type="text/css" href="{RES}qrcode/qrcode.css" />
+<link rel="stylesheet" href="{RES}css/style_detail.css" />
+<link rel="stylesheet" href="{RES}cs/style.css" />
+<style>
+.jz_copy {
+	-webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+	-webkit-user-select:none; /*webkit浏览器*/
+	-khtml-user-select:none; /*早期浏览器*/
+	-moz-user-select:none;/*火狐*/
+	-ms-user-select:none; /*IE10*/
+	user-select:none;
+	float:left
+}
+.dianzan, .homeH {
+	position:inherit;
+ 	 margin-right:10px;
+	box-shadow:none
+	/*bottom:100px*/
+}
+.boxMin {
+	/*width:100%*/
+}
+.dianzan, .homeH {
+	/*left: 20px;
+	width:22px;
+	height: 24px;
+	line-height: 24px;
+	box-shadow:0 0 5px #d33d3e*/
+}
+.homeH i {
+	/*line-height: 20px;*/
+}
+#box .liuyan_min textarea {
+	height:100px;
+	width:90%;
+	margin:10px auto;
+	margin-left:5%;
+	border-radius:10px;
+}
+.liuyan_min .btn a {
+	width:50%;
+	margin:0 auto;
+	height:50px;
+	line-height:50px;
+	color:#fff;
+	background:#d33d3e
+}
+.dianzan i, .homeH i {
+	color:#d33d3e
+}
+body {
+	background:#fff
+}
+#box .boxTit a {
+	color:#fff
+}
+.Recommend {
+	float:left;
+	width:100%;
+}
+.liuyanMin {
+	width:100%;
+	float:left
+}
+body, html {
+	flex: 1;
+	overflow: scroll;
+	-webkit-overflow-scrolling: touch;
+}
+#box .boxMin img {
+	width:auto;
+	max-width:100%
+}
+#box .boxTit h2{ text-align:left; padding:10px; padding-top:0;}
+body{ color:#000}
+</style>
+<script type="text/javascript" src="{RES}js/jquery-2.1.1.min.js"></script>
+<script src="{RES}music_style/css/js/audioplayer.js"></script>
+<script>
+$(function() {
+		wx.ready(function() {	
+		<?php if(!empty($detail['bg_music'])){ ?>	
+    		document.getElementById('music_audio').play();
+			<?php } ?>
+			shareMeta = {
+				imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+				success: function() {
+					<?php if($isself==0){ ?>
+					$('#finger-guide2').css('display','block');
+					<?php } ?>
+					$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>$_GPC['id'],'frompage'=>'detail'),true),2); ?>", function(res){});
+				},
+				cancel: function() {
+					// alert("分享失败，可能是网络问题，一会儿再试试？");
+				}
+			};
+			wx.onMenuShareTimeline(shareMeta);
+			wx.onMenuShareAppMessage(shareMeta);
+			wx.onMenuShareWeibo(shareMeta);
+			wx.onMenuShareQQ(shareMeta);
+			wx.onMenuShareQZone(shareMeta);
+			
+		});
+});
+
+	$(window).bind('beforeunload', function(e) {visit_log();
+	});
+</script>
+</head>
+<body onbeforeunload="visit_log()" onunload="visit_log()">
+
+<?php  
+    if(($advid==0||$advid==$curadver['id'])&&empty($curadver['mobile'])){
+    ?>
+<style>
+.finger-guide{ font-size:14px; z-index:999;}
+.submit{ background:#F90; padding:10px 20px; border-radius:10px;color:#fff;}
+.awindow{ width:80%; padding:15px 10px; margin:20px auto; background:#fff; border-radius:20px; color:#333}
+input{ border:1px solid #ccc; padding:5px; border-radius:5px}
+.finger-guide p{ width:100%;  margin:10px auto; height:auto}
+</style>
+<div class="finger-guide" id="finger-guide" style=" width:100%; height:100%;display:none">
+  <div class="awindow">
+      <form action="" method="post" name="myform">
+        <p style="text-align:left; padding:0 30px">亲！完善资料，让文章自动带上您的联系方式，让客户主动找到你！</p>
+        <hr />
+        <p>
+          <input type="text" name="realname"  id="realname" value="<?php echo $_W['fans']['nickname']; ?>" placeholder="请输入您的名称" />
+        </p>
+        <p>
+          <input type="text" name="mobile" id="mobile" value="" placeholder="电话" />
+        </p>
+        <p style=" margin:20px 0 30px 0"><a href="###" onclick="add();" class="submit">开始体验</a></p>
+        <p><a href="###" onclick="closew();" class="submit" style="background:#333">关闭</a></p>
+        
+      </form>
+  </div>
+</div>
+<?php } ?>
+
+<?php if($isself==0){ ?>
+<style>
+.finger-guide{ font-size:14px; z-index:999;}
+.submit{ background:#F90; padding:10px 20px; border-radius:10px;color:#fff;}
+.awindow{ width:80%; padding:15px 10px; margin:20px auto; background:#fff; border-radius:20px; color:#333}
+input{ border:1px solid #ccc; padding:5px; border-radius:5px}
+.finger-guide p{ width:100%;  margin:10px auto; height:auto}
+ 
+</style>
+<div class="finger-guide" id="finger-guide2" style=" width:100%; height:100%; display:none">
+  <div class="awindow">
+    <p style="text-align:center; font-size:20px; padding:0 30px">温馨提示！</p>
+    <hr />
+    <p style="margin:10px auto; margin-bottom:30px; text-align:left">亲，您刚才分享的文章尚未带上您的名片信息，下次分享前记得点击“换成我的”按钮</p>
+    <p><a href="###" onclick="closew2();" class="submit" style="background:#333">好的</a></p>
+  </div>
+</div>
+<?php } ?>
+
+<div id="box" style=" overflow-x:hidden">
+    <link rel="stylesheet" type="text/css" href="{RES}music_style/css/css/audioplayer.css"/>
+    <div class="boxTit">
+      <h2>{$detail['title']}</h2>
+      <p style="width:100%; height:60px;"> <img src="{$curadver['avatar']}" style="float:left; margin-left:10px; margin-right:10px; width:50px; border-radius:50px;" /><span style="float: left;text-align: left;line-height: 24px;height: 60px;">{$curadver['realname']}<br />
+        {$curadver['mobile']}</span> <span style="float:right;margin-right:20px;background: #d33d3e; border-radius:5px;padding: 5px 10px;margin-top: 5px;">
+        <?php if($isself==0){ ?>
+        <a href="{php echo $this->createmobileurl('detail',array('id'=>$detail['id'],'advid'=>0))}">换成我的</a>
+        <?php }else{  ?>
+        <?php if($curadver['end_time']<time()){ ?>
+        <a href="{php echo $this->createmobileurl('myintro')}">去掉**号</a>
+        <?php }else { ?>
+        <a href="{php echo $this->createmobileurl('catelist',array('cid'=>$detail['pcate'],'advid'=>$advid))}">更多文章 >></a>
+        <?php }} ?>
+        </span> 
+      </p>
+    </div>
+    <?php if(!empty($cfg['detailtoppic'])){ ?>
+    <div style="width:100%; text-align:center; float:left; margin-bottom:10px">
+        <a href="{$cfg['detailtoppicurl']}"><img src="<?php echo tomedia($cfg['detailtoppic']); ?>" style="width:96%;" /></a>
+    </div>
+    <?php } ?>
+
+    {if $detail['bg_music_set']==1 && !empty($detail['bg_music'])}
+    <audio id="music_audio" src="{php echo tomedia($detail['bg_music'])}" controls="controls" autoplay preload loop="loop"> </audio>
+    <script>
+	$( function() {
+	 $( 'audio').audioPlayer(
+		{
+			classPrefix: 'audioplayer',
+			strPlay: 'Play',
+			strPause: 'Pause',
+			strVolume: 'Volume'
+		}
+	 ); } );
+	 </script>
+    {/if} 
+			
+	<div class="boxMin pl15 pr15 jz_copy " style="max-width:100%; width:100%;"> 
+		{$detail['content']} 
+    </div>
+    <div class="bottom_card" >
+        <div class="lc">
+          <p style=" text-align:left; margin-top:-60px; margin-left:20px; margin-bottom:10px;"><img src="{php echo tomedia($curadver['avatar'])}" /></p>
+          <p class="rname">{$curadver['realname']}</p>
+          <p><div  style="border-radius:30px; width:150px; height:30px; line-height:30px; padding:0 15px; margin:5px 0; background:#870705; "><i class="iconfont icon-dianhua" style="color:#fff"></i> {$curadver['mobile']}</div></p>
+          <?php if(!empty($curadver['companyname'])){ ?>
+          <p>公司 : {$curadver['companyname']}</p>
+          <?php } ?>
+          <?php if(!empty($curadver['desc'])){ ?>
+          <p class="desp">简介 : {$curadver['desc']}</p>
+          <?php } ?>
+        </div>
+        <div class="rc">
+            <div style="width:120px; text-align:center; float:left">
+            	<?php 
+                if(!empty($curadver['wechatewmpic']))
+                {
+                	$curadver['wechatewmpic']=tomedia($curadver['wechatewmpic']);
+                }
+                if($isself==0)
+				{
+                	if((intval($curadver['end_time'])<time()))
+                    {
+                    	$curadver['wechatewmpic']="/addons/amd_qmrwtg/public/img/ewm7.png";
+                    }
+                    
+				}else
+                {
+                	if(intval($curadver['end_time'])<time())
+                    {
+                    	$curadver['wechatewmpic']='/addons/amd_qmrwtg/public/img/camera.gif';
+                    }
+                }  
+                if(empty($curadver['wechatewmpic']))
+                {
+                	$curadver['wechatewmpic']='/addons/amd_qmrwtg/public/img/camera.gif';
+                }              
+                ?>
+                <img src="<?php echo $curadver['wechatewmpic']; ?>" width="110" height="110" /> 
+                <p style="font-size:12px; margin-top:10px">长按识别  添加微信</p> 
+            </div>
+        </div> 
+    </div>
+     <?php if(($advid==0||$advid==$curuser['id'])){ ?>
+          <p class="btn-card"><A href="{php echo $this->createmobileurl('edit')}">完善我的名片>></A></p>
+     <?php } ?>
+    <?php  if(!empty($cfg['detailbottompic'])){ ?>
+    <div style="width:100%; text-align:center; float:left">
+        <a href="{$cfg['detailbottompicurl']}"><img src="<?php echo tomedia($cfg['detailbottompic']); ?>" style="width:96%;" /></a>
+    </div>
+    <?php } ?>
+    
+  
+    <style>
+      .bottom_card{ width:96%; margin:10px auto; margin-left:2%; color:#fff; background:#333; opacity:0.9; float:left; display:block; height:200px; border-radius:10px; padding:15px; margin-top:50px; background:url(/addons/amd_qmrwtg/public/img/cardbg.png); background-size:100% 100%}
+      .bottom_card .lc{ width:60%; float:left}
+      .bottom_card .lc p{ text-align:left; padding:0 10px}
+      .bottom_card .lc p img{ width:90px; height:90px; border-radius:90px; border:2px solid #870705}
+	  .bottom_card .lc .desp{ height:60px; overflow:hidden}
+	  .bottom_card .lc .rname{ font-size:18px;}
+      .bottom_card .rc{ width:33%; float:left; padding-top:20px;}
+	  .bottom_card .rc p{ text-align:center}
+	  .btn-card{ width:80%; margin:15px auto; margin-left:10%; text-align:center; height:40px; line-height:40px; font-size:18px; color:#fff; background:#333333;border-radius:10px; float:left}
+	  .btn-card a{ color:#fff}
+      </style>
+    
+  
+   
+   <style>
+.pl15{padding-left: 15px;}
+.pr15{padding-right: 15px;}
+.pb15{padding-bottom:15px;}
+#box{padding: 0}
+.tit{text-indent:0;padding:15px;}
+.tit a i{margin-left: -4px;}
+.Recommend{margin-bottom: 15px;border-top:10px solid #f5f5f5;border-bottom:10px solid #f5f5f5;}
+.RecommendMin ul{-webkit-overflow-scrolling: touch;white-space: nowrap;}
+.RecommendMin li{width:100px;display: inline-flex;margin-right: 5%;overflow: hidden;}
+.RecommendMin li .img{border-radius: 3px;}
+.RecommendMin li:last-child{margin-right: 6%;}
+.RecommendMin li a{display: block;width:100%;}
+/*定位和伪元素*/
+.pr{position: relative;}
+[class*=pab]{position: absolute;}
+[class*=pabt]{top: 0;}
+[class*=pabtl]{left: 0;}
+[class*=pabbl]{bottom: 0;}
+[class*=pabtr]{right: 0;}
+[class*=pabFour]{top:0;right: 0;bottom: 0;left: 0;}
+.before:before,.after:after{content: '';display: block;position: absolute;}
+.imgWH {
+    width: 100px;
+    height: 80px;
+}
+[class*=overflow]{overflow: hidden;}
+[class*=overflow-x]{overflow-x: auto;}
+[class*=overflow-y]{overflow-y: auto;}
+/****************盒子布局*****************/
+[class*=flex]{ display: -webkit-box;display: -webkit-flex;  display: -ms-flexbox; display: flex;/* width: 100%;*/}
+[class*=flex] .sub{ -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1; overflow: hidden;}
+[class*=flex-column]{-webkit-flex-direction: column; flex-direction: column;}
+[class*=flex-column-c]{justify-content: center;}
+[class*=flex-column-ja]{align-items: center;}
+[class*=flex-jb]{justify-content: space-between;}
+[class*=line-text]{ overflow: hidden;text-overflow: ellipsis;}
+[class*=line-text-t]{ display: -webkit-box; -webkit-box-orient: vertical;box-orient: vertical;}
+[class*=line-text-two]{ -webkit-line-clamp: 2;}
+[class*=line-text-three]{ -webkit-line-clamp: 3;}
+
+.mt10{ margin-top:10px;}
+/****************字体大小*****************/
+.max-font { font-size: 2rem }
+.large-font { font-size: 1.8rem }
+.big-font { font-size: 1.6rem }
+.mid-font { font-size: 1.4rem }
+.small-font { font-size: 1.2rem }
+.min-font { font-size: 1rem }
+
+.f12{font-size: 12px;}
+.f14{font-size: 14px;}
+.f16{font-size: 16px;}
+.f18{font-size: 18px;}
+.f20{font-size: 20px;}
+.f28{font-size: 28px;}
+.f30{font-size: 30px;}
+
+/****************常用字体颜色*****************/
+.grey{color:#989898;}
+.Lightgrey{color:#c0c0c0;}
+.black{color:#333;}
+.white{color:#fff;}
+.cred{color:#e64340;}
+.cblack{color:#353535;}
+.tit{padding: 15px 0;}
+.RecommendMin li:last-child{ margin-right:0}
+.RecommendMin li{ width:100%; margin-right:0; float:left; padding-bottom:10px; border-bottom:1px #ddd solid}
+			</style>
+            
+    <div class="Recommend bWhite mt10 pl15 pr15">
+        <div class="tit pr after flex-jb" style="padding:15px">
+            <h2 class="f18">相关阅读</h2>
+            <a class="tr grey" href="{php echo $this->createmobileurl('catelist',array('pcate'=>$detail['pcate'],'advid'=>$advid))}"> 更多 <i class="iconfont icon-xiangyoujiantou"></i> </a> 
+        </div>
+        <div class="RecommendMin pb15">
+            <ul class="overflow-x">
+            {loop $one_article $val}
+                <li> <a href="{php echo $this->createmobileurl('detail',array('id'=>$val['id'],'advid'=>$advid))}">
+                <h3 class="f16 line-text mt10 cblack">{$val['title']}</h3>
+                </a> 
+                </li>
+            {/loop}
+            </ul>
+        </div>
+    </div>
+    
+  <style type="text/css">
+				.liuyanMin {
+					display: flex;
+					justify-content: space-between;
+				}
+				#box{ padding-bottom:70px}
+				#box .liuyan {
+					margin-top: 0;
+				}
+				
+				#box .liuyan .xiexin {
+					width: 100px;
+					padding: 0;
+				}
+				#box .liuyan h3
+				{
+					padding: 10px 15px;
+				}
+				#box .liuyan h3:before{left: 18px;}
+			</style>
+            
+  <div class="liuyanMin pl15 pr15">
+    <div class="boxUp">
+      <ul>
+        <li>阅读<span>{$detail['clickNum']}</span></li>
+        <li class="dianzan" id="collect" onclick="collect('col');"> {if empty($iscol)} <i class="iconfont icon-shoucang"></i> {else} <i class="iconfont icon-shoucang1"></i> {/if} </li>
+        <li id="like"> {if $like!=1} <i class="iconfont icon-dianzan"> </i> {else} <i class="iconfont icon-dianzan"> </i> {/if} <span id="likeNum">{$detail['zanNum']}</span> </li>
+        
+        {if $detail['tel'] }
+        <li> <a href="tel:{$detail['tel']}">联系我们</a> </li>
+        {/if}
+        <li style="float:right;"><a class="xiexin" href="###" onclick="dis();" id="dis"><i class="iconfont icon-caiji"></i>留言</a></li>
+      </ul>
+    </div>
+  </div>
+  
+    <div class="liuyan "> 
+    {if !empty($dis)}
+        <div class="liuyan_list">
+            <h3>精选留言</h3>
+            <ul>
+                {loop $dis $row}
+                <li> 
+                    <span class="img"><img src="{$row['avatar']}"></span>
+                    <div class="right">
+                        <div class="right_min01 clearfix">
+                            <h4>{$row['nickname']}<i>{php echo date('Y-m-d H:i:s', $row['createtime']);}</i></h4>
+                            <p>{$row['discuss']}</p>
+                            <div class="liuyun_wz"> 
+                                <span class="zang"><i class="iconfont diszan"data="{$row['id']}" id="diszan_{$row['id']}"><i>{$row['zannum']}</i></i></span> 
+                            </div>
+                        </div>
+                        {if !empty($row['reply'])}
+                        <div class="huifu_min">
+                            <div class="huifu_li">
+                                <h5>作者回复</h5>
+                                <p>{$row['reply']}</p>
+                            </div>
+                        </div>
+                        {/if} 
+                    </div>
+                </li>
+                {/loop}
+            </ul>
+        </div>
+    {/if} 
+    </div>
+  <div height="20px"></div>
+  <form action="">
+    <div class="liuyan_min clearfix" id="liu" >
+      <textarea onmouseover="this.value='';" name="discontent" id="discontent"></textarea>
+      <div class="btn"> <a href="###" id="dissub" onclick="dissub();">提交保存</a> </div>
+    </div>
+  </form>
+  
+  
+</div>
+</body>
+<script type="text/javascript">
+    var uin = "";
+    var key = "";
+    var pass_ticket = "";
+    //全局变量
+    gSound = '{php echo tomedia($detail['bg_music'])}';
+		<?php if(!empty($detail['bg_music'])){ ?>			
+	document.getElementById("music_audio").play();
+	document.addEventListener("WeixinJSBridgeReady", function () {//微信  
+		document.getElementById("music_audio").play();//音频播放
+	}, false);
+	$(".audioplayer-playpause").bind("click", function() {
+		var Media = document.getElementById("music_audio");
+		if($(this).attr("title") == "Pause") {
+			$(this).removeClass("Pause");
+			$(this).addClass("Play");
+			Media.pause(); //暂停  
+		} else {
+			$(this).removeClass("Play");
+			$(this).addClass("Pause");
+			Media.play(); //播放  
+		}
+	});
+	<?php } ?>
+</script>
+<script type="text/javascript">var _speedMark = new Date(), _loadTime = '<?php echo time();?>';</script>
+<script type="text/javascript" src="{RES}js/weixin_new.js"></script>
+<link rel="stylesheet" href="{RES}new_style/new_font/iconfont.css?t=<?php echo time();?>" />
+<?php 
+
+if($cfg['as_menu_show']!=3){
+ 
+?>
+<style>
+.foot{position: fixed;bottom: 0;left: 0;width:100%; background:#fff; border-top:#ccc 1px solid;<?php if($cfg['as_menu_show']==2){ ?> display:none<?php } ?>}
+.foot a{color:#666;line-height: 24px;display: block;padding: 6px 0 0 0; font-size:12px}
+.foot a.active{color:rgba(8,186,6,1); background:#fff}
+.foot i{font-size: 25px;}
+[class*=flex] {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;/* width: 100%;*/
+padding:0;
+margin:0
+}
+[class*=flex] .sub {
+-webkit-box-flex: 1;
+-webkit-flex: 1;
+-ms-flex: 1;
+flex: 1;
+overflow: hidden;
+text-align:center
+}
+.disb{ display:block}
+.foot {
+	box-shadow: inherit;
+
+	width:100%;
+	bottom:0;
+}
+.foot a{ color:#333}
+.foot a.active{ color:#d33d3e}
+</style>
+<?php if($cfg['as_menu_show']==2){ ?>
+<style>
+.btnhiden{position: fixed;bottom:120px;right: 10px;width:2.8rem;height: 2.8rem;color:#d33d3e;background:#fff;line-height: 2.9rem;text-align: center;-webkit-border-radius: 100%;border-radius: 100%;box-shadow:0 0 2px #d33d3e;}
+</style>
+<div class="btnhiden" onClick="changemenu()"><i class="iconfont icon-daohang disb" style=" font-size:2rem"></i></div>
+<script>
+ishiden=1;
+function changemenu()
+{
+	if(ishiden==1)
+	{
+		$(".foot").css('display','block');
+		ishiden=0;
+	}else
+	{
+		$(".foot").css('display','none');
+		ishiden=1;
+	}
+}
+</script>
+<?php } ?>
+<?php if($isself==1){ ?>
+<div class="foot tc bWhite">
+  <ul class="flex">
+    <li class="sub"> <a {if $_GPC['do']=='new_index'}class="active"{/if} href="{php echo $this->createmobileurl('new_index')}"> <i class="iconfont icon-zhuye disb"></i> 首页 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='myintro'}class="active"{/if} href="{php echo $this->createmobileurl('myintro')}"> <i class="iconfont icon-Member disb"></i> 成为会员 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='mycatelist'}class="active"{/if} href="{php echo $this->createmobileurl('mycatelist')}"> <i class="iconfont icon-brand disb"></i> 我的品牌 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='statistics'}class="active"{/if} href="{php echo $this->createmobileurl('statistics')}"> <i class="iconfont icon-yanjing disb"></i> 谁看过我 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='center'}class="active"{/if} href="{php echo $this->createmobileurl('center')}"> <i class="iconfont icon-geren disb"></i> 个人中心 </a> </li>
+  </ul>
+</div>
+<?php }else{ ?>
+<div class="foot tc bWhite">
+  <ul class="flex">
+    <li class="sub"> <a {if $_GPC['do']=='new_index'}class="active"{/if} href="{php echo $this->createmobileurl('new_index',array('advid'=>$advid))}"> <i class="iconfont icon-zhuye disb"></i> 他的网站 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='myintro'}class="active"{/if} href="{php echo $this->createmobileurl('myintro')}"> <i class="iconfont icon-Member disb"></i> 成为会员 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='catelist'}class="active"{/if} href="{php echo $this->createmobileurl('catelist')}"> <i class="iconfont icon-brand disb"></i> 我的品牌 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='statistics'}class="active"{/if} href="{php echo $this->createmobileurl('statistics')}"> <i class="iconfont icon-yanjing disb"></i> 谁看过我 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='center'}class="active"{/if} href="{php echo $this->createmobileurl('new_index',array('advid'=>0))}"> <i class="iconfont icon-qiyexinxicaiji  disb"></i> <?php if(!empty($isreged)){ echo '我的网站'; }else{ echo '我要注册'; } ?> </a> </li>
+  </ul>
+</div>
+<?php } ?>
+
+<?php } ?>
+<!--底部菜单 start--> 
+<script type="text/javascript">
+function visit_log()
+	{
+		$.ajax({
+				type: 'POST',
+				async: true,//这块至关重要，用$post默认是true
+				url: "<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('visitrecord',array('m'=>$curuser['id'],'artid'=>$_GPC['id'],'frompage'=>$_GPC['do'],'visitid'=>$visitid),true),2); ?>",//上传到需要的地
+				data: {}//需要post的数据
+				});
+	}
+ window.alert = function(name){
+  var iframe = document.createElement("IFRAME");
+  iframe.style.display="none";
+  iframe.setAttribute("src", 'data:text/plain,');
+  document.documentElement.appendChild(iframe);
+  window.frames[0].window.alert(name);
+  iframe.parentNode.removeChild(iframe);
+ };
+window.confirm = function (message) {
+   var iframe = document.createElement("IFRAME");
+   iframe.style.display = "none";
+   iframe.setAttribute("src", 'data:text/plain,');
+   document.documentElement.appendChild(iframe);
+   var alertFrame = window.frames[0];
+   var result = alertFrame.window.confirm(message);
+   iframe.parentNode.removeChild(iframe);
+   return result;
+ };
+</script>
+</html>
+<script>
+	$("#play").bind("click", function() {
+		var Media = document.getElementById('music_audio');
+		if($(this).attr("data") == "open") {
+			$(this).attr('data', 'close');
+			Media.play(); //播放
+			$(".icon_audio_default").addClass("active");
+		} else {
+			$(this).attr('data', 'open');
+			Media.pause(); //暂停
+			$(".icon_audio_default").removeClass("active");
+		}
+
+	});
+</script>
+<script>
+	function link() {
+		location.href = "{$_W['siteroot']}app/index.php?i={$_W['uniacid']}&c=entry&do=new_index&m=amd_qmrwtg";
+	}
+
+	$(function() {
+	
+		$("#like").click(function() {
+			var id = "{$detail['id']}";
+			var ajaxurl = "{php echo $this->createmobileurl('like')}";
+			$.ajax({
+				url: ajaxurl,
+				type: "post",
+				dataType: "json",
+				data: {
+					"articleid": id
+				},
+				success: function(r) {
+					$(".rich_media_tool .red").removeClass("red");
+					var v = $("#likeNum");
+					var c = r.zannum;
+					v.text(c);
+					$("#like > i").empty();
+					$("#like > i").html("");
+				},
+				error: function(r) {
+					console.log(r);
+				}
+			});
+		});
+
+	});
+	initShare();
+	
+	
+	function initShare() {
+
+		
+	}
+	
+	function dis() {
+		$("#liu").toggle();
+	}
+
+	function dissub() {
+		var discontent = $("#discontent").val();
+		var aid = "{$detail['id']}";
+		$.ajax({
+			type: "post",
+			data: {
+				"discuss": discontent,
+				"aid": aid
+			},
+			url: "{php echo $this->createmobileurl('dis')}",
+			datatype: "json",
+			success: function(res) {
+				alert(res.msg);
+				location.reload();
+			}
+		});
+	}
+	$(".diszan").click(function() {
+		var disid = $(this).attr("data");
+		var id = "{$detail['id']}";
+		$.post(location.href, {
+			id: id,
+			disid: disid
+		}, function(res) {
+			var c = res.zannum;
+			$("#diszan_" + disid + " > i").text(c);
+		});
+	});
+
+	function collect(op) {
+		var id = "{$detail['id']}";
+		var collurl = "{php echo $this->createmobileurl('collect')}";
+		var c = op;
+		$.post(collurl, {
+			id: id,
+			op: c
+		}, function(res) {
+			if(res.result == 1) {
+				alert(res.msg);
+				$("#collect > i").empty();
+				$("#collect > i").addClass("icon-shoucang1");
+			} else {
+				if(res.result == 2)
+				{
+					alert(res.msg);
+					$("#collect > i").empty();
+					$("#collect > i").addClass('icon-shoucang');
+				 
+				}else
+				{
+				alert(res.msg);
+				}
+			}
+		});
+	}
+	function add()
+	{
+		var data={};
+		data.realname=$("#realname").val();
+		data.mobile=$("#mobile").val();
+		data.flag='add';
+		$.post("{php echo $this->createmobileurl('adduserinfo')}",data,function(result){
+            if(result.success==1){
+                location.reload();
+            }else
+			{
+				alert(result.content);
+			}
+        })
+	}
+	function closew()
+	{ 
+		$('#finger-guide').hide();
+	}
+	function closew2()
+	{ 
+		$('#finger-guide2').hide();
+	}
+	function showw()
+	{ 
+		$('#finger-guide').show();
+	}
+	
+$(document).ready(function() { 
+    <?php if($isself&&empty($curadver['mobile'])){ 
+	if(($curadver['end_time']==-1) || ($curadver['end_time']>time())){
+	?>
+	$('#finger-guide').show();
+	<?php }} ?>
+     $('.boxMin img').each(function() {
+		 /*$(this).css("width", 'auto');
+         $(this).css("max-width", '100%'); // 设定实际显示宽度*/
+		 if($(this).width()>$(window).width())
+		 {
+			  $(this).css("width", $(window).width()+'px');
+			  $(this).css("height", 'auto');
+			  $(this).css("data-height", 'auto');
+		 }
+		 /*if($(this).max_width()>$(window).width())
+		 {
+			  $(this).css("max-width", $(window).width()+'px');
+		 }*/
+     });
+	 $('.boxMin iframe').each(function() {
+		 
+		 if($(this).width()>$(window).width())
+		 {
+			  $(this).css("width", '100%');
+			 
+		 }
+		
+     }
+	 );
+	 {if $detail['bg_music_set']==1 && !empty($detail['bg_music'])}
+	 document.getElementById('music_audio').play();
+	 {/if}
+});
+</script>
+ 

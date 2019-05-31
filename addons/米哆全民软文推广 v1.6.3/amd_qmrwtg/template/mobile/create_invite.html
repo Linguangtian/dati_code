@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <title>专属邀请卡</title>
+    <script src="//cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<script type="text/javascript">
+    var i="{php echo $i}";
+</script>
+<body>
+<div style="padding:30px 15%; text-align: center;">
+    <img id="yao" src="{$filename_true}" width="100%">
+    <input type="hidden" name="ci" id="ci" value="0">
+    <!-- <button id="geng" style="width:160px; height: 46px; background: #09BB07; color: #fff; text-align: center; color:
+    #fff; margin-top:20px; -webkit-appearance:none;appearance:none; border: none; border-radius: 50px;
+    font-size:18px;">更换邀请卡
+    </button> -->
+</div>
+<div style="padding: 10px 15%">
+    <p>如何玩转邀请卡</p>
+    <p>1.邀请好友进入</p>
+    <p>2.长按图片转发给好友</p>
+    <p>3.好友扫描就可以进来观看了</p>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    $("#geng").click(function(){
+        var ci=parseInt($("#ci").val());
+        var order=ci+1;
+        $.ajax({
+            url:"{php echo $this->createMobileUrl('create_invite')}",
+            type:'post',
+            data:{order:order},
+            async:false
+        });
+        location.href = "";
+    });
+</script>

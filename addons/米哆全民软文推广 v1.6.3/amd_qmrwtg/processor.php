@@ -1,0 +1,2 @@
+<?php
+ defined("\x49\116\137\x49\101") or exit("\101\143\x63\x65\163\x73\40\104\145\x6e\151\145\144"); class amd_qmrwtgModuleProcessor extends WeModuleProcessor { public function respond() { global $_W, $_GPC; } }

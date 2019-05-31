@@ -1,0 +1,92 @@
+
+
+@charset "UTF-8";
+html{
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 20px;
+}
+html,body {
+    -webkit-touch-callout:none;
+    -webkit-text-size-adjust:none;
+    -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+    -webkit-user-select:none;
+    width: 100%;
+}
+body {
+    line-height: 1.5;
+    font-size: 0.8rem;
+    color: #212121;
+    background-color: #f5f5f5;
+    outline: 0;
+}
+html,body,header,section,footer,div,ul,ol,li,img,a,span,em,del,legend,center,strong,var,fieldset,form,label,dl,dt,dd,cite,input,hr,time,mark,code,figcaption,figure,textarea,h1,h2,h3,h4,h5,h6,p{
+    margin:0;
+    border:0;
+    padding:0;
+    font-style:normal;
+}
+* {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+#topbar{
+    padding-top:3.5rem;
+    position:relative;
+    height:12rem;
+    background:url(../img/06tbg.png)no-repeat bottom center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+}
+.userinfo{ text-align:center; color:#fff; }
+    .userinfo .name{ letter-spacing: .2rem; font-size:.8rem; font-weight:500}
+    .userinfo .firm{ letter-spacing: .1rem; font-size:.6rem; }
+    .userinfo .job{ font-size:.6rem; }
+
+.face {
+   
+    margin:0 auto;
+    width: 5rem;
+    height: 5rem;
+    border-radius:50%;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.topbtn{ width:8rem; height:7rem; position:absolute;top:1.5rem;left:50%;margin-left:-4rem;background:url(../img/06topbtn.png)no-repeat bottom center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;}
+#yinyue{ height:2.4rem;}
+.topbtn .col-50{
+    
+    height:2.4rem;
+    
+}
+#botbar{
+     margin:.5rem auto;
+    height:9.9rem;
+    width:14rem;
+background:url(../img/06botbar.png)no-repeat bottom center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;}
+            #botbar .row .col-50{ height:3.3rem}
+.row .col-50 {
+    width: 46%;
+    margin-left: 4%;
+}
+.row>[class*=col-], .row>[class*=tablet-] {
+    box-sizing: border-box;
+    float: left;
+}

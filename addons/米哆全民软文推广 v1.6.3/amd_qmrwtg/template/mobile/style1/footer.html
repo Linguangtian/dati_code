@@ -1,0 +1,111 @@
+<!--底部菜单 start-->
+<link rel="stylesheet" href="{RES}new_style/new_font/iconfont.css?t=<?php echo time();?>" />
+<?php 
+
+if($cfg['g_menu_show']!=3){
+ 
+?>
+<style>
+.foot{position: fixed;bottom: 0;left: 0;width:100%; background:#333; opacity:0.9; border-top:#ccc 1px solid;<?php if($cfg['g_menu_show']==2){ ?> display:none<?php } ?>}
+.foot a{color:#fff;line-height: 24px;display: block;padding: 6px 0 0 0; font-size:12px}
+.foot a.active{color:#d04542; background:none}
+.foot i{font-size: 25px;}
+[class*=flex] {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;/* width: 100%;*/
+padding:0;
+margin:0
+}
+[class*=flex] .sub {
+-webkit-box-flex: 1;
+-webkit-flex: 1;
+-ms-flex: 1;
+flex: 1;
+overflow: hidden;
+text-align:center
+}
+.disb{ display:block}
+.foot {
+	box-shadow: inherit;
+
+	width:100%;
+	bottom:0;
+}
+
+</style>
+<?php if($cfg['g_menu_show']==2){ ?>
+<style>
+.btnhiden{position: fixed;bottom:60px;left: 5px;width:2rem;height: 2rem;color:#d33d3e;background:#fff;line-height: 1.8rem;text-align: center;-webkit-border-radius: 100%;border-radius: 100%;box-shadow:0 0 2px #d33d3e;}
+</style>
+<div class="btnhiden" onClick="changemenu()"><i class="iconfont icon-zhuye disb"></i></div>
+<script>
+ishiden=1;
+function changemenu()
+{
+	if(ishiden==1)
+	{
+		$(".foot").css('display','block');
+		ishiden=0;
+	}else
+	{
+		$(".foot").css('display','none');
+		ishiden=1;
+	}
+}
+</script>
+<?php } ?>
+<?php if($isself==1){ ?>
+<div class="foot tc bWhite">
+  <ul class="flex">
+    <li class="sub"> <a {if $_GPC['do']=='new_index'}class="active"{/if} href="{php echo $this->createmobileurl('new_index')}"> <i class="iconfont icon-zhuye disb"></i> 首页 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='myintro'}class="active"{/if} href="{php echo $this->createmobileurl('myintro')}"> <i class="iconfont icon-Member disb"></i> 成为会员 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='mycatelist'}class="active"{/if} href="{php echo $this->createmobileurl('mycatelist')}"> <i class="iconfont icon-brand disb"></i> 我的品牌 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='statistics'}class="active"{/if} href="{php echo $this->createmobileurl('statistics')}"> <i class="iconfont icon-yanjing disb"></i> 谁看过我 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='center'}class="active"{/if} href="{php echo $this->createmobileurl('center')}"> <i class="iconfont icon-geren disb"></i> 个人中心 </a> </li>
+  </ul>
+</div>
+<?php }else{ ?>
+<div class="foot tc bWhite">
+  <ul class="flex">
+    <li class="sub"> <a {if $_GPC['do']=='new_index'}class="active"{/if} href="{php echo $this->createmobileurl('new_index',array('advid'=>$advid))}"> <i class="iconfont icon-zhuye disb"></i> 他的网站 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='myintro'}class="active"{/if} href="{php echo $this->createmobileurl('myintro')}"> <i class="iconfont icon-Member disb"></i> 成为会员 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='catelist'}class="active"{/if} href="{php echo $this->createmobileurl('catelist')}"> <i class="iconfont icon-brand disb"></i> 我的品牌 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='statistics'}class="active"{/if} href="{php echo $this->createmobileurl('statistics')}"> <i class="iconfont icon-yanjing disb"></i> 谁看过我 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='center'}class="active"{/if} href="{php echo $this->createmobileurl('new_index',array('advid'=>0))}"> <i class="iconfont icon-qiyexinxicaiji  disb"></i> <?php if(!empty($isreged)){ echo '我的网站'; }else{ echo '我要注册'; } ?> </a> </li>
+  </ul>
+</div>
+<?php } ?>
+
+<?php } ?>
+<!--底部菜单 start--> 
+<script type="text/javascript">
+function visit_log()
+	{
+		$.ajax({
+				type: 'POST',
+				async: true,//这块至关重要，用$post默认是true
+				url: "<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('visitrecord',array('m'=>$curuser['id'],'artid'=>$_GPC['id'],'frompage'=>$_GPC['do'],'visitid'=>$visitid),true),2); ?>",//上传到需要的地
+				data: {}//需要post的数据
+				});
+	}
+ window.alert = function(name){
+  var iframe = document.createElement("IFRAME");
+  iframe.style.display="none";
+  iframe.setAttribute("src", 'data:text/plain,');
+  document.documentElement.appendChild(iframe);
+  window.frames[0].window.alert(name);
+  iframe.parentNode.removeChild(iframe);
+ };
+window.confirm = function (message) {
+   var iframe = document.createElement("IFRAME");
+   iframe.style.display = "none";
+   iframe.setAttribute("src", 'data:text/plain,');
+   document.documentElement.appendChild(iframe);
+   var alertFrame = window.frames[0];
+   var result = alertFrame.window.confirm(message);
+   iframe.parentNode.removeChild(iframe);
+   return result;
+ };
+</script>

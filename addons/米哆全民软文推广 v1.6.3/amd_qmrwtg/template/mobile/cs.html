@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" device-width="750">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/750;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
+    <title>会员</title>
+    <link rel="stylesheet" type="text/css" href="{RES}font/iconfont/iconfont.css">
+    <link rel="stylesheet" href="{RES}css/vip.css">
+    <script src="{RES}js/jquery.min.js"></script>
+    {php echo register_jssdk(false);}
+</head>
+<body>
+<div class="app-vip">
+    <!--顶部用户信息-->
+    <div class="top mb10 bgcolor write">
+        <div class="user-msg tc">
+            <div class="img" style="background-image: url({$userinfo['headimgurl']});background-size: cover">
+                {if $member['info_status']==2}<span class="v-title yellow iconfont icon-v f18"></span>{/if}
+            </div>
+            <p class="mt10">{$userinfo['nickname']}</p>
+			{if ($member['end_time']=="" || $member['end_time']==null)}
+			<p class="f14 mt10">您还不是会员~</p>
+			{else}
+            <p class="f14 mt10">会员到期时间：{php echo date("Y-m-d",$member['end_time'])}</p>
+			{/if}
+        </div>
+    </div>
+    <!--成长进度条-->
+    <!--vip续费-->
+    <div class="vip-con">
+        <p>续费会员</p>
+        <div class="flex mt15 tc">
+            <div class="sub pay mr10 active" data="{$cfg['amd_qmrwtg_recharge']}" data-mode="1"><p class="price grey">￥{$cfg['amd_qmrwtg_recharge']}</p><p>按月付费</p></div>
+            <div class="sub pay mr10" data="{$cfg['amd_qmrwtg_recharge_qua']}" data-mode="2"><p class="price grey">￥{$cfg['amd_qmrwtg_recharge_qua']}</p><p>按季付费</p></div>
+            <div class="sub pay" data="{$cfg['amd_qmrwtg_recharge_year']}" data-mode="3"><p class="price grey">￥{$cfg['amd_qmrwtg_recharge_year']}</p><p>按年付费</p></div>
+        </div>
+        <div class="number flex tc mt20">
+            <div class="minus change-num f24">-</div>
+            <input type="number" id="month" class="sub tc f24" value="1">
+            <div class="add change-num write f24">+</div>
+        </div>
+        <div class="btn mt20 mb20"><button class="bgcolor write f16 reger">充值</button></div>
+
+    </div>
+</div>
+<div class="mid cancle-tips tc write">取消付费</div>
+</body>
+</html>
+<script>
+    var monthnum="{$cfg['amd_qmrwtg_recharge']}";
+    var month="1";
+    var reger=(parseFloat(monthnum)*100*month)/100;
+    var mode='1';
+    $('#month').bind('input propertychange', function(){
+        changeval();
+    });
+    function changeval(){
+        month=$("#month").val();
+        if(month==""||month<=1){
+            month=1;
+        }
+        console.log(month);
+        changreger(monthnum,month);
+    }
+    $(function(){
+        $(".reger").text("充值"+reger);
+    })
+    $(".app-vip .vip-con .pay").click(function () {
+        $(this).addClass("active").siblings().removeClass("active");
+        monthnum=$(this).attr('data');
+        mode=$(this).data('mode');
+        changreger(monthnum,month)
+    })
+    $(".add").click(function(){
+        month++;
+        $("#month").val(month);
+        reger=monthnum*month;
+        $(".reger").text("充值"+reger);
+        changreger(monthnum,month);
+    })
+    $(".minus").click(function(){
+        month--;
+        if(month<=1){
+            month=1;
+        }
+        changreger(monthnum,month);
+    })
+    function changreger(monthnum,month){
+        $("#month").val(month);
+        reger=(parseFloat(monthnum)*100*month)/100;
+        $(".reger").text("充值"+reger);
+    }
+    function jsApiCall(pay){
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                pay,
+                function(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    if(res.err_msg == "get_brand_wcpay_request:ok") {
+                        location.href="{php echo $this->createmobileurl('detail',array('id'=>$detail['id']))}";
+                    } else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                        showTips("取消付费……",2000);
+                    }else{
+                        alert(res.err_code+res.err_desc+res.err_msg);
+                    }
+                });
+    }
+    function callpay(pay)
+    {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall(pay);
+        }
+    }
+    $(".reger").click(function(){
+        var data={};
+        data.month=month;
+        data.mode=mode;
+        data.rec=reger;
+        data.op="post";
+        $(".reger").attr("disabled",true);
+        $.post(location.href,data,function(res){
+            callpay(res);
+        })
+    })
+    function showTips(text,seconds){
+        $(".cancle-tips").text(text);
+        $(".cancle-tips").show();
+        setTimeout(function(){
+            $(".cancle-tips").hide();
+        },seconds);
+        $(".reger").attr("disabled",false);
+    }
+</script>

@@ -1,0 +1,110 @@
+{template 'common/header'}
+
+<div class="main">
+<!--    <div class="panel-heading">
+        <div class="row-fluid">
+            <div class="span8 control-group">
+                <a class="btn btn-primary" href="{php echo $this->createweburl('addgroup')}" ><i
+                        class="fa fa-plus"></i>添加分组</a>
+            </div>
+        </div>
+    </div>-->
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row-fluid">
+                <div class="span8 control-group">
+                    共计 {$total} 条数据
+                </div>
+            </div>
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th>全选&nbsp;&nbsp;&nbsp;&nbsp;<input name="" type="checkbox" id="checkall" /></th>
+                    <th>用户组名称</th>
+                    <th>创建时间</th>
+                </tr>
+                </thead>
+                <tbody id="add_author" class="tablist">
+                {loop $records $row}
+                <tr>
+                    <td><input type="checkbox" name="name" value="{$row['id']}" /></td>
+                    <td>{$row['groupname']}</td>
+                    <td>{php echo date('Y/m/d H:i:s', $row['createtime'])}</td>
+                </tr>
+                {/loop}
+                <tr>
+                    <td><input class="button" type="button" name="" value="添加提交" onclick="checkbox_submit()" /></td>
+                    <td colspan="2"><input class="txtValue" type="hidden" name="acheckboxval" value="" /></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {$pager}
+</div>
+
+<!--多选开始-->
+<script type="text/javascript">
+$(function(){
+	$(".tablist :checkbox[name='name']").click(function(){
+        var v=$(this).val();
+        var values='';
+        var aa = document.getElementsByName('name');
+        var mnum = aa.length;
+        for(i = 0; i < mnum; i++) {
+            if(aa[i].checked){
+            values+=aa[i].value+',';
+            }
+        }
+        if(values!=''){
+             values=values.substring(0,values.length);
+        }
+        $('.txtValue').val(values)
+//            alert(values);
+        })
+        //全选
+        $("#checkall").click(function() {
+            var ischeck = $("#checkall").is(":checked");
+            checkvotethis(ischeck);
+	})
+});
+
+function checkvotethis(ischeck){
+        if(ischeck){
+            var aa = document.getElementsByName('name');
+            var mnum = aa.length;
+            var values='';
+            for(i = 0; i < mnum; i++) {
+                    aa[i].checked = ischeck;
+                    values+=aa[i].value+',';
+            }
+            values=values.substring(0,values.length);
+            } 
+            $('.txtValue').val(values)
+}
+// 多选或者全选提交
+function checkbox_submit(){
+    var checkbox_val=$('.txtValue').val();
+   
+    if(checkbox_val==''){
+        alert('请选择后再提交');
+    }else{
+        $.post("{php echo $this->createWebUrl('add_appoint',array('op'=>'checkbox','aid'=>$_GPC['id']))}", {
+            checkbox_val: checkbox_val
+        }, function (data) {
+            if(data.success==1){
+                alert('添加成功');
+                 window.location.href="{php echo $this->createWebUrl('appoint',array('id'=>$_GPC['id']))}"
+            }
+               
+            
+        });
+    }
+   
+}
+                
+</script>
+{template 'common/footer'}

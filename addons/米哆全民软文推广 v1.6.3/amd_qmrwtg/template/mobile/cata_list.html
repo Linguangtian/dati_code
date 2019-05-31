@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+		<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+		<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+	<style>
+		.nopay{color: #a3a3a3;}
+	</style>
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+		<script type="text/javascript">
+			var pindex = 1;
+			var serialize_id="{$serialize_id}";
+			var serialize_free_chapter="{$serialize['free_chapter']}";
+			var order='order';
+			var postData ={};
+			var is_pay ="{$is_pay}";
+			var is_author ="{$is_author}";
+			var is_vip ="{$is_vip}";
+			var cata_url="{php echo $this->createmobileurl('cata_detail')}"
+			$(function(){
+				function pageLoadCommon(a, b) {
+					a.scroll(function() {
+						distanceScrollCount = document.body.scrollHeight;
+						distanceScroll = document.body.scrollTop;
+						topicPageHight = document.body.clientHeight;
+						1 >= distanceScrollCount - distanceScroll - topicPageHight && b()
+					})
+				}
+				pageLoadCommon($(document), function() {
+					pindex++;
+					postData.pindex=pindex;
+					catalogLoad(postData);
+				});
+				function catalogLoad(postData){
+					$.post(location.href,{'page':postData.pindex,'order':postData.order,'serialize_id':serialize_id},function(res){
+						var cata_list = res.list;
+						if(jQuery.isEmptyObject(cata_list)) {
+							$("#next").html('已加载全部');
+							return false;
+						}else{
+							var html = "";
+							for(var i=0;i<cata_list.length;i++){
+								html+='<li class="gridXb"><a class="hi40 arrow-r disb ';
+								if((parseInt(cata_list[i].displayorder)>parseInt(serialize_free_chapter)) && (is_author!=true && is_pay!=true && is_vip!=true)){
+									html+='nopay';
+								}
+								html+='" href="'+cata_url+'&cata_id='+cata_list[i].id+'&serialize_id='+serialize_id+'">第'+cata_list[i].displayorder+'章 '+cata_list[i].title;
+								if((parseInt(cata_list[i].displayorder)>parseInt(serialize_free_chapter)) && (is_author!=true && is_pay!=true && is_vip!=true)){
+									html+='<i class="iconfont icon-suo fr pr10" style="font-size: 24px;"></i>';
+								}
+								html+='</a></li>';
+							}
+							$("#cata").append(html);
+							$("#next").html('<span class="loading"></span>正在加载...');
+						}
+					})
+				}
+				$('.infoIn i').click(function(){
+					$('.infoIn p,.infoIn span,.infoIn i.pabbr').addClass('active');
+				})
+				$('.infoIn span').click(function(){
+					$('.infoIn p,.infoIn i.pabbr,.infoIn span').removeClass('active');
+
+				})
+				$('.review .title p').click(function(){
+					$('.Elastic,.ElasticMin').addClass('active');
+				})
+				$('.ElasticMin .close').click(function(){
+					$('.Elastic').removeClass('active');
+				})
+				$(".back").click(function(){
+					history.back();
+				})
+				$('.order').click(function(){
+					postData.order=order;
+					pindex=1;
+					console.log(postData.order);
+					$.post(location.href,{'order':postData.order,'click':'click'},function(res){
+						$("#cata").empty();
+						if(res.order=='order'){
+							order='';
+							$('.order').text('正序');
+						}else{
+							order='order';
+							$('.order').text('倒序');
+						}
+
+						var cata_list = res.list;
+						if(jQuery.isEmptyObject(cata_list)) {
+							$("#next").html('已加载全部');
+							return false;
+						}else{
+							var html = "";
+							for(var i=0;i<cata_list.length;i++){
+								html+='<li class="gridXb"><a class="hi40 arrow-r disb ';
+								if((parseInt(cata_list[i].displayorder)>parseInt(serialize_free_chapter)) && (is_author!=true && is_pay!=true && is_vip!=true)){
+									html+='nopay';
+								}
+								html+='" href="'+cata_url+'&cata_id='+cata_list[i].id+'&serialize_id='+serialize_id+'">第'+cata_list[i].displayorder+'章 '+cata_list[i].title;
+								if((parseInt(cata_list[i].displayorder)>parseInt(serialize_free_chapter)) && (is_author!=true && is_pay!=true && is_vip!=true)){
+									html+='<i class="iconfont icon-suo fr pr10" style="font-size: 24px;"></i>';
+								}
+								html+='</a></li>';
+							}
+							$("#cata").append(html);
+							$("#next").html('<span class="loading"></span>正在加载...');
+						}
+					})
+				})
+			})
+		</script>
+	</head>
+	<body onbeforeunload="visit_log()">
+		<div class="Catalog pr before p10">
+				<div class="tit black flex-jb pr">
+					<a class="pr blank hi40 disb back" style="width: 92%;" href="javascript:;">
+						<i class="iconfont icon-fanhui"></i>												
+					</a>					
+					<span class="f14 tr hi40 blank order" style="width: 40px;">倒序</span>
+					<h2 class="blank disi float-mid f18" style="top:20px;">{$serialize['serialize_title']}</h2>
+				</div>
+				{if $cata_list}				
+				<div class="CatalogMin bWhite bd8 pb10 pl15 pr15">					
+						<ul id="cata">
+						{loop $cata_list $val}
+							<li class="gridXb ">
+								<a class="hi40 arrow-r disb {if ((int)$val['displayorder']>(int)$serialize['free_chapter']) && ($is_author!=true && $is_pay!=true && $is_vip!=true)}nopay
+{/if}" href="{php echo $this->createmobileurl('cata_detail',array('serialize_id'=>$serialize_id,'cata_id'=>$val['id']))}">第{$val['displayorder']}章 {$val['title']}
+
+								{if ((int)$val['displayorder']>(int)$serialize['free_chapter']) && ($is_author!=true && $is_pay!=true && $is_vip!=true)}
+								<i class="iconfont icon-suo fr pr10" style="font-size: 24px;"></i>
+								{/if}	
+								</a>
+															
+							</li>
+						{/loop}
+						</ul>
+						<div class="still mt20 mb20 tc grey" id="next">
+							{if (int)$total > $psize}
+							<span class="loading"></span>正在加载...{/if}
+						</div>
+				</div>
+				{else}
+				
+				<div class="noInfo tc pb15">
+							<i class="iconfont icon-meiyougengduo"></i>
+							<p class="grey">作者还未发布章节内容~</p>
+				</div>
+				{/if}
+		</div>
+			<div style="height: 60px;"></div>
+		</div>
+		 <!--foot start-->
+	        {template footer}
+            <script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+	        <!--foot end-->
+	</body>
+</html>

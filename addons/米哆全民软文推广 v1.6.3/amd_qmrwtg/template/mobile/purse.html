@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" device-width="750">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/750;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
+    <title>我的钱包</title>
+    <link rel="stylesheet" type="text/css" href="{RES}font/iconfont/iconfont.css">
+    <link rel="stylesheet" href="{RES}css/purse.css">
+    <script src="{RES}js/jquery.min.js"></script>
+</head>
+<body>
+<div class="app-purse">
+    <!--我的余额-->
+<!--    <div class="purse bgcolor write">
+        <p>我的余额</p>
+        <p class="money">13.50 <span class="f18">元</span></p>
+    </div>-->
+    <div class="mt20">
+        <!--签到金币-->
+<!--        <div class="flex list bb">
+            <p class="sub"><span class="yellow mr10 iconfont icon-tubiao207"></span> 签到金币</p>
+            <p class="grey">300个</p>
+        </div>-->
+        <!---->
+        {if !empty($author)}
+        <div class="flex list bb">
+            <p class="sub"><span class="red mr10 iconfont icon-qian"></span> 收益</p>
+            <p class="grey">{$countart}元</p><button class="bgcolor write ml10 countart">去提现</button>
+        </div>
+        {/if}
+        <!--分享收益-->
+        <div class="flex list bb">
+            <p class="sub"><span class="blue mr10 iconfont icon-moneybagfill"></span> 分享收益</p>
+            <p class="grey">{$mysharepay}元</p><button class="bgcolor write ml10 sharepay"> 去提现</button>
+        </div>
+    </div>
+    <!--提现提示-->
+    <p class="tips grey f14 ml15 mr15 mt15">满{$cfg['min_tixian']}元方可提现，收益和软文赞赏收益分成比例为作者的比例</p>
+    <!--<div class="btn tc m20"><a class="link" href="tixian.html"><button class="bgcolor write">申请提现</button></a></div>-->
+
+</div>
+<div class="mid cancle-tips tc write">取消付费</div>
+</body>
+</html>
+<script>
+    var aid="{$author['id']}";
+    var artpay="{$countart}";
+    var income="{php echo $this->createmobileurl('income')}";
+    var sharep="{php echo $this->createmobileurl('sharep')}";
+    var sharenum="{$mysharepay}";
+    function showTips(text,seconds){
+        $(".cancle-tips").text(text);
+        $(".cancle-tips").show();
+        setTimeout(function(){
+            $(".cancle-tips").hide();
+        },seconds);
+    }
+    $(".countart").click(function(){
+        var data={};
+        data.aid=aid;
+        data.artpay=artpay;
+        data.submit=true;
+        $.post(income,data,function(res){
+            if(res.success==1){
+                showTips(res.data,1500);
+            }else if(res.success==-1){
+                showTips(res.data,1500);
+            }
+        });
+    })
+    $(".sharepay").click(function(){
+        var data={};
+        data.sharenum=sharenum;
+        data.submit=true;
+        $.post(sharep,data,function(res){
+            if(res.success==1){
+                showTips(res.data,1500);
+            }else if(res.success==-1){
+                showTips(res.data,1500);
+            }
+        })
+    })
+</script>
+<script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>

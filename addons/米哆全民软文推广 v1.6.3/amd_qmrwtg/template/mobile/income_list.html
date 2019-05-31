@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" device-width="750">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/750;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
+    <title>我的软文收益</title>
+    <link rel="stylesheet" type="text/css" href="{RES}font/iconfont/iconfont.css">
+    <link rel="stylesheet" href="{RES}css/income_list.css">
+</head>
+<body>
+<div class="app-income">
+    <!--总金额-->
+    <div class="top tc">
+        <div class="user-img" style="background-image: url({$avatar})"></div>
+        <p class="mt10">软文总收益</p>
+        <p class="money">{$incomesum}</p>
+    </div>
+    <div class="content-list jilu">
+        {loop $income $row}
+        <div class="list bb flex tr {if $row['income_status']=="处理中"}weiwan{/if}">
+            <div class="sub tl">
+                <p>微信提现（{$row['income_status']}）</p>
+                <p class="grey f14">{php echo date("Y-m-d H:i:s",$row['createtime'])}</p>
+            </div>
+            <p class="price {if $row['income_status']=="处理中"}grey{else}red{/if} f20">+{$row['income_money']}</p>
+        </div>
+        {/loop}
+    </div>
+    {if empty($income)}
+    <p class="grey tc">暂无收益</p>
+    {/if}
+</div>
+</body>
+</html>

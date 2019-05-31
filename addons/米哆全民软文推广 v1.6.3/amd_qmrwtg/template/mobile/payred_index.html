@@ -1,0 +1,596 @@
+<html lang="en" device-width="750">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/750;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
+    <title>{php echo $this->htmltitle();}</title>
+    <link rel="stylesheet" type="text/css" href="{RES}font/iconfont/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="{RES}css/swiper-3.4.1.min.css">
+    <script src="{RES}js/jquery.min.js"></script>
+    <script src="{RES}js/swiper-3.4.1.jquery.min.js"></script>
+    <link rel="stylesheet" href="{RES}css/index2.css">
+    {php echo register_jssdk(false);}
+    <style>
+        .red{
+            font-size: 25px;
+        }
+		.lineText2{
+			font-size: 25px;
+		}
+    </style>
+</head>
+<body>
+
+<div class="app-index last">
+    <div class="cap f0">
+        <!--导航菜单-->
+        <div class="cap-list">
+            <ul class="f0 menu">
+                <li class="nav {if empty($cid)}active{/if}">发现</li>
+                {loop $category $row}
+                <li data-id="{$row['id']}" class="nav {if $cid==$row['id']}active{/if}" onClick="tablist(this);">{$row['name']}</li>
+                {/loop}
+            </ul>
+        </div>
+        <!--搜索按钮-->
+        <div class="cap-search tc max-font write">
+            <i class="iconfont icon-search"></i>
+        </div>
+        <!--右侧弹出搜索框-->
+        <div class="search flex bb">
+            <div class="close tc grey f20 br"><i class="iconfont icon-close"></i></div>
+            <div class="search-input sub f16"><form action="javascript:return false;"><input type="search" id="keyword" value="" autofocus="autofocus" placeholder="请输入关键词进行搜索"></div></from>
+            <div class="search-icon tc bgcolor write"  onclick="keysearch()"><i class="iconfont icon-search"></i></div>
+        </div>
+        <!--二级菜单-->
+        <div class="cap-sublist f0">
+            <ul class="submenu">
+                <li class="subnav">发现</li>
+            </ul>
+        </div>
+    </div>
+    <div class="first"></div>
+    <!--轮播图 start-->
+    {if $adv}
+    <div class="swiper-container">
+        <!--轮播图片-->
+        <div class="swiper-wrapper">
+            {loop $adv $banner}
+            <div class="swiper-slide banner-img banner" style="background-image: url({php echo tomedia($banner['adv_img'])})"><a href="{$banner['adv_href']}"></a></div>
+            {/loop}
+        </div>
+        <!-- 分页器-->
+        <div class="swiper-pagination"></div>
+    </div>
+    {/if}
+    <!--轮播图 end-->
+    <div class="article bgwrite">
+        {loop $article $new}
+        <a href="{php echo $this->createmobileurl('detail',array('id'=>$new['id']))}" class="article-list flex bb">
+            <div class="left-img mr10" style="background-image: url({$new['thumb']});background-size: cover">
+                <!--最新-->
+                <!--<p class="top-little new write tc">new</p>-->
+            </div>
+            <div class="article-right sub">
+                <h4 class="title lineText2">{$new['title']}</h4>
+                <div class="flex mt10 bottom-right">
+                    {if $new['pay_money']>0}
+                    <div class="red sub f18">￥{$new['pay_money']}</div>
+                    {/if}
+                    <div class="grey f12">
+                        <span>{$new['createtime']}</span>
+                        <span class="iconfont icon-attention_light ml5"><i>{$new['clickNum']}</i></span>
+                        <span class="iconfont icon-appreciate_light ml5"><i>{$new['zanNum']}</i></span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {/loop}
+    </div>
+    <input type="hidden" id="page" value="1">
+    <input type="hidden" id="cid" value="{$pcid}">
+    <input type="hidden" id="pid" value="{$cid}">
+    <!--加载中-->
+    <div class="loding grey tc mt10 f14" style="display: none;">
+        <span class="iconfont icon-loading"></span>
+        <span>玩命加载中</span>
+    </div>
+    <!--没有更多了-->
+    <div class="nothing grey tc mt10 f14" style="display: none;">
+        <span>没有更多了</span>
+    </div>
+    <div class="navbar tc flex bt bgwrite">
+        <a class="link sub mcolor" href="{php echo $this->createmobileurl('payred_index')}"><span class="iconfont icon-homefill f20"></span><p>首页</p></a>
+        <a class="link sub grey" href="{php echo $this->createmobileurl('center')}"><span class="iconfont icon-people f20"></span><p>我的</p></a>
+    </div>
+</div>
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        loop:true,
+        autoplay : 3000,
+        speed:400,
+        autoplayDisableOnInteraction : false,
+        pagination: '.swiper-pagination', //分页器
+        paginationClickable :true,// 分页器可点击
+    });
+</script>
+</body>
+</html>
+<script>
+    $(function() {
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+<script>
+    var tab_url="{php echo $this->createmobileurl('char')}";
+    var loadture=true;
+    $(".cap-list ul li").eq(0).click(function(){
+        $(".submenu").hide();
+        $(this).addClass("active").siblings().removeClass("active");
+        location.reload();
+    });
+    $('.banner').click(function(){
+    	hr = $(this).find('a').attr('href');
+		location.href = hr;
+    })
+    function tablist(obj){
+        var id=$(obj).data('id');
+        $("#pid").val(id);
+	 
+        $(obj).addClass("active").siblings().removeClass("active");
+        $.post(tab_url,{id:id},function(result){
+            if(result.success==1){
+                $(".submenu").empty();
+                var html='';
+                for(var i= 0;i<result.list.length;i++){
+                    html+='<li class="subnav" data="'+result.list[i].id+'" onclick="art(this)">'+result.list[i].name+'</li>';
+                }
+                $(".submenu").append(html);
+                $(".cap-sublist").animate({scrollLeft:0},0);
+                $(".submenu").show();
+                var arts = result.art;
+                var htmls = '';
+
+                //console.log(arts);
+                for(var i=0;i<arts.length;i++){
+                    htmls+='<a href="'+returnurl(arts[i].id)+'" class="article-list flex bb">';
+                    htmls+='<div class="left-img mr10" style="background-image: url('+arts[i].thumb+');background-size: cover"></div>';
+                    htmls+='<div class="article-right sub"> <h4 class="title lineText2">'+arts[i].title+'</h4>';
+                    htmls+='<div class="flex mt10 bottom-right">';
+                    if(arts[i].pay_money>0){
+                        htmls+='<div class="red sub f18">￥'+arts[i].pay_money+'</div>';
+                    }
+                    htmls+='<div class="grey f12"> <span>'+arts[i].createtime+'</span> <span class="iconfont icon-attention_light ml5"><i>'+arts[i].clickNum+'</i></span> <span class="iconfont icon-appreciate_light ml5"><i>'+arts[i].zanNum+'</i></span> </div>';
+                    htmls+='</div> </div> </div> </a>';
+                    $('.loding').hide();
+                    $(".article").empty();
+                    $(".article").append(htmls);
+                    $("#page").val(result.page);
+                    loadture=true;
+                }
+              // console.log(htmls)
+            }else{
+                loadture=false;
+                $(".article").empty();
+                $('.loding').hide();
+                $(".nothing > span").text("此分类下暂时没有软文");
+                $(".nothing").show();
+
+            }
+        })
+    }
+    function art(obj){
+        var id=$(obj).attr("data");
+        $(obj).addClass("active").siblings().removeClass("active");
+        var data={};
+        $("#page").val(1);
+        $("#cid").val(id);
+        data.page=$("#page").val();
+        data.cid=id;
+        data.pid=$("#pid").val();
+        data.op='cata';
+        loadture=true;
+        $('.loding').hide();
+        $(".nothing").hide();
+        if(loadture){
+            loadture=false;
+            $(".article").empty();
+            article(data);
+        }
+
+    }
+    function returnurl(aid){
+        return "{php echo $this->createmobileurl('detail')}"+"&id="+aid;
+    }
+
+    function article(data){
+		
+        $.post(location.href,data,function(result){
+            if(result.success==1){
+                var html='';
+                for(var i= 0;i<result.list.length;i++){
+                    html+='<a href="'+returnurl(result.list[i].id)+'" class="article-list flex bb">';
+                    html+='<div class="left-img mr10" style="background-image: url('+result.list[i].thumb+');background-size: cover"></div>';
+                    html+='<div class="article-right sub"> <h4 class="title lineText2">'+result.list[i].title+'</h4>';
+                    html+='<div class="flex mt10 bottom-right">';
+                    if(result.list[i].pay_money>0){
+                        html+='<div class="red sub f18">￥'+result.list[i].pay_money+'</div>';
+                    }
+                    html+='<div class="grey f12"> <span>'+result.list[i].createtime+'</span> <span class="iconfont icon-attention_light ml5"><i>'+result.list[i].clickNum+'</i></span> <span class="iconfont icon-appreciate_light ml5"><i>'+result.list[i].zanNum+'</i></span> </div>';
+                    html+='</div> </div> </div> </a>';
+                }
+                $('.loding').hide();
+                $(".article").append(html);
+                $("#page").val(data.page);
+                loadture=true;
+
+            }else{
+                loadture=false;
+                $('.loding').hide();
+                $(".nothing").show();
+            }
+        })
+    }
+
+    $(window).scroll(function(){
+        var sh = document.body.scrollHeight;
+        var st = document.body.scrollTop;
+        var wh = window.innerHeight;
+        if (st +wh==sh) {
+            if(loadture){
+                loadture=false;
+                var data={};
+                data.page=$("#page").val();
+                data.page++;
+                data.cid=$("#cid").val();
+				data.keyword=$("#keyword").val();
+				data.sear=true;
+                $('.loding').show();
+                article(data);
+            }
+        }
+    });
+    $(".cap .cap-search").click(function () {
+        $(".submenu").hide();
+        $(".cap .search").animate({left:0},500)
+    })
+    // 关闭搜索
+    $(".cap .close").click(function () {
+		$("#keyword").val('');
+		//tablist($('.cap-list ul li').eq(1));
+        $(".cap .search").animate({left:750},500);
+    })
+    function keysearch(){
+        var data={};
+        data.keyword=$("#keyword").val();
+        data.sear=true;
+        $("#page").val(1);
+        data.page=$("#page").val();
+        loadture=true;
+        if(loadture){
+            $(".article").empty();
+            article(data);
+        }
+		$("#keyword").val("");
+		$(".cap .search").animate({left:750},500);
+    }
+</script>
+<!--
+<script>
+    function more(){
+        var cid=$("#lei").data("cid");
+        var pid=$("#lei").data("pid");
+        var page=$("#page").data("page");
+        var sear = $("#search").val();
+        var status=$("#sub").data('status');
+        var aid=$("#cate").data("cate");
+        var pccid=$("#cid").data("cid");
+        var ppcid=$("#pcid").data("pcid");
+        var submit=false;
+        if(status==2){
+            submit=true;
+        }
+        var pindex=++page;
+        if(parseInt(pccid)>0){
+            if(parseInt(ppcid)>0){
+                var database={"ccate":cid,"pcate":pid,"page":pindex,"search":sear,"submit":submit,"aid":aid,"pccid":pccid,"ppcid":ppcid}
+            }else{
+                database={"ccate":cid,"pcate":pid,"page":pindex,"search":sear,"submit":submit,"aid":aid,"pccid":pccid}
+            }
+        }else{
+            var database={"ccate":cid,"pcate":pid,"page":pindex,"search":sear,"submit":submit,"aid":aid}
+        }
+        $.ajax({
+            type:"post",
+            url:"{php echo $this->createmobileurl('article')}",
+            data:database,
+            datatype:"json",
+            success:function(data){
+                var article=data.list;
+                if(jQuery.isEmptyObject(article)){
+                    $("#next").removeClass('display');
+                    $("#next").html('已加载全部');
+                }else{
+                    for(i=0;i<article.length;i++){
+                        var html='<li><a href='+geturl(article[i].id)+'>';
+                        html+='<div class="menuL" style="background-image: url('+article[i].thumb+');"></div>';
+                        html+='<div class="menuR"><div class="menuR_wz"><h2>'+article[i].title+'</h2>';
+                        html+='<span class="date"><i class="iconfont">&#xe606;</i>'+article[i].time;
+                        if(typeof(article[i].aname) == "undefined"){
+                            html+='</span></div>';
+                        }else{
+                            html+='<em>'+article[i].aname+'</em></span></div>';
+                        }
+                        html+='<div class="menu_up"><div class="menu_Part"><span><i class="iconfont">&#xe605;</i>'+article[i].clickNum+'</span>';
+                        html+='<span><i class="iconfont">&#xe604;</i>'+article[i].zanNum+'</span></div>';
+                        if(article[i].pay_money>0){
+                            html+='<div class="menoy"><span><i class="iconfont">&#xe603;</i>'+article[i].pay_money+'</span></div>';
+                        }
+                        html+=' </div></div></a></li>';
+                        $("#menu > ul").append(html);
+                        $("#page").data("page",pindex);
+                    }
+                }
+            }
+        })
+    }
+    function tabclick(cid,pid){
+        $("#page").data("page","1");
+        $("#lei").remove();
+        var hdiv="<input id='lei' type='hidden' data-cid='"+cid+"' data-pid='"+pid+"'>";
+        $(".menuCon").append(hdiv);
+        $.ajax({
+            type:"post",
+            url:"{php echo $this->createmobileurl('article')}",
+            data:{"ccate":cid,"pcate":pid},
+            datatype:"json",
+            success:function(data){
+                var article=data.list;
+                if(jQuery.isEmptyObject(article)){
+                    if(parseInt(data.page)==1){
+                        $("#menu > ul").empty();
+                        var html='<div class="icon"><i class="iconfont">&#xe61c;</i><p>没有更多内容了</p ></div>';
+                        $("#menu > ul").append(html);
+                        $("#next").addClass('display');
+                    }else{
+                        $("#next").removeClass('display');
+                        $("#next").html('已加载全部');
+                    }
+                }else{
+                    $("#menu > ul").empty();
+                    for(i=0;i<article.length;i++){
+                        var html='<li><a href='+geturl(article[i].id)+'>';
+                        html+='<div class="menuL" style="background-image: url('+article[i].thumb+');"></div>';
+                        html+='<div class="menuR"><div class="menuR_wz"><h2>'+article[i].title+'</h2>';
+                        html+='<span class="date"><i class="iconfont">&#xe606;</i>'+article[i].time;
+                        if(typeof(article[i].aname) == "undefined"){
+                            html+='</span></div>';
+                        }else{
+                            html+='<em>'+article[i].aname+'</em></span></div>';
+                        }
+                        html+='<div class="menu_up"><div class="menu_Part"><span><i class="iconfont">&#xe605;</i>'+article[i].clickNum+'</span>';
+                        html+=' <span><i class="iconfont">&#xe604;</i>'+article[i].zanNum+'</span></div>';
+                        if(article[i].pay_money>0){
+                            html+='<div class="menoy"><span><i class="iconfont">&#xe603;</i>'+article[i].pay_money+'</span></div>';
+                        }
+                        html+=' </div></div></a></li>';
+                        $("#menu > ul").append(html);
+                    };
+                    $("#next").removeClass('display');
+                    $("#next").html("点击加载更多");
+                }
+                $('.menuCon').hide();
+            }
+        })
+    }
+    function getLocalTime(nS) {
+        return new Date(parseInt(nS) * 1000).toLocaleDateString();
+    }
+    function getstring(str){
+        var string=str;
+        var ec=string;
+        if(string.length>18){
+            ec=string.substring(0,18)+"......";
+        }
+        return ec;
+    }
+    function geturl(url){
+        var murl="{php echo $this->createMobileUrl('detail')}&id="+url;
+        return murl;
+    }
+    function none(){
+        $('.menuCon').hide();
+    }
+    function search() {
+        var sear = $("#search").val();
+        var cid=$("#lei").data("cid");
+        var pid=$("#lei").data("pid");
+        var cate=$("#cate").data("cate");
+        if(cate>0){
+            $("#cate").data("cate","");
+        }
+        var submit = true;
+        if(sear.length==0){
+            $("#sub").data('status',1);
+            return;
+        }
+        $.ajax({
+            url: "{php echo $this->createmobileurl('article')}",
+            type: "post",
+            data: {"search": sear, "submit": submit,"ccate":cid,"pcate":pid},
+            datatype: "json",
+            success: function (data) {
+                var article = data.list;
+                if (jQuery.isEmptyObject(article)) {
+                    $("#menu > ul").empty();
+                    var html='<div class="icon"><i class="iconfont">&#xe61c;</i><p>没有更多内容了</p ></div>';
+                    $("#menu > ul").append(html);
+                    $("#next").addClass('display');
+/*                    $("#next").html('已加载全部');*/
+                } else {
+                    $("#menu > ul").empty();
+                    for (i = 0; i < article.length; i++) {
+                        var html = '<li><a href=' + geturl(article[i].id) + '>';
+                        html += '<div class="menuL" style="background-image: url(' + article[i].thumb + ');"></div>';
+                        html += '<div class="menuR"><div class="menuR_wz"><h2>' + article[i].title + '</h2>';
+                        html += '<span class="date"><i class="iconfont">&#xe606;</i>' +article[i].time;
+                        if(typeof(article[i].aname) == "undefined"){
+                            html+='</span></div>';
+                        }else{
+                            html+='<em>'+article[i].aname+'</em></span></div>';
+                        }
+                        html += '<div class="menu_up"><div class="menu_Part"><span><i class="iconfont">&#xe605;</i>' + article[i].clickNum + '</span>';
+                        html += ' <span><i class="iconfont">&#xe604;</i>' + article[i].zanNum + '</span></div>';
+                        if (article[i].pay_money > 0) {
+                            html += '<div class="menoy"><span><i class="iconfont">&#xe603;</i>' + article[i].pay_money + '</span></div>';
+                        }
+                        html += ' </div></div></a></li>';
+                        $("#menu > ul").append(html);
+                    }
+                    $("#next").removeClass('display');
+                    $("#page").data("page",1);
+                    $("#next").html("点击加载更多");
+                    $("#sub").data('status',2);
+                }
+            }
+        });
+    }
+    function taball(id){
+        var status=$("#sub").data('status');
+        if(status==2){
+            $("#sub").data('status',1);
+        }
+        var sear = $("#search").val();
+        if(sear.length>0){
+            $("#search").text("");
+        }
+        var url="{php echo $this->createmobileurl('article')}";
+        $("#cate").data('cate',id);
+        $.ajax({
+            url: "{php echo $this->createmobileurl('article')}",
+            type: "post",
+            data: {"aid": id},
+            datatype: "json",
+            success:function(data){
+                var article=data.list;
+                if(jQuery.isEmptyObject(article)){
+                    if(parseInt(data.page)==1){
+                        $("#menu > ul").empty();
+                        var html='<div class="icon"><i class="iconfont">&#xe61c;</i><p>没有更多内容了</p ></div>';
+                        $("#menu > ul").append(html);
+                        $("#next").addClass('display');
+                    }else{
+                        $("#next").removeClass('display');
+                        $("#next").html('已加载全部');
+                    }
+                }else{
+                    $("#menu > ul").empty();
+                    for(i=0;i<article.length;i++){
+                        var html='<li><a href='+geturl(article[i].id)+'>';
+                        html+='<div class="menuL" style="background-image: url('+article[i].thumb+');"></div>';
+                        html+='<div class="menuR"><div class="menuR_wz"><h2>'+article[i].title+'</h2>';
+                        html+='<span class="date"><i class="iconfont">&#xe606;</i>'+article[i].time;
+                        if(typeof(article[i].aname) == "undefined"){
+                            html+='</span></div>';
+                        }else{
+                            html+='<em>'+article[i].aname+'</em></span></div>';
+                        }
+                        html+='<div class="menu_up"><div class="menu_Part"><span><i class="iconfont">&#xe605;</i>'+article[i].clickNum+'</span>';
+                        html+=' <span><i class="iconfont">&#xe604;</i>'+article[i].zanNum+'</span></div>';
+                        if(article[i].pay_money>0){
+                            html+='<div class="menoy"><span><i class="iconfont">&#xe603;</i>'+article[i].pay_money+'</span></div>';
+                        }
+                        html+=' </div></div></a></li>';
+                        $("#menu > ul").append(html);
+                    };
+                    $("#next").removeClass('display');
+                    $("#next").html("点击加载更多");
+                }
+                $('.menuCon').hide();
+            }
+        })
+
+    }
+    $(function(){
+        $(".list li").click(function () {
+            $("#cid").data('cid','0');
+            $("#pcid").data('pcid','0');
+            var id=$(this).data('id');
+            $('.tabIn').hide();
+            $.ajax({
+                type:"post",
+                url:"{php echo $this->createmobileurl('char')}",
+                data:{"parentid":id},
+                datatype:"json",
+                success:function(data){
+                    var list=data.list;
+                    $(".menuCon").empty();
+                    var tabIn=$("<div class='tabIn clearfix' id='tab'></div>");
+                    var tul=($("<ul></ul>"));
+                    for(i=0;i<list.length;i++){
+                        var html='<li onclick="tabclick('+list[i].id+','+list[i].parentid+')" data-cid="'+list[i].id+'" data-pid="'+list[i].parentid+'">'+list[i].name+'</li>';
+                        tul.append(html);
+                    }
+                    var all='<li onclick="taball('+id+')" data-pid="'+id+'">全部</li>';
+                    tul.append(all);
+                    tabIn.append(tul);
+                    $(".menuCon").append(tabIn);
+                    $('.menuCon').toggle();
+                    if($('.homeTags').hasClass('atop')){
+                        $('.homeTags').removeClass('atop');
+                    }else{
+                        $('.homeTags').addClass('atop');
+                    }
+
+                    //$('.homeTags').css({'position':'fixed','top':'0','left':'0','z-index':'9999','border':'1px solid #e5e5e5','height':'50px','line-height':'50px'})
+                    $('.tabIn').show();
+                }
+            });
+        });
+        $('.menuCon').click(function(){
+            $('.menuCon').hide();
+            if($('.homeTags').hasClass('atop')){
+                $('.homeTags').removeClass('atop');
+            }else{
+                $('.homeTags').addClass('atop');
+            }
+/*            if($('.homeTags').hasClass('altop')){
+                $('.homeTags').removeClass('altop');
+            }else{
+                $('.homeTags').addClass('altop');
+            }*/
+            //$('.homeTags').css({'position':'inherit','top':'0','left':'0','z-index':'99','border':'0','height':'45px','line-height':'45px'})
+        });
+    });
+</script>-->

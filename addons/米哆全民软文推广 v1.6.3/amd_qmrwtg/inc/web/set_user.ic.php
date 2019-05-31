@@ -1,0 +1,2 @@
+<?php
+ goto hEYjC; gyzrv: load()->func("\x74\160\154"); goto kxn7b; Tjg8k: $id = $_GPC["\x61\137\151\144"]; goto aWY53; hEYjC: global $_W, $_GPC; goto gyzrv; PZX1i: echo 1; goto Tjg8k; kxn7b: $uniacid = $_W["\165\156\x69\x61\143\151\x64"]; goto PZX1i; aWY53: include $this->template("\163\145\164\x5f\165\163\145\x72");

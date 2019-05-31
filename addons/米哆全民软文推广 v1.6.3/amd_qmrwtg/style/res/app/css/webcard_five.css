@@ -1,0 +1,195 @@
+
+@charset "UTF-8";
+html{
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 20px;
+}
+html,body {
+    -webkit-touch-callout:none;
+    -webkit-text-size-adjust:none;
+    -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+    -webkit-user-select:none;
+    width: 100%;
+}
+body {
+    line-height: 1.5;
+    font-size: 0.8rem;
+    color: #212121;
+    background-color: #f5f5f5;
+    outline: 0;
+}
+html,body,header,section,footer,div,ul,ol,li,img,a,span,em,del,legend,center,strong,var,fieldset,form,label,dl,dt,dd,cite,input,hr,time,mark,code,figcaption,figure,textarea,h1,h2,h3,h4,h5,h6,p{
+    margin:0;
+    border:0;
+    padding:0;
+    font-style:normal;
+}
+* {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+
+
+        /*模版二*/
+        .box2{box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #efeff4;
+    
+    overflow: hidden;}
+
+.content {
+    background: url(../img/bj.png)no-repeat center center fixed;
+
+    background-size: cover;
+}
+.content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /*overflow: auto;*/
+    
+}
+@font-face {
+  font-family: 'iconfont';  /* project id 219915 */
+  src: url('//at.alicdn.com/t/font_bww9gym8r9ou5wmi.eot');
+  src: url('//at.alicdn.com/t/font_bww9gym8r9ou5wmi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_bww9gym8r9ou5wmi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_bww9gym8r9ou5wmi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_bww9gym8r9ou5wmi.svg#iconfont') format('svg');
+}
+
+.icon2 {
+    font-family:iconfont!important;
+    font-size: 24px;
+    font-style:normal;
+    display:inline-block;
+    vertical-align:middle;
+    background-size:100% auto;
+    background-position:center;
+    -webkit-font-smoothing:antialiased;
+    -webkit-text-stroke-width:.2px;
+    -moz-osx-font-smoothing:grayscale
+}
+.icon-qq:before {
+    content:"\e648"
+}
+.icon-weixin:before {
+    content:"\e600"
+}
+.icon-phone:before {
+    content:"\e6f0"
+}
+.icon-ewm:before {
+    content:"\e626"
+}
+.icon-shiye:before {
+    content:"\e62b"
+}
+.icon-fenxiang:before {
+    content:"\e649"
+}
+.icon-shop:before {
+    content:"\e641"
+}
+.icon-ziliao:before {
+    content:"\e631"
+}
+.icon-liuyan:before {
+    content:"\e615"
+}
+.icon-add:before {
+    content:"\e64a"
+}
+.content{   background:url(../img/bj.png)no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+}
+.userinfo{ text-align:center; color:#fff; margin-top:4px}
+    .userinfo .name{ letter-spacing: .2rem; font-size:.8rem; font-weight:500}
+    .userinfo .firm{ letter-spacing: .1rem; font-size:.6rem; }
+    .userinfo .job{ font-size:.6rem; }
+
+.face {
+    border:.2rem rgba(81,108,171,.8) solid;
+    margin:1rem auto 0 auto;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    }
+    .bar-tab .tab-item{ color:#fff}
+
+    .lbtn{ margin-top:1.6rem; text-align:center}
+    .lbtn .col-33{ margin-top:2rem}
+    .licon{display:inline-block; width:2.6rem; height:2.6rem; line-height:2.6rem; border-radius:1.3rem; color:#fff;font-size:1.2rem}
+    .lbtn a{color:#aaa;font-size:.6rem}
+    .tpc{ height:1rem; line-height:1rem; margin-top:.2rem;color: #aaa}
+    .bg1{background:#0ccfe0}.bg2{background:#9ded1d}.bg3{background:#ff1f69}
+    .bg4{background:#fe9932}.bg5{background:#1dd8ed}.bg6{background:#9d1efe}
+    .lianxi {
+    margin-top: .4rem;
+    color: #fff;
+    font-size: 1.2rem;
+}
+.bar-tab .tab-item {
+    color: #fff;
+}
+.bar-tab .tab-item {
+    position: relative;
+    display: table-cell;
+    width: 1%;
+    height: 2.5rem;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+}
+.lbtn {
+    position: absolute;
+    bottom: 10px;
+    margin-top: 1.6rem;
+    text-align: center;
+}
+.row {
+    overflow: hidden;
+    margin-left: -4%;
+}
+.lbtn .col-33 {
+    margin-top: 2rem;
+}
+.row .col-33 {
+    width: 29.333333333333332%;
+    margin-left: 4%;
+}
+.row>[class*=col-], .row>[class*=tablet-] {
+    box-sizing: border-box;
+    float: left;
+}
+.lbtn a {
+    color: #aaa;
+    font-size: .6rem;
+}
+.licon {
+    display: inline-block;
+    width: 2.6rem;
+    height: 2.6rem;
+    line-height: 2.6rem;
+    border-radius: 1.3rem;
+    color: #fff;
+    font-size: 1.2rem!important;
+}

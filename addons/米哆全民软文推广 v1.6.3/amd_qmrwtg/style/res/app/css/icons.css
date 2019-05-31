@@ -1,0 +1,56 @@
+@font-face {
+    font-family: MuiiconSpread;
+    font-weight: normal;
+    font-style: normal;
+    src:  url('//at.alicdn.com/t/font_590152_o65pndisryv3rf6r.woff') format('woff') /* iOS 4.1- */
+}
+.mui-icon-extra
+{
+    font-family: MuiiconSpread;
+    font-size: 24px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    display: inline-block;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+
+    display: inline-block;
+
+    font-weight: 400;
+ 
+
+
+ 
+}
+
+.mui-bar .mui-icon-extra {
+    position: relative;
+    z-index: 20;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 24px;
+}
+.my-bar-tab .my-tab-item .mui-icon-extra {
+   top: 6px;
+    width: 24px;
+    height: 24px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.my-bar-tab .my-tab-item .mui-icon-extra~.mui-tab-label {
+    display: block;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mui-icon-extra-help:before { content: "\e67d"; }
+.mui-icon-extra-ad:before { content: "\e674"; }
+.mui-icon-extra-lst:before { content: "\e624"; }
+.mui-icon-extra-my:before { content: "\e758"; }
+.mui-icon-extra-add:before { content: "\e659"; }
+.mui-icon-extra-weixin:before { content: "\e618"; }
+.mui-icon-extra-qq:before { content: "\e62e"; }
+.mui-icon-extra-tel:before { content: "\e614"; }
+.mui-icon-extra-video:before { content: "\e63e"; }
+.mui-icon-extra-msg:before { content: "\e65a"; }

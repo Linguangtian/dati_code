@@ -1,0 +1,311 @@
+{template 'common/header'}
+<div class="main">
+    <form action="" method="post" class="form-horizontal form" id="setting-form">
+			 
+              <div class="panel-body">
+              <div class="form-group" >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">全局底部菜单显示方式（文章页除外）</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <label class="radio-inline">
+                            <input type="radio" name="g_menu_show" value="1"  {if $settings['g_menu_show']=='1' }checked={/if}>显示
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="g_menu_show" value="2" {if $settings['g_menu_show']=='2' }checked{/if}>悬浮按钮 
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="g_menu_show" value="3" {if $settings['g_menu_show']=='3' }checked{/if}>不显示 
+                            </label>
+                        </div>
+                    </div>
+                 </div>
+                 <div class="form-group" >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">文章页底部菜单显示方式</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <label class="radio-inline">
+                            <input type="radio" name="as_menu_show" value="1"  {if $settings['as_menu_show']=='1' }checked={/if}>显示
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="as_menu_show" value="2" {if $settings['as_menu_show']=='2' }checked{/if}>悬浮按钮 
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="as_menu_show" value="3" {if $settings['as_menu_show']=='3' }checked{/if}>不显示 
+                            </label>
+                        </div>
+                    </div>
+                 </div>
+              	<div class="form-group" >
+                    
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动推送消息状态</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <?php if($startflag&&($runstatus==1)){ ?><span class="btn btn-primary " onclick="changeMsgStatus('close')">已开启，点击关闭</span><?php }else{ ?><span class="btn btn-primary "  onclick="changeMsgStatus('open')" style="background:#333">已关闭，点击开启</span><?php } ?>
+                        </div>
+                    </div>
+                 </div>
+                 <div class="form-group" style="display:none">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">原创发布之后是否需要审核</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <label class="radio-inline">
+                            <input type="radio" name="isneedcheck" value="1"  {if $settings['isneedcheck']=='1' }checked={/if}>是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="isneedcheck" value="2" {if $settings['isneedcheck']=='2' }checked{/if}>否 
+                            </label>
+                        </div>
+                    </div>
+                 </div>
+                 
+                 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户分享上级提成比例设置</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户分享提成比例</span>
+                            <input type="text" class="form-control" name="amd_qmrwtg_scale" value="{$settings['amd_qmrwtg_scale']}">
+                        </div>
+                        <div class="help-block">取值在0.00-1直接，比如百分之10 设置成0.1</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户分享上上级提成比例设置</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户分享上上级提成比例</span>
+                            <input type="text" class="form-control" name="amd_qmrwtg_pscale" value="{$settings['amd_qmrwtg_pscale']}">
+                        </div>
+                        <div class="help-block">取值在0.00-1直接，比如百分之10 设置成0.1</div>
+                    </div>
+                </div>
+                <div class="form-group" style="display:none">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">作者提成比例设置</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">默认作者提成比例</span>
+                            <input type="text" class="form-control" name="amd_qmrwtg_author_scale" value="{$settings['amd_qmrwtg_author_scale']}">
+                        </div>
+                        <div class="help-block">比例为扣除用户分成比例之后的值的比例</div>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现限额</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">提现起步限额</span>
+                            <input type="text" class="form-control" name="min_tixian" value="{$settings['min_tixian']}">
+                        </div>
+                        <div class="help-block">满多少才可以提现</div>
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费成功提醒</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">消费提醒模板id</span>
+                            <input type="text" class="form-control" name="pay_template" value="{$settings['pay_template']}">
+                        </div>
+                        <div class="help-block">IT科技 - 互联网|电子商务 >> 消费成功通知 (OPENTM412599676) 
+                            <p>{{first.DATA}} <br>
+                            订单金额：{{keyword1.DATA}}<br>
+                            商品名称：{{keyword2.DATA}}<br>
+                            订单编号：{{keyword3.DATA}}<br>
+                            {{remark.DATA}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="display:none">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">邀请卡设置</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">邀请卡介绍</span>
+                            <input type="text" class="form-control" name="qrcode_desc" value="{$settings['qrcode_desc']}">
+                        </div>
+                        
+                    </div>
+                </div>
+                 <div class="form-group" style="display:none">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启赞赏</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                            <label class="radio-inline">
+                            <input type="radio" name="shang_status" value="1"  {if $settings['shang_status']=='1' }checked={/if}>是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="shang_status" value="2" {if $settings['shang_status']=='2' }checked{/if}>否 
+                            </label>
+                        </div>
+                    </div>
+                 </div>
+                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">项目名称</label>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                            <input class="form-control" name="projecttitle" id="" type="text" value="{$settings['projecttitle']}">
+                        <div class="help-block">项目名称</div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页标题</label>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                            <input class="form-control" name="amd_qmrwtg_title" id="" type="text" value="{$settings['amd_qmrwtg_title']}">
+                        <div class="help-block">这里的首页标题如果没有设置，那么首页的标题为xxx</div>
+                    </div>
+
+                </div>
+<!-- 
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页软文展示数</label>
+                <div class="col-sm-9 col-xs-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">设置单篇软文每页展示数</span>
+                        <input type="text" class="form-control" name="amd_qmrwtg_num" value="{$settings['amd_qmrwtg_num']}">
+                    </div>
+                    <div class="help-block"></div>
+                </div>
+            </div> -->
+            <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">新手指南</label>
+          
+                    <div class="col-sm-8">
+                        {php echo tpl_ueditor('center_intro', $settings['center_intro']);}
+                    </div>
+  
+            </div>
+            <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付界面标题</label>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                            <input class="form-control" name="amd_qmrwtg_myintrotitle" id="" type="text" value="{$settings['amd_qmrwtg_myintrotitle']}">
+                        <div class="help-block">支付界面标题</div>
+                    </div>
+
+            </div>
+            <div class="form-group" id="js_music_div">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">音频链接</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {php echo tpl_form_field_audio('bg_music', $settings['bg_music']);}
+                    </div>
+            </div>
+            <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付界面内容</label>
+          
+                    <div class="col-sm-8">
+                        {php echo tpl_ueditor('my_intro', $settings['my_intro']);}
+                    </div>
+  
+            </div>
+			<div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">详情页顶部广告</label>
+                    <div class="col-sm-9">
+                        {php echo tpl_form_field_image('detailtoppic', $settings['detailtoppic'])}
+                        
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">详情页顶部广告链接</label>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="detailtoppicurl" value="{$settings['detailtoppicurl']}">
+                       
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">详情页底部广告</label>
+                    <div class="col-sm-9">
+                        {php echo tpl_form_field_image('detailbottompic', $settings['detailbottompic'])}
+                        
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">详情页底部广告链接</label>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="detailbottompicurl" value="{$settings['detailbottompicurl']}">
+                     
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">虚拟当日新增客户基数</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+                             
+                            <input type="text" class="form-control" name="base_add_user" value="{$settings['base_add_user']}">
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">虚拟当日新增谁看了我基数</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="base_views" value="{$settings['base_views']}">
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义推送消息内容（早）</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="push_diy_m_message" value="{$settings['push_diy_m_message']}">
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义推送消息内容（晚）</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="push_diy_a_message" value="{$settings['push_diy_a_message']}">
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送替代菜单标识</label>
+                    <div class="col-sm-9 col-xs-6">
+                        <div class="input-group">
+
+                            <input type="text" class="form-control" name="bottom_menu" value="{$settings['bottom_menu']}">
+                        </div>
+                        <div class="help-block"></div>
+                    </div>
+                </div>
+        <div class="form-group col-sm-12">
+            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+            <input type="hidden" name="token" value="{$_W['token']}" />
+        </div>
+       <!-- <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机端采集链接</label>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                           {php echo $this->createMobileUrl('cai')}
+                     
+                    </div>
+                </div>-->
+    </form>
+    <script>
+	function changeMsgStatus(op)
+	{
+		$.post("{php echo $this->createWebUrl('changemsgstatus')}",{ostatus:op},function(res){
+			if(res.status!=0)
+			{
+				$.post("/app/{php echo $this->createMobileUrl('pushreport')}",{},function(res){});
+				alert("自动推送消息修改成功");
+				location.href="{php echo $this->createWebUrl('setting')}";
+			}else
+			{
+				alert("状态修改失败");
+			}	
+		});
+	}
+    /*$(function(){
+        setInterval(getLoc,50000);
+     });
+	 function getLoc()
+	 {
+		 $.post("{php echo $this->createWebUrl('pushdayreport')}",{},function(res){});
+	 }*/
+    </script>
+{template 'common/footer'}

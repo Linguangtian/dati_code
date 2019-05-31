@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{RES}css/style_index.css"/>
+    <link rel="stylesheet" href="{RES}new_style/css/base.css" />
+        <link rel="stylesheet" href="{RES}new_style/css/style.css" />
+<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+   <!--  <link rel="stylesheet" href="{RES}font/iconfont.css" /> -->
+    <script src="//cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{RES}js/script.js" ></script>
+    <title>我的收益</title>
+    <script type="text/javascript">
+        $(function(){
+            $("#btn_cash").click(function(){
+                var conf=confirm("确认提现吗?");
+                if(!conf){return;}
+                $.post(location.href,{submit:true},function(result){
+                    if(result.success==-1){
+                        alert(result.data);
+                    }else{
+                        alert(result.data);
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body onbeforeunload="visit_log()">
+<div id="box">
+    <div class="profit_add bottom">
+        <div class="profit_up gridXb">
+            <h3>累计总收益</h3>
+            <span>{if $all!=0.00 && !empty($all)}{$all}{else}0.00{/if}<i>元</i></span>
+        </div>
+        <div class="profit_un">
+            <ul class="clearfix">
+                <li>{if $pay!=0.00 && !empty($pay)}{$pay}{else}0.00{/if}<i>元</i><span>收益</span></li>
+                {if $shang!=0.00 && !empty($shang)}
+                <li>{$shang}<i>元</i><span>软文赞赏收益</span></li>
+                {/if}
+            </ul>
+        </div>
+    </div>
+    <div class="profit_add bottom">
+        <div class="profit_up gridXb">
+            <h3>可提现金额</h3>
+            <span>{if $sum!=0.00 && !empty($sum)}{$sum}{else}0.00{/if}<i>元</i></span>
+        </div>
+        <div class="profit_un">
+            <p>满{$cfg['min_tixian']}元方可提现，收益和软文赞赏收益分成比例为作者的比例</p>
+        </div>
+    </div>
+    <div class="profitSq bottom">
+        <div class="profitSq_min">
+        	<?php if($cfg['min_tixian']>$sum){ ?>
+        	<a href="###" style="background:#ccc" >余额不足以提现</a>
+        	<?php }else{ ?>
+            <a href="###" id="btn_cash">申请提现</a>
+            <?php } ?>
+        </div>
+    </div>
+    <div class="profit_add bottom">
+        <div class="profit_up gridXb">
+            <h3>已提现金额</h3>
+            <span>{if $incomesum!=0.00 && !empty($incomesum)}{$incomesum}{else}0.00{/if}<i>元</i></span>
+        </div>
+        <div class="profit_un">
+            <p>请到微信钱包查看具体收益</p>
+        </div>
+    </div>
+    <div class="profit_add">
+        {loop $income $row}
+        <div class="profit_main">
+            <div class="profit_addr">
+                <p>{php echo date('Y/m/d H:i:s', $row['createtime']);}</p>
+                <p>{$row['income_money']}</p>
+            </div>
+            <span style="color:{if $row['income_status']=='处理中'}red{else}green{/if};">{$row['income_status']}</span>
+        </div>
+        {/loop}
+    </div>
+   {template footer}
+</div>
+</body>
+</html>

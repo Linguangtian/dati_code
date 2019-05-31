@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>海报中心</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">    
+		<link rel="stylesheet" type="text/css" href="{RES}qrcode/qrcode.css" />
+		<script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+        <link rel="stylesheet" href="{RES}new_style/css/base.css" />
+</head>
+    <body onbeforeunload="visit_log()">
+    <?php
+    if(empty($curadver['mobile']))
+    {
+    ?>
+        <style>
+	.finger-guide{ font-size:14px; z-index:9999;}
+		.submit{ background:#F90; padding:10px 20px; border-radius:10px;color:#fff;}
+		.awindow{ width:80%; padding:15px 10px; margin:20px auto; background:#fff; border-radius:20px; color:#333}
+		 input{ border:1px solid #ccc; padding:5px; border-radius:5px}
+		 .finger-guide p{ width:100%;  margin:10px auto; height:auto}
+ 
+	</style>
+<div class="finger-guide" id="finger-guide" style=" width:100%; height:100%">
+	<div class="awindow">
+ 	<form action="" method="post" name="myform">
+    <p style="text-align:left; padding:0 40px">亲！请先完善您的资料！</p>  
+    <hr />
+    <p><input type="text" name="realname"  id="realname" value="" placeholder="请输入您的姓名" /></p>
+    <p><input type="text" name="mobile" id="mobile" value="" placeholder="手机号" /></p>
+    <p style=" margin:20px 0 30px 0"><a href="###" onclick="add();" class="submit">保存</a></p>
+    <p><a href="###" onclick="closew();" class="submit" style="background:#333">关闭</a></p>
+    </form>
+    </div>
+    
+</div>
+    <div style="height: 60px;"></div>
+		 <!--foot start-->
+	       {template footer}
+	        <!--foot end-->
+    <script>
+    function add()
+	{
+		var data={};
+		data.realname=$("#realname").val();
+		data.mobile=$("#mobile").val();
+		data.flag='add';
+		$.post("{php echo $this->createmobileurl('adduserinfo')}",data,function(result){
+            if(result.success==1){
+                location.href="{php echo $this->createmobileurl('myadvs')}";
+            }else
+			{
+				alert(result.content);
+			}
+        })
+	}
+	function closew()
+	{ 
+		window.history.go(-1);
+	}
+    </script>          
+    </body>
+    </html>
+
+    <?php 
+    exit();
+    } ?>
+		<style>
+		 
+		.thumb-inner-list span.active:after {
+			content: '';
+			background-image: url({RES}/qrcode/checked_678a9ca.png);
+			background-position: center;
+			-webkit-background-size: contain;
+			background-size: contain;
+			position: absolute;
+			right: .5rem;
+			bottom: .5rem;
+			width: 2rem;
+			height: 2rem
+		}
+		.share-card-container .btn{position: absolute;top: 15px;right: 0;background: #fff;height: 30px;line-height: 30px;padding: 0 10px;border-top-left-radius: 10px;border-bottom-left-radius: 10px;}
+		.share-card-container .btn a{color:#000;text-decoration: none;box-shadow: 10px 0 0 0  rgba
+			(0,0,0,.8) inset;}
+		.thumb-list-container{ padding:1rem; margin-bottom:10px}
+		#next{ margin-bottom:120px; text-align:center}
+		.share-card-inner-container{ background:#fff; padding:0}
+		.catecc{width:100%; line-height:50px;}
+		.catecc a{ height:50px; line-height:50px; padding:10px ; margin:0 5px; text-decoration:none; color:#333}
+		.active{ background:#d33d3e; color:#fff}
+		.finger-guide img{ width:100%; height:100%}
+		.ttitle{ height:24px; line-height:24px;}
+		 .finger-guide{ color:#000}
+		 ul{ margin:0; padding:0}
+		 #back{ background:#d33d3e; color:#fff; position:fixed; right:0px; top:10px;border-top-left-radius:20px; border-bottom-left-radius:20px; padding:5px 15px;}
+		 a{ text-decoration:none}
+		</style>
+        <div class="finger-guide" id="finger-guide" style="display:none; width:100%; height:100%; padding:0; margin:0; position:inherit">
+              <img id="imagepic" src="{$img}&t=<?php echo time();?>" width="100%" height="auto" style="padding:0; margin:0;" />
+              	<div style="padding:0; margin:0 auto;  float:left">
+                <p style="position:fixed; right:0; top:50px; background:#CCC; color:#000; border-top-left-radius:20px; border-bottom-left-radius:20px; padding:5px 15px;  text-align:center">长按保存到手机</p>  
+				<p style="background:#d33d3e;" id="back">点击返回</p>
+                </div>
+            </div>	
+        <div class="catecc">
+        <a href="{php echo $this->createmobileurl('myadvs')}" <?php if(empty($_GPC['cateid'])){ ?>class="active" style="color:#fff"<?php } ?> >全部</a>{loop $cates $k}
+							<a href="{php echo $this->createmobileurl('myadvs',array('cateid'=>$k['id']))}" <?php if($k['id']==$_GPC['cateid']){ ?> class="active" style="color:#fff"<?php } ?> />{$k['poster_type']}</a>						
+						{/loop}
+        </div>	
+        <div class="share-card-container">
+            <div class="share-card-inner-container">  
+            <div class="thumb-list-container">
+                <div id="thumb-list" class="thumb-inner-list">
+                    <!--缩略图列表-->
+						{loop $advlist $k}
+							<div style="width:33.33%; text-align:center; float:left;" onClick="selectedadv({$k['id']})"><img src="<?php echo tomedia($k['picurl']);?>" style="width:95%;" /><div class="ttitle" id="ttitle">{$k['postertitle']}</div>	</div>						
+						{/loop}
+                        <div style="width:100%; text-align:center; float:left; margin:10px auto;line-height:24px;">---第1页---</div>
+                </div>
+            </div>
+        {if !empty($advlist)}
+        <div class="still" id="next" onclick="more('mo')">
+            点击加载更多
+        </div>
+        {/if}
+        <input type="hidden" data-page="1" id="page"> 
+            </div>
+            <div class="loading-bg hidden" id="loading">
+                <img class="loading-icon" src="{RES}/qrcode/loading.gif" />
+                <p>海报生成中，请稍后</p>  
+            </div>
+             
+          
+        </div>
+
+                
+          
+
+<script>
+	function more(op){
+        var page=$("#page").data("page");
+        var pindex=++page;
+        var c=op;
+        $.ajax({
+            type:"post",
+            url:"{php echo $this->createmobileurl('myadvs')}",
+            data:{"page":pindex,op:op,cateid:"<?php echo intval($_GPC['cateid']);?>"},
+            datatype:"json",
+            success:function(data){
+                var article=data.list;
+                if(jQuery.isEmptyObject(article)){
+                    $("#next").html('已加载全部');
+                }else{
+                    for(i=0;i<article.length;i++){
+                        var html='<div style="width:33.33%; text-align:center; float:left;" onClick="selectedadv('+article[i].id+')"><img src="'+article[i].picurl+'" style="width:95%;" /><div class="ttitle" id="ttitle">'+article[i].postertitle+'</div>	</div>';
+                        $("#thumb-list").append(html);
+                        $("#page").data("page",pindex);
+                    }
+					var html='	<div style="width:100%; text-align:center; float:left; margin:10px auto;line-height:24px;">---第'+pindex+'页---</div>';
+					$("#thumb-list").append(html);
+					
+                }
+            }
+        })
+    }
+	var loadture=true;
+	$(window).scroll(function(){
+        var sh = document.body.scrollHeight;
+        var st = document.body.scrollTop;
+        var wh = window.innerHeight;
+        if (st +wh==sh) {
+            if(loadture){
+                loadture=false;
+                var data={};
+                
+                $('.loding').show();
+                var page=$("#page").data("page");
+				var pindex=++page;
+				var c='mo';
+				$.ajax({
+					type:"post",
+					url:"{php echo $this->createmobileurl('myadvs')}",
+					data:{"page":pindex,op:c,cateid:"<?php echo intval($_GPC['cateid']);?>"},
+					datatype:"json",
+					success:function(data){
+						var article=data.list;
+						if(jQuery.isEmptyObject(article)){
+							$("#next").html('已加载全部');
+						}else{
+							for(i=0;i<article.length;i++){
+								var html='<div style="width:33.33%; text-align:center; float:left;" onClick="selectedadv('+article[i].id+')"><img src="'+article[i].picurl+'" style="width:95%;" /><div class="ttitle" id="ttitle">'+article[i].postertitle+'</div>	</div>	 ';
+								$("#thumb-list").append(html);
+								$("#page").data("page",pindex);
+							}
+							var html='	<div style="width:100%; text-align:center; float:left; margin:10px auto;line-height:24px;">---第'+pindex+'页---</div>';
+					$("#thumb-list").append(html);
+						}
+					}
+				})
+				 loadture=true;
+            }
+        }
+    });
+	function selectedadv(selectedadvid)
+	{
+		$('#t'+selectedadvid).css("bacoground","#d33d3e"); 
+		$('#loading').css("display","flex");
+		$.get(location.href,{'selectadvid':selectedadvid},function(data){
+				$('#loading').hide();
+				eval('data='+data);
+				console.log(data);
+				if(data.status==1){ 
+					$('#imagepic').attr('src',data.content+'?a='+selectedadvid+'&t='+Math.random());
+				 $('#finger-guide').css('display','block');
+				 $('.foot').css('display','none');
+				 $('.catecc').css('display','none');
+				 $('.share-card-container').css('display','none');
+				}else{
+					alert(data.content);
+				}
+			})
+	}
+	$(function(){
+		$('#back').click(function(){
+			$('#finger-guide').hide();
+			$('.foot').css('display','block');
+			$('.catecc').css('display','block');
+			$('.share-card-container').css('display','block');
+		})
+		$('#finger-guide').click(function(){
+			/*$(this).hide();*/
+		})
+		$('#thumb-list span').click(function(){
+			$('#finger-guide').hide();
+			$('#loading').css("display","flex");
+			$('#thumb-list span').removeClass('active');
+			$(this).addClass('active');
+			var id = $(this).attr('attr-id');
+			id = parseInt(id);
+			$.get(location.href,{'type':'img',code:id},function(data){
+				$('#loading').hide();
+				eval('data='+data);
+				console.log(data);
+				if(data.status==1){ 
+					$('#image').attr('src',data.content+'?a='+id);
+				}else{
+					alert(data.content);
+				}
+			})
+		})
+	})
+</script>
+<div style="height: 60px;"></div>
+		 <!--foot start-->
+	       {template footer}
+           
+           <script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+	        <!--foot end-->
+            
+</body>
+</html>

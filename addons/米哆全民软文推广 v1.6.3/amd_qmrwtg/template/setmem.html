@@ -1,0 +1,111 @@
+{template 'common/header'}
+<div class="main">
+    <ul class="nav nav-tabs">
+        <li{if $_GPC['do'] == 'member' } class="active"{/if}><a href="{php echo $this->createWebUrl('member')}">会员管理
+    </a></li>
+        <li{if $_GPC['do'] == 'setmem' || $_GPC['do'] == '' } class="active"{/if}><a
+            href="{php echo $this->createWebUrl('setmem',array('id'=>$user['id']))}">会员信息</a></li>
+    </ul>
+    <form class="form-horizontal form" id="form2" action="" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                会员信息
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员昵称</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" name="nickname" id="nickname" value="{$user['nickname']}" disabled />
+                        <input type="hidden" class="form-control" name="id" id="id" value="{$user['id']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员姓名</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" name="realname" id="realname" value="{$user['realname']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员手机号</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" class="form-control" name="mobile" id="mobile" value="{$user['mobile']}" />
+                    </div>
+                </div>
+                <div class="form-group" style="display:none;">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">付费方式</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class="radio-inline">
+                            <input type="radio" name="mode" value="1" {if $user['mode'] == 1}
+                            checked="checked"{/if} />月份
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="mode" value="2" {if $user['mode'] == 2}
+                            checked="checked"{/if}  />季度
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="mode" value="3" {if $user['mode'] == 3}
+                            checked="checked"{/if}  />年
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员类型</label>
+                   <div class="col-sm-8 col-xs-12">
+               			 <select name="viptype" class="form-control">
+                            <?php foreach($vipconfigs as $ckey){ ?>
+                            <option value="{$ckey['id']}"{if $ckey['id'] == $user['viptype']} selected="selected"{/if}>{$ckey['title']}</option>
+                            <?php } ?>
+                            
+                        </select>
+                 </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">公众号采集权限</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='cancai' value='1' {if $user['cancai']==1 }checked{/if} /> 可采集
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='cancai' value='0' {if $user['cancai']==0 || $user['cancai']==""}checked{/if} /> 禁止采集
+                        </label>
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">发表软文权限</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='canpublish' value='1' {if $user['canpublish']==1 }checked{/if} /> 可发表
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='canpublish' value='0' {if $user['canpublish']==0 || $user['canpublish']==""}checked{/if} /> 禁止发表
+                        </label>
+                    </div>
+                </div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"><span style="color:red;">*</span>有效期</label>
+					<div class="col-sm-8 col-xs-12">
+						{if $user['end_time']==-1}
+							永久
+						{else}
+							{php echo tpl_form_field_date('end_time', $user['end_time'],false)}	
+						{/if}
+					<div class="help-block"></div>
+					
+					</div>
+				</div>
+
+                <div class="form-group" style="display:none;">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">上次操作时间：</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {php echo date("Y-m-d H:i:s",$user['settime'])}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-12">
+            <input type="submit" class="btn btn-primary col-lg-1 pull-right" name="submit" value="提交" />
+            <input type="hidden" name="token" value="{$_W['token']}" />
+        </div>
+    </form>
+</div>
+{template 'common/footer'}

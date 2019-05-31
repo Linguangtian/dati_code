@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>我的分销收益</title>
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="{RES}css/style_index.css?v=1"/>
+    
+    <link rel="stylesheet" type="text/css" href="{RES}css/swiper.min.css"/>
+    <link rel="stylesheet" href="{RES}font/iconfont.css" />
+    <script type="text/javascript" src="{RES}js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="{RES}js/script.js" ></script>
+    <script type="text/javascript" src="{RES}js/swiper.min.js" ></script>
+    <style>
+        *{margin: 0;padding: 0;}
+        body{background: #f2f2f2;}
+        .flex{ display: -webkit-box;display: -webkit-flex;  display: -ms-flexbox; display: flex; width: 100%;}
+        .flex .sub{ -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1;}
+        .title{padding: 10px 15px;}
+        .user-box{padding:0 15px;background: #fff;}
+        .user-msg{line-height: 40px;padding:10px 0;}
+        .user-msg:nth-child(n+2){border-top: 1px solid #eee;}
+        .user-img{width: 40px;height: 40px;border-radius: 50%;margin-right: 10px;}
+        .grey{color: #808080;}
+    </style>
+</head>
+<body>
+<p class="grey title">一共{$data['total']}个下线</p>
+<ul class="user-box">
+    {loop $result $row}
+    <li class="user-msg flex">
+        <img class="user-img" src="{$row['avatar']}" alt="">
+        <span class="sub">{$row['nickname']}</span>
+        <span class="grey">{php echo date('Y/m/d H:i:s', $row['time']);}</span>
+    </li>
+    {/loop}
+</ul>
+{if !empty($result)}
+    <div class="still2" id="next" onclick="more()">
+        点击加载更多
+    </div>
+    {/if}
+        <!-- <input type="hidden" data-status="1" id="sub"> -->
+        <input type="hidden" data-page="1" id="page">
+</body>
+<script>
+    function more(){
+
+        var page=$("#page").data("page");
+
+        var pindex=++page;
+        $.ajax({
+            type:'post',
+            url:"{php echo $this->createMobileUrl('my_downline')}",
+            data:{'page':pindex},
+            success: function(data){
+                var result = data.list;
+                if(jQuery.isEmptyObject(result)){
+                    $("#next").removeClass('display');
+                    $("#next").html('已加载全部');
+                }else{
+                    
+                    for(i=0;i<result.length;i++){
+                        var html='<li class="user-msg flex">';
+                        html+='<img class="user-img" src="'+result[i].avatar+'" alt="">';
+                        html+='<span class="sub">'+result[i].nickname+'</span>';
+                        html+='<span class="grey">'+result[i].time+'</span></li>';
+                        $(".user-box").append(html);
+                        $("#page").data("page",pindex);
+                    }
+                        
+                }
+            }
+        });
+    }
+</script>
+<script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+</html>

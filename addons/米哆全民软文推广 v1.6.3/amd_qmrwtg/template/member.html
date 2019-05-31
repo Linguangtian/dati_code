@@ -1,0 +1,279 @@
+{template 'common/header'}
+<ul class="nav nav-tabs">
+	<li {if $op == 'display'}class="active"{/if}>
+		<a href="{php echo $this->createWebUrl('member',array('op'=>'display'));}">会员列表</a>
+    </li>
+    <li {if $op == 'config'}class="active"{/if}>
+		<a href="{php echo $this->createWebUrl('member', array('op' => 'config'));}">类型管理</a>
+    </li>
+	<li {if $_GPC['op'] == 'editconfig'}class="active"{/if}><a href="{php echo $this->createWebUrl('member', array('op' => 'editconfig' ))}">添加/编辑（类型）</a></li>
+</ul>
+
+{if $op=="display"}
+<div class="main">
+    <div class="panel panel-info">
+        <div class="panel-heading">筛选</div>
+        <div class="panel-body">
+            <form action="./index.php" method="get" class="form-horizontal" role="form">
+                <input type="hidden" name="c" value="site"/>
+                <input type="hidden" name="a" value="entry"/>
+                <input type="hidden" name="m" value="amd_qmrwtg"/>
+                <input type="hidden" name="do" value="member"/>
+                <input type="hidden" name="op" value="display"/>
+
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 control-label">会员名称</label>
+
+                    <div class="col-sm-8 col-md-8 col-lg-8 col-xs-12">
+                        <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}" placeholder="请输入会员昵称">
+                    </div>
+                    <div class="pull-right col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel-heading">
+        <div class="row-fluid">
+            <div class="span8 control-group">
+                <a class="btn btn-primary" href="###" onclick="popwin = $('#modal-module-menus').modal();"><i
+                        class="fa fa-plus"></i>添加会员</a>
+            </div>
+            <span>这里查找的会员，会员必须是关注了该公众号的用户</span>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row-fluid">
+                <div class="span8 control-group">
+                    共计 {$total} 条数据
+                </div>
+            </div>
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th style="width:65px;" align="center">头像</th>
+                    <th>昵称</th>
+                    <th>真实姓名</th>
+                    <th>手机号</th>
+                    <th>收益</th>
+                    <th>添加时间</th>
+                    <th>到期时间</th>
+                    <th>支付方式</th>
+                    <th>采集权限</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="add_author">
+                {loop $records $row}
+                <tr>
+                    <td><img alt="" src="{$row['avatar']}" width='auto' style="max-width:50px; max-height:50px;" height='auto'></td>
+                    <td>{$row['nickname']}</td>
+                    <td>{$row['realname']}</td>
+                    <td>{$row['mobile']}</td>
+                    <td><A href="{php echo $this->createweburl('usercommissionlist',array(userid=>$row['id']))}">{php echo floatval($row['share_all'])}</A></td>
+                    <td>{php echo date('Y/m/d', $row['createtime']);}</td>
+                    <td>{if !empty($row['end_time'])}{if $row['end_time']==-1}永久{else}{php echo date('Y/m/d', $row['end_time']);}{/if}{/if}</td>
+                    <td>{if $row['setmem']==1}<span class="label label-success ">后台设置</span>{else}<span
+                            class="label label-success ">微信支付</span>{/if}</td>
+                   <td>{if $row['cancai']==1}可采集{else}禁止采集{/if}</td>
+                    <td data="{$row['id']}">
+                    	<a class="btn btn-default" href="{php echo $this->createweburl('memrelex',array(id=>$row['id']))}"  title="绑定关系">
+                            绑定关系</a>
+                        <a class="btn btn-default" href="{php echo $this->createweburl('memsitedatas',array(id=>$row['id']))}"  title="数据统计">
+                            数据统计</a>
+                        <a class="btn btn-default" data-toggle="tooltip" data-placement="top"
+                           href="{php echo $this->createweburl('setmem',array(id=>$row['id']))}"  title="设置">
+                            <i class="fa fa-edit"></i></a>
+                       <!-- <a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="javascript:" onclick="return del(this)" title="删除">
+                            <i class="fa fa-times"></i></a>-->
+                    </td>
+                </tr>
+                {/loop}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {$pager}
+</div>
+<div id="modal-module-menus"  class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×
+            </button><h3>选择会员</h3></div>
+            <div class="modal-body" >
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value="" id="search-kwd" placeholder="请输入粉丝昵称" />
+                        <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_members()">搜索</button></span>
+                    </div>
+                </div>
+                <div id="module-menus" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+        </div>
+
+    </div>
+</div>
+<script language='javascript'>
+
+    function search_members() {
+        if ($.trim($('#search-kwd').val()) == '') {
+            Tip.focus('#search-kwd', '请输入关键词');
+            return;
+        }
+        $("#module-menus").html("正在搜索....");
+        $.get("{php echo $this->createWebUrl('fans',array('op'=>'mem'))}", {
+            keyword: $.trim($('#search-kwd').val())
+        }, function (dat) {
+            $('#module-menus').html(dat);
+        });
+    }
+    function select_member(o) {
+        $.ajax({
+            type:"post",
+            data:o,
+            url:"{php echo $this->createweburl('add',array('op'=>'mem'))}",
+            datatype:"json",
+            success:function(res){
+                if(res.success==1){
+                    var html='<tr><td><img alt="" src="' + res.avatar + '" width="auto" style="max-width:50px; max-height:50px;" height="auto"></td> ';
+                    html+=' <td>' + res.nickname + '</td>';
+                    html+=' <td>' + res.money + '</td>';
+                    html+=' <td>'+ res.createtime+'</td> ';
+                    html+=' <td data="'+res.id+'"> <a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="javascript:" onclick="return del(this)" title="删除"><i class="fa fa-times"></i></a> </td> </tr>';
+                    $("#add_author").append(html);
+                    $('#modal-module-menus').modal('hide');
+                    location.reload();
+                }else{
+                    alert("他已经是会员了！");
+                }
+            }
+        });
+    }
+    function del(obj){
+        var conf=confirm("确定删除吗？");
+        var id=$(obj).parents('td').attr('data');
+        $.post(location.href,{del:true,id:id},function(result){
+            location.reload();
+        });
+    }
+
+</script>
+{else if $op=="config"}
+<div class="main">
+	<div class="alert alert-info" style="color:red;">
+		若要设置永久会员，有效期必须设置为-1。
+	</div>
+    <div class="panel panel-default">
+
+        <form method="post" class="form-horizontal" id="formfans">
+            <input type="hidden" name="op" value="del" />
+            <div style="position:relative">
+                <div class="panel-body table-responsive">
+                    <table class="table table-hover" style="position:relative">
+                        <thead class="navbar-inner">
+                        <tr>
+                            <th>标题</th>
+                            <th>有效期（天）</th>
+                            <th>金额</th>
+                            <th>公众号采集</th>
+                           <!-- <th>发表软文</th>-->
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {loop $configlist $item}
+                        <tr>
+                            <td>{$item['title']}</td>
+                            <td>{$item['day']}</td>
+                            <td>{$item['money']}</td>
+                            <td>{if $item['cancai']==1}可采集{else}禁止采集{/if}</td>
+                            <!--<td>{if $item['canpublish']==1}可发表{else}禁止发表{/if}</td>-->
+                            <td>{if $item['status']==1}显示{else}隐藏{/if}</td>
+                            <td>
+                                <a href="{php echo $this->createWebUrl('member', array('op' => 'editconfig', 'id' => $item['id']))}" data-toggle="tooltip" data-placement="top"  class="btn btn-default btn-sm manage"><i class="fa fa-edit"></i>修改</a>
+								<a class="btn btn-default" data-toggle="tooltip" data-placement="top" href="{php echo $this->createWebUrl('member', array('op' => 'deleteconfig', 'id' => $item['id']))}" title="删除"><i class="fa fa-times"></i></a>
+							</td>
+                        </tr>
+                        {/loop}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{else if $op=="editconfig"}
+<div class="main">
+    <form action="" method="post" class="form-horizontal form"	enctype="multipart/form-data">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">标题</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="title" class="form-control" value="{$config['title']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">有效期（天）</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="day" class="form-control" value="{$config['day']}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">金额</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="money" class="form-control" value="{$config['money']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">公众号采集权限</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='cancai' value='1' {if $config['cancai']==1 }checked{/if} /> 可采集
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='cancai' value='0' {if $config['cancai']==0 || $config['cancai']==""}checked{/if} /> 禁止采集
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group" style="display:none">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">发表软文权限</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='canpublish' value='1' {if $config['canpublish']==1 }checked{/if} /> 可发表
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='canpublish' value='0' {if $config['canpublish']==0 || $config['canpublish']==""}checked{/if} /> 禁止发表
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='status' value='1' {if $config['status']==1 || $config['status']==""}checked{/if} /> 是
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='status' value='2' {if $config['status']==2}checked{/if} /> 否
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-12">
+            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+            <input type="hidden" name="token" value="{$_W['token']}" />
+        </div>
+    </form>
+</div>
+{/if}

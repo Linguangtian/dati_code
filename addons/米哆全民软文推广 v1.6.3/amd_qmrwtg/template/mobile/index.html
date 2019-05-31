@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<title>{$title}  {$cfg['projecttitle']}</title>
+<link rel="stylesheet" type="text/css" href="{RES}css/swiper-3.4.1.min.css">
+<script src="{RES}js/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{RES}qrcode/qrcode.css" />
+<script src="{RES}js/swiper-3.4.1.jquery.min.js"></script>
+<link rel="stylesheet" href="{RES}css/index2.css">
+<link rel="stylesheet" href="{RES}css/style_index.css" />
+<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+<link rel="stylesheet" href="{RES}new_style/css/style.css" />
+<link rel="stylesheet" href="{RES}new_style/css/swiper.min.css" />
+<link rel="stylesheet" href="{RES}new_style/new_font/iconfont.css?t=20190323" />
+<link rel="stylesheet" href="{RES}new_style/css/index0103.css?t=20190103" />
+{php echo register_jssdk(false);}
+</head>
+<body onbeforeunload="visit_log()">
+<?php 
+	if(($advid==0||$advid==$curadver['id'])&&empty($curadver['mobile'])){
+?>
+<div class="finger-guide" id="finger-guide" >
+  <form action="" method="post" name="myform">
+  <div class="awindow">
+    <p style="text-align:left; padding:0 40px">亲！完善资料，让文章自动带上您的联系方式，让客户主动找到你！</p>
+    <hr />
+    <p>
+      <input type="text" name="realname"  id="realname" value="<?php echo $_W['fans']['nickname']; ?>" placeholder="请输入您的名称" />
+    </p>
+    <p>
+      <input type="text" name="mobile" id="mobile" value="" placeholder="电话" />
+    </p>
+    <p style=" margin:20px 0 30px 0"><a href="###" onclick="add();" class="submit">开始体验</a></p>
+    <p><a href="###" onclick="closew();" class="submit" style="background:#333">关闭</a></p>
+  </div>
+  </form>
+</div>
+<?php } ?>
+
+<?php if($isself==0){ ?>
+<div class="finger-guide" id="finger-guide2" >
+  <div class="awindow">
+    <p style="text-align:center; font-size:20px; padding:0 30px">温馨提示！</p>
+    <hr />
+    <p style="margin:10px auto; margin-bottom:30px; text-align:left">亲，您刚才分享的微站尚未带上您的名片信息，下次分享前记得点击"我要注册"按钮</p>
+    <p><a href="###" onclick="closew2();" class="submit" style="background:#333">好的</a></p>
+  </div>
+</div>
+<?php } ?>
+
+<div class="app-index last">
+    <!--轮播图 start--> 
+    {if $adv}
+    <div class="swiper-container"> 
+      <!--轮播图片-->
+      <div class="swiper-wrapper"> {loop $adv $banner}
+        <div class="swiper-slide banner-img banner" style="background-image: url({php echo tomedia($banner['adv_img'])})"><a href="{$banner['adv_href']}"></a></div>
+        {/loop} </div>
+      <!-- 分页器-->
+      <div class="swiper-pagination"></div>
+    </div>
+    {/if}
+    <div class="adver_info">
+      <div class="l">{$curadver['realname']}
+        <?php if(!empty($curadver['companyname'])){ echo '【'.$curadver['companyname'].'】'; } ?>
+      </div>
+      <div class="r"><a href="tel:{$curadver['mobile']}">{$curadver['mobile']}</a> </div>
+    </div>
+	<?php 
+    if($advid==0){
+    	if($curadver['end_time']<time()){ ?>
+	<div class="guoqi"> <a href="{php echo $this->createmobileurl('myintro')}">亲，您的会员功能已到期，点击升级！</a> </div>
+	<?php 
+    	}else
+    	{
+    		if($curadver['end_time']<(time()-7*24*3600))
+        	{?>
+	<div class="guoqi"> <a href="{php echo $this->createmobileurl('myintro')}">亲，你的会员功能将于2天后到期,过期后将无法显示名片功能，点击续期</a> </div>
+	<?php 
+    		}
+    	}
+    
+    } ?>
+
+	<!--轮播图 end--> 
+
+    <!--导航菜单-->
+    <div class="cate-list">
+      <ul >
+        {loop $category $row}
+        <li data-id="{$row['id']}" class=" {if $cid==$row['id']}active{/if}" ><a href="<?php echo $this->createMobileUrl('catelist',array('pcate'=>$row['id'],'advid'=>$advid));?>"><span>{$row['name']}</span></a></li>
+        {/loop}
+      </ul>
+    </div>
+    
+	<form action="javascript:return false;">
+        <div class="search flex bb" style=" margin:10px 0;margin-left:5%">
+          <div class="search-input sub f16">
+            <input type="search" id="keyword" value="" autofocus="autofocus" placeholder="请输入关键词进行搜索" />
+          </div>
+          <div class="search-icon tc write"  style="margin-right:-2px" onclick="keysearch()"><i class="iconfont icon-sousuo" style="font-size: 26px;color:#d33d3e;line-height: 43px;"></i></div>
+        </div>
+	</form>
+    
+	<?php 
+    if($advid==0){
+    ?>
+	<div class="fenge"> <span class="line"></span> <span class="txt">以下的文章都已带上您的名片</span> <span class="line"></span> </div>
+	<?php } ?>
+    
+	<div class="article bgwrite"> 
+        {loop $article $new} 
+        <a href="{php echo $this->createmobileurl('detail',array('id'=>$new['id'],'advid'=>$curadver['id']))}" class="article-list flex bb">
+        <div class="left-img mr10" style="background-image: url({$new['thumb']});background-size: cover"></div>
+        <div class="article-right sub">
+            <h4 class="title lineText2"><?php if($new['author_id']>0){ ?><span class="oflag">原</span><?php } ?>{$new['title']}</h4>
+            <div class="flex mt10 bottom-right"> 
+                {if $new['pay_money']>0}
+                 <div class="red sub f18">￥{$new['pay_money']}</div>
+                {/if}
+                <div class="grey f12" > 
+                    <span>{$new['createtime']}</span> 
+                    <span class="iconfont icon-yanjing ml5" style="font-size:100%;"><i> {$new['clickNum']}</i></span> 
+                    <span class="iconfont icon-dianzan ml5" style="font-size:100%;"><i> {$new['zanNum']}</i></span> <br />
+                    <?php if(!empty($new['brandstitle'])){ ?>
+                    <span class="brandt">{$new['brandstitle']}</span>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+        </a> 
+        {/loop} 
+    </div>
+    <input type="hidden" id="page" value="1">
+    <input type="hidden" id="cid" value="{$pcid}">
+    <input type="hidden" id="pid" value="{$cid}">
+    <!--加载中-->
+    <div class="loding grey tc mt10 f14" style="display: none;"> <span class="iconfont icon-loading"></span> <span>玩命加载中</span> </div>
+    <!--没有更多了-->
+    <div class="nothing grey tc mt10 f14" style="display: none;"> <span>没有更多了</span> </div>
+</div>
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        loop:true,
+        autoplay : 3000,
+        speed:400,
+        autoplayDisableOnInteraction : false,
+        pagination: '.swiper-pagination', //分页器
+        paginationClickable :true,// 分页器可点击
+    });
+</script> 
+<!--底部菜单 start--> 
+
+{template footer} 
+<!--底部菜单 start--> 
+<script type="text/javascript">
+
+ $(function() {
+		<?php if($isself&&empty($curadver['mobile'])){ 
+	if(($curadver['end_time']==-1) || ($curadver['end_time']>time())){
+	?>
+	$('#finger-guide').show();
+	<?php }} ?>
+        wx.ready(function () {
+            shareMeta = {
+               imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+					<?php if($isself==0){ ?>
+					$('#finger-guide2').css('display','block');
+					<?php } ?>
+					$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+    var tab_url="{php echo $this->createmobileurl('char')}";
+    var loadture=true;
+    $(".cap-list ul li").eq(0).click(function(){
+        $(".submenu").hide();
+        $(this).addClass("active").siblings().removeClass("active");
+        location.reload();
+    });
+    $('.banner').click(function(){
+    	hr = $(this).find('a').attr('href');
+		location.href = hr;
+    })
+    function tablist(obj){
+        var id=$(obj).data('id');
+        $("#pid").val(id);
+        $(obj).addClass("active").siblings().removeClass("active");
+        $.post(tab_url,{id:id},function(result){
+            if(result.success==1){
+                $(".submenu").empty();
+                var html='';
+                for(var i= 0;i<result.list.length;i++){
+                    html+='<li class="subnav" data="'+result.list[i].id+'" onclick="art(this)">'+result.list[i].name+'</li>';
+                }
+                $(".submenu").append(html);
+                $(".cap-sublist").animate({scrollLeft:0},0);
+                $(".submenu").show();
+                var arts = result.art;
+                var htmls = '';
+
+                //console.log(arts);
+                for(var i=0;i<arts.length;i++){
+                    htmls+='<a href="'+returnurl(arts[i].id)+'" class="article-list flex bb">';
+                    htmls+='<div class="left-img mr10" style="background-image: url('+arts[i].thumb+');background-size: cover"></div>';
+                    htmls+='<div class="article-right sub"> <h4 class="title lineText2">';
+					if(arts[i].author_id>0)
+					{
+						htmls+='<span class="oflag">原</span>';
+					}
+					htmls+=arts[i].title+'</h4>';
+                    htmls+='<div class="flex mt10 bottom-right">';
+                    if(arts[i].pay_money>0){
+                        htmls+='<div class="red sub f18">￥'+arts[i].pay_money+'</div>';
+                    }
+					if(arts[i].brandstitle!='')
+					{
+                    htmls+='<div class="grey f12"> <span>'+arts[i].createtime+'</span> <span class="iconfont icon-yanjing ml5" style="font-size:100%;"><i> '+arts[i].clickNum+'</i></span> <span class="iconfont icon-dianzan ml5" style="font-size:100%;"><i> '+arts[i].zanNum+'</i></span><br/><span class="brandt">'+arts[i].brandstitle+'</span> </div>';
+					}else
+					{
+						htmls+='<div class="grey f12"> <span>'+arts[i].createtime+'</span> <span class="iconfont icon-yanjing ml5" style="font-size:100%;"><i> '+arts[i].clickNum+'</i></span> <span class="iconfont icon-dianzan ml5" style="font-size:100%;"><i> '+arts[i].zanNum+'</i></span>= </div>';
+					}
+                    htmls+='</div> </div> </div> </a>';
+                    $('.loding').hide();
+                    $(".article").empty();
+                    $(".article").append(htmls);
+                    $("#page").val(result.page);
+                    loadture=true;
+                }
+              // console.log(htmls)
+            }else{
+                loadture=false;
+                $(".article").empty();
+                $('.loding').hide();
+                $(".nothing > span").text("此分类下暂时没有软文");
+                $(".nothing").show();
+
+            }
+        })
+    }
+    function art(obj){
+        var id=$(obj).attr("data");
+        $(obj).addClass("active").siblings().removeClass("active");
+        var data={};
+        $("#page").val(1);
+        $("#cid").val(id);
+        data.page=$("#page").val();
+        data.cid=id;
+        data.pid=$("#pid").val();
+        data.op='cata';
+        loadture=true;
+        $('.loding').hide();
+        $(".nothing").hide();
+        if(loadture){
+            loadture=false;
+            $(".article").empty();
+            article(data);
+        }
+
+    }
+    function returnurl(aid){
+        return "{php echo $this->createmobileurl('detail')}"+"&id="+aid+"&advid={$curadver['id']}";
+    }
+
+    function article(data){
+        $.post(location.href,data,function(result){
+            if(result.success==1){
+                var html='';
+                for(var i= 0;i<result.list.length;i++){
+                    html+='<a href="'+returnurl(result.list[i].id)+'" class="article-list flex bb">';
+                    html+='<div class="left-img mr10" style="background-image: url('+result.list[i].thumb+');background-size: cover"></div>';
+                    
+					html+='<div class="article-right sub"> <h4 class="title lineText2">';
+					if(result.list[i].author_id>0)
+					{
+						htmls+='<span class="oflag">原</span>';
+					}
+					html+=result.list[i].title+'</h4>';
+					
+                    html+='<div class="flex mt10 bottom-right">';
+                    if(result.list[i].pay_money>0){
+                        html+='<div class="red sub f18">￥'+result.list[i].pay_money+'</div>';
+                    }
+                    html+='<div class="grey f12"> <span>'+result.list[i].createtime+'</span> <span class="iconfont icon-yanjing ml5" style="font-size:100%;"><i> '+result.list[i].clickNum+'</i></span> <span class="iconfont icon-dianzan ml5" style="font-size:100%;"><i> '+result.list[i].zanNum+'</i></span> </div>';
+                    html+='</div> </div> </div> </a>';
+                }
+                $('.loding').hide();
+                $(".article").append(html);
+                $("#page").val(data.page);
+                loadture=true;
+
+            }else{
+                loadture=false;
+                $('.loding').hide();
+                $(".nothing").show();
+            }
+        })
+    }
+
+    $(window).scroll(function(){
+        var sh = document.body.scrollHeight;
+        var st = document.body.scrollTop;
+        var wh = window.innerHeight;
+        if (st +wh==sh) {
+            if(loadture){
+                loadture=false;
+                var data={};
+                data.page=$("#page").val();
+                data.page++;
+                data.cid=$("#cid").val();
+				data.keyword=$("#keyword").val();
+				data.sear=true;
+                $('.loding').show();
+                article(data);
+            }
+        }
+    });
+    $(".cap .cap-search").click(function () {
+        $(".submenu").hide();
+        $(".cap .search").animate({left:0},500)
+    })
+    // 关闭搜索
+    $(".cap .close").click(function () {
+		$("#keyword").val('');
+		//tablist($('.cap-list ul li').eq(1));
+        $(".cap .search").animate({left:750},500);
+    })
+    function keysearch(){
+        var data={};
+        data.keyword=$("#keyword").val();
+        data.sear=true;
+        $("#page").val(1);
+        data.page=$("#page").val();
+        loadture=true;
+        if(loadture){
+            $(".article").empty();
+            article(data);
+        }
+		$("#keyword").val("");
+		$(".cap .search").animate({left:750},500);
+    }
+	function add()
+	{
+		var data={};
+		data.realname=$("#realname").val();
+		data.mobile=$("#mobile").val();
+		data.flag='add';
+		$.post("{php echo $this->createmobileurl('adduserinfo')}",data,function(result){
+            if(result.success==1){
+                location.reload();
+            }else
+			{
+				alert(result.content);
+			}
+        })
+	}
+	function closew()
+	{ 
+		$('#finger-guide').hide();
+	}
+	function closew2()
+	{ 
+		$('#finger-guide2').hide();
+	}
+	function showw()
+	{ 
+		$('#finger-guide').show();
+	}
+</script>
+</body>
+</html>
+
+   

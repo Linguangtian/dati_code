@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta charset="UTF-8">
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<title>{$cfg['amd_qmrwtg_myintrotitle']} {$cfg['projecttitle']}</title>
+{php echo register_jssdk(false);}
+<link rel="stylesheet" href="{RES}css/style_index.css" />
+<link rel="stylesheet" href="{RES}new_style/new_font/iconfont.css?t=20190323" />
+<script src="{RES}js/jquery.min.js"></script>
+ 
+<script type="text/javascript">
+$("#play").bind("click", function() {
+		var Media = document.getElementById('music_audio');
+		if($(this).attr("data") == "open") {
+			$(this).attr('data', 'close');
+			Media.play(); //播放
+			$(".icon_audio_default").addClass("active");
+		} else {
+			$(this).attr('data', 'open');
+			Media.pause(); //暂停
+			$(".icon_audio_default").removeClass("active");
+		}
+
+	});
+	var mini_pay = false; 
+			 var pay_type='uni'; 
+        var send_url = "{php echo $this->createmobileurl('pay_sendnotice')}";
+			$(function(){
+				$('.infoIn i').click(function(){
+					$('.infoIn p,.infoIn span,.infoIn i.pabbr').addClass('active');
+				})
+				$('.infoIn span').click(function(){
+					$('.infoIn p,.infoIn i.pabbr,.infoIn span').removeClass('active');
+
+				})
+				$('.review .title p').click(function(){
+					$('.Elastic,.ElasticMin').addClass('active');
+				})
+                 $('#recmember').click(function(){
+					 {if $user['end_time']!=-1}
+                        $('.Elastic').show();
+					 {else}
+					 	alert('您已经为永久会员！');
+					 {/if}	
+                })
+                $('#close').click(function(){
+                    $('.Elastic').hide();
+                })
+				$('.ElasticMin .close').click(function(){
+					$('.Elastic').removeClass('active');
+				})
+				 $("input[name='name1']").click(function(){
+                    $("#number").text(parseInt($("#number").text()));
+					$money=parseFloat($("input[name='name1']:checked").attr("attr-money"));
+					$day=parseFloat($("input[name='name1']:checked").attr("attr-day"));
+					
+					$(".money").html(($money*parseInt($("#number").text())).toFixed(2));
+					$(".day").html($day*parseInt($("#number").text()));
+                })
+			})
+
+    function cut(){
+		if(parseInt($("#number").text())==1){
+			return;
+		}else{
+			$("#number").text(parseInt($("#number").text())-1);
+			$money=parseFloat($("input[name='name1']:checked").attr("attr-money"));
+			$day=parseFloat($("input[name='name1']:checked").attr("attr-day"));
+			
+			$(".money").html(($money*parseInt($("#number").text())).toFixed(2));
+			$(".day").html($day*parseInt($("#number").text()));
+		}
+    }
+    function add(){
+		$("#number").text(parseInt($("#number").text())+1);
+        $money=parseFloat($("input[name='name1']:checked").attr("attr-money"));
+		$day=parseFloat($("input[name='name1']:checked").attr("attr-day"));
+		
+		$(".money").html(($money*parseInt($("#number").text())).toFixed(2));
+		$(".day").html($day*parseInt($("#number").text()));
+    }
+    function pay(){
+        //var money=$(".money").text();
+        var day=$(".day").text();
+		var id=$("input[name='name1']:checked").attr("attr-id");
+		var num=$("#number").text();
+        //var mode=$("input[name='name1']:checked").val();
+		
+        $.ajax({
+            type:"post",
+            data:{"id":id,"num":num,'pay_type':pay_type},
+            url:"{php echo $this->createmobileurl('center',array('op'=>'post'))}",
+			
+            datatype:"json",
+            success:function(data){
+
+				jsApiParameters = JSON.parse(data.jsApiParameters);
+				jsApiParameters.money = data.money;
+				jsApiParameters.out_trade_no = data.out_trade_no;
+				jsApiParameters.type = 'vip';
+				callpay(jsApiParameters);
+				
+				
+            }
+        });
+    }
+
+    $(".radio").change(function(){
+		$(".money").html(parseFloat($(this).attr("attr-money"))*parseInt($("#number").text()));
+		$(".day").html(parseInt($(this).attr("attr-day"))*parseInt($("#number").text()));
+    });
+	    wx.ready(function() {
+			shareMeta = {
+				imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+				success: function() {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+				},
+				cancel: function() {
+					// alert("分享失败，可能是网络问题，一会儿再试试？");
+				}
+			};
+			wx.onMenuShareTimeline(shareMeta);
+			wx.onMenuShareAppMessage(shareMeta);
+			wx.onMenuShareWeibo(shareMeta);
+			wx.onMenuShareQQ(shareMeta);
+			wx.onMenuShareQZone(shareMeta);
+			{if !empty($cfg['bg_music'])}
+			document.getElementById('music_audio').play();
+			{/if}
+		});
+    function jsApiCall(pay)
+    {
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                pay,
+                function(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    if(res.err_msg == "get_brand_wcpay_request:ok") {
+                        $.post(send_url, {'type': pay.type,'id': pay.id,'title': pay.title,'money': pay.money,'out_trade_no': pay.out_trade_no}, function(res){
+                           // location.reload();
+                        })   
+						
+						alert("支付成功，请完善您的个人信息!");
+						$('.Elastic').hide();
+                		$('.Elastic').css('display','none');
+						location.href="{php echo $this->createmobileurl('edit')}";
+						
+                    } else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+						/*location.reload(true);*/
+                        alert("已取消付费!");
+                    }else{
+						$('.Elastic').hide();
+                		$('.Elastic').css('display','none');
+                        alert(res.err_code+res.err_desc+res.err_msg);
+                    }
+                }
+        );
+    }
+
+    function callpay(pay)
+    {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall(pay);
+        }
+    }
+	function addu()
+	{
+		var data={};
+		data.realname=$("#realname").val();
+		data.mobile=$("#mobile").val();
+		data.flag='add';
+		$.post("{php echo $this->createmobileurl('adduserinfo')}",data,function(result){
+            if(result.success==1){
+                location.href="{php echo $this->createmobileurl('myintro')}";
+            }else
+			{
+				alert(result.content);
+			}
+        })
+	}
+	function closew()
+	{ 
+		$('#finger-guide').hide();
+	}
+
+</script>
+<style type="text/css">
+.Elastic_min .icon {
+	width:24px;
+	height: 24px;
+	line-height: 24px;
+	font-size: 16px;
+}
+.Radio_list input[type=radio]:after {
+	display: none;
+}
+.Elastic_min .Radio_list .radio, input[type=radio], input[type=checkbox] {
+	width:24px;
+	height: 24px;
+	top:0;
+	background-size: 24px;
+}
+.Elastic_min .btn span i {
+	font-size: 30px;
+	color:#888;
+	vertical-align: -5px;
+}
+.foot {
+	box-shadow: inherit;
+}
+.Elastic_min .Radio_list .wz {
+	top:-8px;
+}
+#recmember {
+	width:40%;
+	height:50px;
+	line-height:50px;
+	font-size:24px;
+	text-align:center;
+	margin: 10px auto;
+	background:#d33d3e;
+	color:#fff;
+}
+#scolltxt {
+	height:30px;
+	line-height:30px;
+}
+#scolltxt p {
+	text-align:center;
+	color:#f00
+}
+.introduce {
+	padding:0
+}
+.introduce_Min {
+	margin-top:0
+}
+</style>
+</head>
+<body style="background: #fff;">
+{if !empty($cfg['bg_music'])}
+<audio style="height:30px;width:30px;z-index:99; position:fixed " controls="controls" autoplay="autoplay" src="{php echo tomedia($cfg['bg_music'])}" id="music_audio"></audio>
+{/if}
+<div id="scolltxt" style="position:fixed; width:100%;height:30px; background:#fff;">
+  <marquee behavior="scroll" direction="up" scrolldelay="1" scrollamount="2" style="height:30px;">
+  <?php foreach($paylist as $key){ ?>
+  <p>恭喜 {$key['realname']} 老师成功升级为[
+    <?php if(!empty($cfg['projecttitle'])){ echo $cfg['projecttitle'];}else{ echo $_W['uniaccount']['name']; } ?>
+    ]会员</p>
+  <?php } ?>
+  </marquee>
+</div>
+<div id="box">
+  
+  <div class="introduce" style="z-index:0"> 
+    <!-- <h2>成为会员须知</h2>-->
+    <div class="introduce_Min"> {$intro} </div>
+  </div>
+  
+</div>
+<div style=" position:fixed;bottom:15px;width: 56%;margin: 0 auto;text-align: center;margin-left: 22%; border-radius:10px; z-index:99999" id="recmember" href="javascript:;">{if $user['info_status']==2 }{if $user['end_time']!=-1}续费{/if}{else}<img src="/addons/amd_qmrwtg/public/img/btnpay.gif" style="width:100%" />{/if}</span></div>
+
+<div class="Elastic">
+    <div class="Elastic_min"> <i class="icon iconfont icon-guanbi" id="close"></i>
+      <p>您需要支付<i class="money">{$configlist[0]["money"]}</i>元</p>
+      <i class="day" style="display:none;">{$configlist[0]["day"]}</i>
+      <div class="Radio_list gridXb"> {loop $configlist $i $config}
+        <label>
+          <input class="radio radio2" type="radio" value="" attr-id="{$config["id"]}" attr-day="{$config["day"]}" attr-money="{$config["money"]}" name="name1" {if $i==0}checked{/if}/>
+          <span class="wz">{$config["title"]}</span> </label>
+        {/loop} </div>
+      <div class="btn gridXt"> <span class="span1"><i class="iconfont icon-jia" onclick="add()"></i></span> <span class="span2" id="number">1</span> <span class="span3"><i class="iconfont icon-jian" onclick="cut()"></i></span> </div>
+      <div class="tijiao"> <a href="###" onclick="pay()">提交</a> </div>
+    </div>
+  </div>
+</body>
+</html>

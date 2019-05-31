@@ -1,0 +1,57 @@
+{template 'common/header'}
+
+<div class="main">
+
+
+    <div class="panel-heading">
+        <div class="row-fluid">
+            <div class="span8 control-group">
+              当前查询的用户:<img src="<?php echo tomedia($curuser['avatar']);?>" width="80px;" />{$curuser['nickname']}({$curuser['realname']})  {$curuser['mobile']}
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row-fluid">
+                <div class="span8 control-group">
+                    共计 {$total} 条数据
+                </div>
+            </div>
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th>id</th>
+                    <th>时间</th>
+                    <th>单号</th>
+                    <th>金额</th>
+                    <th>备注</th>
+                    
+                </tr>
+                </thead>
+                <tbody id="add_author">
+                {loop $records $row}
+                <tr>
+                    <td>{$row['id']}</td>
+                    <td>{php echo date('Y/m/d H:i:s', $row['addtime'])}</td>
+                    <td>{$row['money']}</td>
+                    
+
+                    <td data="{$row['id']}">
+                        <td>{$row['remark']}</td>
+                    </td>
+                   
+                </tr>
+                
+                {/loop}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {$pager}
+</div>
+
+ 
+{template 'common/footer'}

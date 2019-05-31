@@ -1,0 +1,2 @@
+<?php
+ defined("\111\x4e\x5f\x49\x41") or exit("\101\x63\x63\145\x73\x73\40\x44\x65\156\151\x65\x64"); class amd_qmrwtgModuleReceiver extends WeModuleReceiver { public function receive() { global $_W, $_GPC; } }

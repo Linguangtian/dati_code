@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html data-embedded="">
+<head>
+<meta charset="utf-8">
+<title>报名申请个人资料登记表</title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="description" content="" '为报名申请个人资料登记表提交数据。'>
+<meta property="og:title" content='报名申请个人资料登记表'>
+<meta property="og:description" content='为报名申请个人资料登记表提交数据。'>
+<link rel="stylesheet" href="{RES}/shuju/css.css"/>
+<script src="{RES}shuju/js.js"></script>
+<script src="{RES}js/jquery.min.js"></script>
+<script src="{RES}shuju/jquery-form.js"></script>
+<script>
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/750;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
+</head>
+<body class="entry-container published_forms-show-page">
+<div class="entry-container-inner">
+	<style type="text/css">
+  .entry-container {
+    background-color: #000000;
+background-image: url({RES}shuju/1920.jpg);
+background-position: top center;
+background-attachment: fixed;
+background-size: cover;
+background-repeat: no-repeat;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1440px) {
+    .entry-container {
+      background-color: #000000;
+background-image: url({RES}shuju/1920.jpg);
+background-position: top center;
+background-attachment: fixed;
+background-size: cover;
+background-repeat: no-repeat;
+    }
+  }
+  @media screen and (min-width: 481px) and (max-width: 768px) {
+    .entry-container {
+      background-color: #000000;
+background-image: url({RES}shuju/768.jpg);
+background-position: top center;
+background-attachment: fixed;
+background-size: cover;
+background-repeat: no-repeat;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    .entry-container {
+      background-color: #000000;
+background-image: url({RES}shuju/480.jpg);
+background-position: top center;
+background-attachment: fixed;
+background-size: cover;
+background-repeat: no-repeat;
+    }
+  }
+	</style>
+	<div id="calendar" class="calendar">
+	</div>
+	<style type="text/css">
+  .entry-container > .entry-container-inner .center {
+  max-width: 700px;
+  }
+  .entry-container > .entry-container-inner > form {
+  background-color: rgba(255, 255, 255, 0.95);
+max-width: 700px;
+border-width: 0;
+border-color: rgb(230, 182, 62);
+  }
+  .entry-container > .entry-container-inner > form > .banner {
+  background-color: rgb(71, 204, 152);
+font-size: 1.333em;
+font-weight: normal;
+color: rgb(255, 255, 255);
+text-align: left;
+  }
+  .entry-container > .entry-container-inner > form > .form-header .form-title {
+  font-size: 1.667em;
+font-weight: normal;
+color: rgb(0, 0, 0);
+text-align: left;
+  }
+  .entry-container > .entry-container-inner > form .fields .field {
+  padding-top: 15px;
+padding-bottom: 15px;
+  }
+  .entry-container > .entry-container-inner > form .fields .field .field-label {
+  font-size: 1.167em;
+font-weight: bold;
+color: rgb(0, 0, 0);
+  }
+  .entry-container > .entry-container-inner > form .fields .field .choices label,
+  .entry-container > .entry-container-inner > form .fields .field .likert thead th,
+  .entry-container > .entry-container-inner > form .fields .field .matrix thead th,
+  .entry-container > .entry-container-inner > form .fields .field .goods-items .name {
+  font-size: 1.000em;
+font-weight: normal;
+color: rgb(0, 0, 0);
+  }
+  .entry-container > .entry-container-inner > form .submit-field {
+  text-align: left;
+  }
+  form .submit-field .gd-btn {
+  background-color: rgb(71, 204, 152);
+padding: 0 55px;
+font-size: 1.167em;
+font-weight: normal;
+color: #FFF;
+border-width: 1px;
+border-color: transparent;
+  }
+	</style>
+	<form class="center with-shadow indent-on-large-phone" id="new_entry" action="{$url}" method="post">
+		<input type="hidden" name="type" value="add"/>
+		
+		<div class="banner font-family-heiti">
+			<div class="banner-text">
+			</div>
+		</div>
+		<div class="form-header container-fluid">
+			<div class="row">
+				<h1 class="form-title col-md-12 font-family-heiti">
+        报名申请个人资料登记表
+				</h1>
+				<div class="form-description col-md-12">
+				</div>
+			</div>
+		</div>
+		<div class="form-content container-fluid">
+			<div class="row">
+				<div class="fields clearfix">
+				{if !empty($admin)}
+					<input type="hidden" name="id" value="{$id}"/>
+					<div class="field field-text-field col-sm-12 required" data-label="姓名：">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            进度：
+								<span></span>
+								</label>
+							</div>
+							<div class="field-content">
+								<label><input name="fruit" type="radio" value="1" {if $detail['status']==1}checked="checked"{/if}/>申请中</label> 
+								<label><input name="fruit" type="radio" value="2" {if $detail['status']==2}checked="checked"{/if}/>申请未通过</label> 
+								<label><input name="fruit" type="radio" value="3" {if $detail['status']==3}checked="checked"{/if}/>申请通过</label> 
+							</div>
+						</div>
+					</div>
+				{/if}	
+					<div class="field field-text-field col-sm-12 required" data-label="姓名：">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            姓名：
+								<span>（请填写2-20个字）</span>
+								</label>
+							</div>
+							<div class="field-content">
+								<div class="field-description clearfix">
+									<p>
+										姓名需要展示在推广中心客户详情中
+									</p>
+								</div>
+								<input type="text" value="{$detail['username']}" name="username" id="entry_field_4"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            年龄：
+								<span>（请填写2个字）</span>
+								</label>
+							</div>
+							<div class="field-content">
+								<input type="text" value="{$detail['age']}" name="age" id="entry_field_7"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            电话：
+								</label>
+							</div>
+							<div class="field-content">
+								<input type="text" value="{$detail['phone']}" name="phone" id="entry_field_5"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            现居住地址
+								</label>
+							</div>
+							<div class="field-content">
+								<input type="text" value="{$detail['address']}" name="address" id="entry_field_6"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            有哪些银行信用卡
+								</label>
+							</div>
+							<div class="field-content">
+								<div class="field-description clearfix">
+									<p>
+										没有填写无
+									</p>
+								</div>
+								<input type="text" name="bank" value="{$detail['bank']}" id="entry_field_22"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti" for="entry_field_24">
+            芝麻信用分是多少
+								</label>
+							</div>
+							<div class="field-content">
+								<input type="text" name="alipay" value="{$detail['alipay']}" id="entry_field_24"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            身份证号码
+								</label>
+							</div>
+							<div class="field-content">
+								<input type="text" name="shenfenzheng" value="{$detail['shenfenzheng']}" id="entry_field_19"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-date-field col-sm-12 required" data-api-code="field_18" data-type="DateField" data-label="身份证有效期" data-validations="[&quot;Presence&quot;]">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti" for="entry_field_18">
+            身份证有效期
+								</label>
+							</div>
+							<div class="field-content">
+								<input placeholder="年-月-日" class="input-with-icon" type="date" value="{$detail['endtime']}" name="endtime" id="calendar" class="calendar"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-text-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti">
+            办理过或注册过哪些网贷
+								</label>
+							</div>
+							<div class="field-content">
+								<div class="field-description clearfix">
+									<p>
+										必须认真填写，越详细你的通过率就越高（没有填无）
+									</p>
+								</div>
+								<input type="text" value="{$detail['wangdai']}" name="wangdai" id="entry_field_23"/>
+							</div>
+						</div>
+					</div>
+					<div class="field field-matrix-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti" for="entry_field_21">
+            工作情况
+								</label>
+							</div>
+							<div class="field-content">
+								<div class="field-description clearfix">
+									<p>
+										没有填无就好
+									</p>
+								</div>
+								<div class="matrix">
+									<table class="gd-table gd-table-bordered gd-table-hover">
+									<thead class=" font-family-heiti">
+									<tr>
+										<th>
+										</th>
+										<th>
+											单位名称
+										</th>
+										<th>
+											单位地址
+										</th>
+										<th>
+											单位座机
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											单位信息
+										</td>
+										<td>
+											<input type="text" value="{$detail['ffpc_name']}" name="ffpc_name"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['ffpc_address']}" name="ffpc_address"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['ffpc_phone']}" name="ffpc_phone"/>
+										</td>
+									</tr>
+									</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="field field-matrix-field col-sm-12 required">
+						<div class="form-group">
+							<div class="field-label-container" onclick="">
+								<label class="field-label font-family-heiti" for="entry_field_14">
+            紧急联系人
+								</label>
+							</div>
+							<div class="field-content">
+								<div class="matrix">
+									<table class="gd-table gd-table-bordered gd-table-hover">
+									<thead class=" font-family-heiti">
+									<tr>
+										<th>
+										</th>
+										<th>
+											名字
+										</th>
+										<th>
+											电话
+										</th>
+										<th>
+											关系
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											第一紧急联系人
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact1']['name']}" name="contact1[name]"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact1']['phone']}" name="contact1[phone]"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact1']['guanxi']}" name="contact1[guanxi]"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											第二紧急联系人
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact2']['name']}" name="contact2[name]"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact2']['phone']}" name="contact2[phone]"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact2']['guanxi']}" name="contact2[guanxi]"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											第三紧急联系人
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact3']['name']}" name="contact3[name]"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact3']['phone']}" name="contact3[phone]"/>
+										</td>
+										<td>
+											<input type="text" value="{$detail['contact3']['guanxi']}" name="contact3[guanxi]"/>
+										</td>
+									</tr>
+									</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="field submit-field col-md-12 clearfix">
+						<input type="submit" name="commit" value="提交" class="submit gd-btn gd-btn-primary-solid font-family-inherit with-shadow" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form> 
+</body>
+<script>
+$("#new_entry").ajaxForm(function(data){
+	eval('data='+data);
+	if(data.status==1){
+		alert('资料提交成功');
+	}
+});
+</script>
+</html>

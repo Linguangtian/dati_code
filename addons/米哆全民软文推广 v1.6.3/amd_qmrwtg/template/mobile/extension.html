@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="{RES}css/style_index.css"/>
+		<link rel="stylesheet" href="{RES}extension/font/iconfont.css" />
+		<link rel="stylesheet" href="{RES}extension/css/base.css" />
+		<link rel="stylesheet" href="{RES}extension/css/style.css" />
+		
+		<script src="{RES}js/jquery.min.js"></script>
+	</head>
+	<body>
+		{if $member['agent']==0}
+		<style>
+			#test {
+				width:100%;
+				height:100%;
+				background-color:#000;
+				position:absolute;
+				top:0;
+				left:0;
+				z-index:2;
+				opacity:0.7;
+				/*兼容IE8及以下版本浏览器*/
+				filter: alpha(opacity=30);
+				
+			}
+			.zixun{background: #fff;position: fixed;bottom: 0;width: 100%;z-index:3;}
+			.zixun p{margin: 0;}
+			.zixun .item{padding: 10px 15px;}
+			.zixun .others{padding: 15px;}
+			.zixun .btn{width: 100%;line-height: 46px;color: #fff;background: #ff9800;text-align: center;border-radius: 4px;margin-top: 10px;}
+			input{
+                border: 1px solid #ccc;
+                padding: 7px 0px;
+                border-radius: 3px;
+                padding-left:5px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+                -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+            }
+            input:focus{
+                    border-color: #66afe9;
+                    outline: 0;
+                    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+                    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+            }
+			.menu ul {
+				min-height: 13rem;
+				position: relative;
+			}
+			.menu ul li {
+				width: 100%;
+				-webkit-border-radius: 2px;
+				border-radius: 2px;
+				position: relative;
+				overflow: hidden;
+				display: block;
+				background: #fff;
+				margin-bottom: 10px;
+			}
+			.menu li a {
+				display: block;
+			}
+			
+			
+		</style>
+		<div class="zixun">
+			<div class="others">
+				<div class="item flex grey bb">
+					<div class="sub">
+						<span>姓名</span>
+						<i></i>
+					</div>
+					<p><input type="text" class="name"/></p>
+				</div>
+				<div class="item flex grey">
+					<p class="sub">手机号</p>
+					<p><input type="text" class="phone"/></p>
+				</div>
+				<div class="item flex grey">
+					<p class="sub">所在地址</p>
+					<p><input type="text" class="address"/></p>
+				</div>
+				{if $extension['status']==1}
+					<div class="btn">您已申请过,正在审核中</div>
+				{else if $extension['status']==2}
+					<div class="btn" onclick="zhifu();">申请未通过,再次申请</div>
+				{/if}
+			</div>
+		</div>
+		<div id="test"></div>
+		{/if}
+		<div class="extension-header bb p15">
+			<div class="info-tit flex modle-sd gridXb pb15">
+				<h2 class="big-font">{$member['nickname']}</h2>
+				<a class="small-font blank pl5 pr5" href="#">邀请好友推广</a>
+			</div>
+			<div class="info-list pb15 pt15 flex tc">
+				<a class="sub" href="#">
+					<i>{$count}</i>
+					累计客户
+				</a>
+				<a class="sub" href="#">
+					<i>{$y_count}</i>
+					成功客户
+				</a>
+				<a class="sub" href="#">
+					<i>{$y_count}</i>
+					客户详情
+				</a>
+			</div>
+		</div>
+		
+		<div class="process mt10 p15 bb">
+			<div class="process-list pb15 tc gridXb">
+				<ul class="flex">
+					<li class="sub">
+						<a href="#">
+							<i class="iconfont icon-ccgl-tuihuosunyi-5"></i>
+							<p>我的收益</p>
+						</a>
+					</li>
+					<li class="sub">
+						<a class="sub" href="{php echo $this->createMobileUrl('marketing')}">
+							<i class="iconfont icon-zixun"></i>
+							<p>营销资讯</p>
+						</a>
+					</li>
+					<li class="sub">
+						<a class="sub" href="#">
+							<i class="iconfont icon-shuoming"></i>
+							<p>推广说明</p>
+						</a>
+					</li>
+					<li class="sub">
+						<a class="sub" href="{php echo $this->createMobileUrl('surface')}">
+							<i class="iconfont icon-shenqing"></i>
+							<p>申请表单</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="process-info flex pt15">
+				<p>最热推广：<p>
+				<p class="linght">商用更改佣金比例后实时更新，请注意查看</p>
+				</p>
+			</div>
+			<style>
+			.menu .menuR {
+				max-height: 12rem;
+				overflow: hidden;
+				position: relative;
+			}
+			</style>
+			<div id="box">
+				<div class="menu" id="menu">
+					<ul>
+						{loop $article $new}
+						<li>
+								
+							<a href="{php echo $this->createmobileurl('detail',array('id'=>$new['id']))}">
+								<div class="menuL" style="background-image: url({$_W['attachurl']}{$new['thumb']});"></div>
+								<div class="menuR">
+									<div class="menuR_wz">
+										<h2>{$new['title']}</h2>
+										<span class="date"><i class="iconfont">&#xe606;</i><?php echo date('Y-m-d H:i:s',$new['createtime'])?></span>
+									</div>
+
+								</div>
+							</a>
+						</li>
+						{/loop}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script>
+			function zhifu(){
+				var name = $('.name').val();
+				var phone = $('.phone').val();
+				var address = $('.address').val();
+				if(name.lenght <= 0 || name.phone <= 0|| name.phone <= 0){
+					alert('请填写完整信息');
+				}
+				$.post(location.href,{type:true,name:name,phone:phone,address:address},function(data){
+					eval('data='+data);
+					if(data.success==1){
+						alert('申请成功');
+					}
+					location.href="{php echo $this->createmobileurl('payred_index')}";
+				})
+			}
+		</script>
+		
+	</body>
+</html>

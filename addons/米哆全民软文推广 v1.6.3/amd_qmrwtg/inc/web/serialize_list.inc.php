@@ -1,0 +1,2 @@
+<?php
+ goto kMKPF; w1UmN: $serialize_id = $_GPC["\163\145\162\151\141\154\151\x7a\x65\x5f\x69\144"]; goto CdQj_; T0WOE: $uniacid = $_W["\x75\156\151\x61\x63\x69\x64"]; goto w1UmN; kMKPF: global $_W, $_GPC; goto T0WOE; CdQj_: include $this->template("\163\x65\162\151\141\x6c\151\172\x65\137\x6c\151\163\x74");

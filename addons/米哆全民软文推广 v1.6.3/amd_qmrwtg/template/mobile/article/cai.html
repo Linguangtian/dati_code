@@ -1,0 +1,251 @@
+{template 'header'} 
+<script>
+	function json(r){
+     	return eval('(' + r + ')');
+     }
+
+     function toast(e){
+     	mui.toast('<div class="mui-toast-icon"><span class="fa fa-exclamation-circle"></span></div>' + e);
+     }
+require.config({
+	    paths : {
+	        "layer" : ["/addons/amd_qmrwtg/style/res/app/lib/layer/layer"],  
+	    }
+})
+</script>
+<style>
+
+/*采集*/
+.home_main {
+    margin: 11px 10px 0;
+    background: -webkit-linear-gradient(top, #01AAED, #75daf1);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.home_bd {
+    padding: 18px 10px;
+}
+.home_bd_text {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 4px;
+    margin-bottom: 15px;
+
+    position: relative;
+}
+.home_text {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 4px;
+    font-size: 12px;
+
+    padding: 10px;
+    resize: none;
+    border: none;
+    width: 100%;
+}
+.home_how {
+    background: rgba(1, 102, 191, 0.16) none repeat scroll 0 0;
+    border-radius: 3px;
+    bottom: 5px;
+    color: #0066bf;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 6px;
+    position: absolute;
+    right: 5px;
+    text-align: center;
+}
+
+/**/
+
+.home_guide {
+    border-radius: 5px;
+    background: #dedede;
+    margin: 11px 10px;
+   margin-bottom:100px;
+}
+.home_guide_hd {
+    background: url(/public/img/guide.png) no-repeat 11px center;
+    background-size: 20px;
+
+    padding-left: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    border-bottom: 1px solid #b6c9d8;
+}
+.home_help {
+    float: right;
+    margin-right: 8px;
+    color: #E54040;
+    font-size: 14px;
+}
+.home_guide_bd p {
+    margin-bottom: 8px;
+}
+.home_guide_bd {
+    padding: 15px 15px 5px;
+    color: #666;
+    line-height: 22px;
+}
+.home_bd button{ display: inline-block;width: 40%; }
+.mui-button-row{ float:left}
+        </style>
+<div class="mui-content" style="background: #f2f2f2">
+  <div class="home_main">
+    <div class="home_bd">
+    	
+      <div class="home_bd_text">
+        <textarea class="home_text" name="url" id="url" placeholder="长按粘贴公众号文章链接在此处...请勿编辑/转发谣言、暴力、色情、辱骂等违规内容"></textarea>
+      </div>
+      
+      <div class="mui-button-row">
+                    <label class="col-xs-12 col-sm-4 col-md-3 col-lg-2 control-label">软文类别</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {php echo tpl_form_field_category_2level('catagroy', $parent, $children, $pcate, $ccate)}
+                    </div>
+        </div>
+        
+ 
+      <div class="mui-button-row" style=" width:100%; margin-bottom:10px;">
+        <button type="button" class="mui-btn  mui-btn-danger" onclick="empty()">清空</button>
+        <button type="button" class="mui-btn mui-btn-primary" id="edit">编辑</button>
+      </div>
+      <p style="color:#f00; margin-top:10px;">  注意:如转载违规内容（如：黄、赌、毒、政治敏感类话题）立即取消会员资格，费用不予退还
+</p>
+    </div>
+  </div>
+  <div class="home_guide">
+    <div class="home_guide_hd">快速使用指南</div>
+    <div class="home_guide_bd">
+      <p>第一步：朋友圈,微信公众账号找到好文章</p>
+      <p>第二步：复制此文章链接</p>
+      <p>第三步：粘贴上方输入框内，点击编辑</p>
+      <p>第四步：保存！然后查看分享吧!</p>
+      <p>第五步： 转换的文章可以去"个人中心"-"我的软文"查看哦！</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+
+
+    function empty(){
+          
+          $('.home_text').val('');
+
+    }
+    var saveing=0;
+    require(['layer',"jquery"],function(layer,$){
+
+
+        $('#edit').click(function(){
+        
+		if(saveing==1)
+		{
+			toast('采集保存中，请稍后');
+             return false;
+		}
+		$('#edit').text('采集保存中');
+		saveing=1;
+        var url= $('.home_text').val();
+        if(url==''){
+
+            toast('文章链接不能为空');
+             return false;
+        }
+		
+
+        if(url.search(/mp\.weixin\.qq\.com/)<0){
+           toast('您粘贴的不是微信公众文章网址!');
+           return false;
+        }
+
+        layer.open({
+            type: 2
+            ,content: '拼命采集中...',
+            shadeClose:false
+          });
+       $.post('',{url:url,pcate:$('#catagroy_parent').val(),ccate:$('#catagroy_child').val()},function(r){
+
+           var r=json(r);
+           if(r.code){
+
+            window.location.href="{php echo $this->createMobileUrl('editcj');}&id="+r.data.id;
+           }else{
+
+            toast(r.msg);
+           }
+       })
+     
+
+    })
+
+    })
+    
+</script> 
+<div style="height: 60px;"></div>
+<link rel="stylesheet" href="{RES}new_style/new_font/iconfont.css?t=20190323" />
+<style>
+.foot{position: fixed;bottom: 0;left: 0;width:100%; background:#fff; border-top:#ccc 1px solid}
+.foot a{color:#666;line-height: 24px;display: block;padding: 6px 0 0 0; font-size:12px}
+.foot a.active{color:rgba(8,186,6,1); background:#fff}
+.foot i{font-size: 25px;}
+[class*=flex] {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;/* width: 100%;*/
+padding:0;
+margin:0
+}
+[class*=flex] .sub {
+-webkit-box-flex: 1;
+-webkit-flex: 1;
+-ms-flex: 1;
+flex: 1;
+overflow: hidden;
+text-align:center
+}
+.disb{ display:block}
+.foot {
+	box-shadow: inherit;
+
+	width:100%;
+	bottom:0;
+}
+.foot a{ color:#333}
+.foot a.active{ color:#d33d3e}
+</style>
+
+
+<div class="foot tc bWhite">
+  <ul class="flex">
+    <li class="sub"> <a {if $_GPC['do']=='index'}class="active"{/if} href="{php echo $this->createmobileurl('new_index')}"> <i class="iconfont icon-zhuye disb"></i> 首页 </a> </li>
+
+    <li class="sub"> <a {if $_GPC['do']=='cai'}class="active"{/if} href="{php echo $this->createmobileurl('cai')}"> <i class="iconfont icon-caiji1 disb"></i> 采集软文 </a> </li>
+ <li class="sub"> <a {if $_GPC['do']=='myactlst'}class="active"{/if} href="{php echo $this->createmobileurl('myactlst')}"> <i class="iconfont icon-liebiao1 disb"></i> 我的文章 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='center'}class="active"{/if} href="{php echo $this->createmobileurl('center')}"> <i class="iconfont icon-geren disb"></i> 个人中心 </a> </li>
+  </ul>
+</div>
+
+<!--底部菜单 start--> 
+<script type="text/javascript">
+
+ window.alert = function(name){
+  var iframe = document.createElement("IFRAME");
+  iframe.style.display="none";
+  iframe.setAttribute("src", 'data:text/plain,');
+  document.documentElement.appendChild(iframe);
+  window.frames[0].window.alert(name);
+  iframe.parentNode.removeChild(iframe);
+ };
+window.confirm = function (message) {
+   var iframe = document.createElement("IFRAME");
+   iframe.style.display = "none";
+   iframe.setAttribute("src", 'data:text/plain,');
+   document.documentElement.appendChild(iframe);
+   var alertFrame = window.frames[0];
+   var result = alertFrame.window.confirm(message);
+   iframe.parentNode.removeChild(iframe);
+   return result;
+ };
+</script>

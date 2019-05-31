@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" device-width="750">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var phoneWidth =  parseInt(window.screen.width);
+        var phoneScale = phoneWidth/750;
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)){
+            var version = parseFloat(RegExp.$1);
+            if(version>2.3){
+                document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+', maximum-scale = '+phoneScale+', target-densitydpi=device-dpi">');
+            }else{
+                document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">');
+        }
+    </script>
+    <title>我的信息</title>
+    <link rel="stylesheet" type="text/css" href="{RES}font/iconfont/iconfont.css">
+    <link rel="stylesheet" href="{RES}css/myinfo.css">
+    <script src="{RES}js/jquery.min.js"></script>
+</head>
+<body>
+<div class="app-info">
+    <div class="top bgcolor write">
+        <div class="user mid tc">
+            <div class="user-img" style="background-image: url({$avatar});background-size: cover"></div>
+            <p>{$nickname}</p>
+        </div>
+    </div>
+    <div class="revise mt15">
+        <div class="list mb15 flex">
+            <p class="sub title br">姓名</p><input id="username" type="text" placeholder="请填写您的姓名" value="{$user['realname']}">
+        </div>
+        <div class="list mb15 flex">
+            <p class="sub title br">手机号</p><input id="userphone" type="tell" placeholder="请填写您的手机号" value="{$user['mobile']}">
+        </div>
+        <div class="list mb15 flex">
+            <p class="sub title br">介绍</p> <textarea id="desc" rows="3" cols="20" placeholder="你的介绍~~">{$user['desc']}</textarea>
+        </div>
+    </div>
+    <div class="btn m20 tc"><button class="bgcolor write f16 save">保存</button></div>
+</div>
+</body>
+<script>
+    $(".save").click(function(){
+        var data={};
+        data.username=$("#username").val();
+        data.userphone=$("#userphone").val();
+        data.desc=$("#desc").val();
+        if(data.username==""){
+            alert("请填写您的姓名");
+            return false;
+        }
+        var pattern = /^1[34578]\d{9}$/;
+        if(!pattern.test(data.userphone)){
+            alert("手机号填写不正确");
+            return false;
+        }
+        data.info=true;
+        $.post(location.href,data,function(result){
+            if(result.success==1){
+                alert(result.data);
+                location.href="{php echo $this->createmobileurl('center')}";
+            }else{
+                location.href=location.href;
+            }
+        });
+    })
+</script>
+<script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>
+</html>

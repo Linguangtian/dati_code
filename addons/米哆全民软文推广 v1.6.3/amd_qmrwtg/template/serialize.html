@@ -1,0 +1,240 @@
+{template 'common/header'}
+
+<ul class="nav nav-tabs">
+	<li {if $_GPC['op'] =='' }class="active"{/if}><a href="{php echo $this->createWebUrl('serialize')}">专栏管理</a></li>
+	<li {if $_GPC['op'] == 'post'}class="active"{/if}><a href="{php echo $this->createWebUrl('serialize', array( 'op' => 'post' ))}">添加专栏</a></li>
+</ul>
+ {if $operation == 'post'}   
+<div class="main">
+	<form action="" method="post" class="form-horizontal form"	enctype="multipart/form-data">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				专栏设置
+			</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red;">*</span>封面</label>
+					<div class="col-sm-9 col-xs-12">
+						{php echo tpl_form_field_image('serialize_img',$serialize['serialize_img'])}
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>标题</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="serialize_title" class="form-control" value="{$serialize['serialize_title']}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>简介</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="serialize_desc" class="form-control" value="{$serialize['serialize_desc']}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>排序</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="displayorder" class="form-control" value="{$serialize['displayorder']}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>虚拟付费人数</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="pay_num" class="form-control" value="{$serialize['pay_num']}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>免费阅读章节</label>
+					<div class="col-sm-9 col-xs-12">
+					<input type="text"  class="form-control" name="free_chapter" value="{if $serialize['free_chapter']}{$serialize['free_chapter']}{else}0{/if}"/>
+					</div>
+				</div>
+				<!-- <div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>是否开启音频</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="radio" name="bg_music_set" class="js_music_open" value="1" {if $serialize['bg_music_set']==1}checked{/if}>是
+						<input type="radio" name="bg_music_set" class="js_music_close" value="2" {if $serialize['bg_music_set']==2}checked{/if}>否
+					</div>
+				</div>
+				<div class="form-group" id="js_music_div" >
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>音频链接</label>
+					<div class="col-sm-9 col-xs-12">
+						 {php echo tpl_form_field_audio('bg_music', $serialize['bg_music']);}
+					</div>
+				</div> -->
+				<input type="hidden" name="id" value="{$serialize['id']}">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>一级分类</label>
+					<div class="col-sm-9 col-xs-12">
+						<select class="form-control tpl-category-parent we7-select" id="catagroy_parent" name="pcate">
+							<option value="0">请选择一级分类</option>
+							{loop $catagroy_parent $val}
+								<option value="{$val['id']}" {if $serialize['pcate']==$val['id']}selected{/if}>{$val['name']}</option>
+							{/loop}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>二级分类</label>
+					<div class="col-sm-9 col-xs-12">
+						<select class="form-control tpl-category-parent we7-select" id="catagroy_child" name="ccate">
+							<option value="0">请选择二级分类</option>
+							{loop $catagroy_child $val}
+								<option value="{$val['id']}" {if $serialize['ccate']==$val['id']}selected{/if}>{$val['name']}</option>
+							{/loop}
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>价格</label>
+					<div class="col-sm-9 col-xs-12">
+						<input type="text" name="serialize_price" class="form-control" value="{$serialize['serialize_price']}" />
+					</div>
+				</div>
+				<div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 control-label">选择作者</label>
+					<input type="hidden" name="openid" id="openid" value="{$serialize['author_openid']}">
+					<input type="hidden" name="nickname" id="nickname" value="{$serialize['author_nickname']}">
+					<input type="hidden" name="avatar" id="avatar" value="{$serialize['author_avatar']}">
+                    <div class="col-sm-8 col-md-8 col-lg-8 col-xs-12">
+                        <input class="form-control" name="author" id="author" type="text" value="{$serialize['author_nickname']}" placeholder="请输入作者昵称(必选)">
+                    </div>
+                    <div class="pull-right col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <a id="search" class="btn btn-default " href="javascript:;" > 搜索</a>
+                    </div>
+                </div>
+               <div class="form-group" id="fen">
+               {if $serialize}
+               	<label class="col-xs-12 col-sm-2 col-md-2 control-label"></label>
+                   <div class="col-sm-8 col-md-8 col-lg-8 col-xs-12"><img src="{$serialize['author_avatar']}" alt="" width="50px" height="50px"><span  style="margin-left:20px ">{$serialize['author_nickname']}</span></div>
+                {/if} 
+               </div>
+
+			</div>
+		</div>
+		<div class="form-group col-sm-12">
+			<input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+			<input type="hidden" name="token" value="{$_W['token']}" />
+		</div>
+	</form>
+</div>
+{else}
+<div class="main">
+	
+		<div class="panel panel-default">
+			
+			<form method="post" class="form-horizontal" id="formfans">
+			<input type="hidden" name="op" value="del" />
+			<div style="position:relative">
+				<div class="panel-body table-responsive">
+					<table class="table table-hover" style="position:relative">
+					<thead class="navbar-inner">
+						<tr>
+							<th style="width:70px;">封面</th>
+									<th>标题</th>					
+									<th>简介</th>
+									<th>价格</th>
+									<th>作者头像</th>
+									<th >作者昵称</th>
+									<th >免费章节</th>
+									<th >创建时间</th>
+									<th >操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						{loop $list $val}
+							<tr>
+								<td><img src="{$val['serialize_img']}" height="40px" width="40px" alt=""></td>
+								<td>{$val['serialize_title']}</td>
+								<td style="width:80px;">{$val['serialize_desc']}</td>
+								<td>{$val['serialize_price']}</td>
+								<td><img src="{$val['author_avatar']}" height="40px" width="40px" alt=""></td>
+								<td>{$val['author_nickname']}</td>
+								<td>{if $val['free_chapter']}{$val['free_chapter']}{else}0{/if}章</td>
+								<td>{php echo date("Y-m-d H:i:s" ,$val['create_time'])}</td>
+								<td style="text-align:left;">
+								<label style="cursor:pointer;" data="{$val['id']}" id="sy" class="label {if $val['recommend']==2}label-info{/if} label-default">推荐</label>
+								<label style="cursor:pointer;" data="{$val['id']}" id="zs" class="label {if $val['status']==2}label-info{/if} label-default">展示</label>
+									<a href="{php echo $this->createWebUrl('serialize_release', array('serialize_id' => $val['id'],'op'=>'post'))}" data-toggle="tooltip" data-placement="top"  class="btn btn-default btn-sm manage">发布章节</a>
+									<a href="{php echo $this->createWebUrl('serialize_release', array('serialize_id' => $val['id']))}" data-toggle="tooltip" data-placement="top"  class="btn btn-default btn-sm manage">章节列表</a>
+									<a href="{php echo $this->createWebUrl('serialize', array('op' => 'post', 'serialize_id' => $val['id']))}" data-toggle="tooltip" data-placement="top"  class="btn btn-default btn-sm manage"><i class="fa fa-edit"></i>修改</a>
+									<a onclick="return confirm('确认要删除吗？删除将不能恢复！');" href="{php echo $this->createWebUrl('serialize', array('type' => 'delete', 'id' => $val['id']))}" data-toggle="tooltip" data-placement="top"  class="btn btn-default btn-sm manage"><i class="fa fa-del"></i>删除</a> 
+								</td>
+							</tr>
+						{/loop}
+						
+					</tbody>
+					</table>
+				</div>
+			</div>
+			</form>
+			
+		</div>
+		{$pager}
+    </div>
+{/if}
+<script>
+
+$('#search').click(function(){
+	var author=$("#author").val();
+	if(author==''){
+		alert("请输入作者昵称");
+		return;
+	}
+	 $.post(location.href,{"type":"search","author":author},function(res){
+	 	 if(res.user!=null){
+                 var html='<label class="col-xs-12 col-sm-2 col-md-2 control-label"></label><div class="col-sm-8 col-md-8 col-lg-8 col-xs-12"><img src="'+res.user.avatar+'" alt="" width="50px" height="50px"><span style="margin-left:20px ">'+res.user.nickname+'</span></div>';
+            $("#openid").val(res.user.openid);
+            $("#nickname").val(res.user.nickname);
+            $("#avatar").val(res.user.avatar);
+            $("#fen").empty();
+            if(res.cus!=1){
+            	 $("#fen").append(html);
+            }
+           
+        }
+	 });
+})
+$(".js_music_close").on("change", function () {
+            $("#js_music_div").toggleClass('hide', $(this).prop("checked"));
+        });
+        $(".js_music_open").on("change", function () {
+            $("#js_music_div").toggleClass('hide', !$(this).prop("checked"));
+        });
+$("#catagroy_parent").click(function(){
+	var pcate = $(this).val();
+	if(pcate==0){
+		return;
+	}
+	$.post(location.href,{"type":"cate","parentid":pcate},function(res){
+		if(res.list!=''){
+			var html="";
+			for(var i=0;i<res.list.length;i++){
+				html+='<option value="'+res.list[i].id+'" >'+res.list[i].name+'</option>';
+			}
+			$("#catagroy_child").empty();
+			$("#catagroy_child").append(html);
+
+		}
+	})
+})
+$("#sy").click(function(){
+	var sy_id=$(this).attr('data');
+	 $.post(location.href,{"type":"sy","sy_id":sy_id},function(res){
+	 	if(res.success==1){
+	 		alert("设置成功");
+	 		location.reload();
+	 	}
+	 })
+})
+$("#zs").click(function(){
+	var zs_id=$(this).attr('data');
+	 $.post(location.href,{"type":"zs","zs_id":zs_id},function(res){
+	 	if(res.success==1){
+	 		alert("设置成功");
+	 		location.reload();
+	 	}
+	 })
+})
+</script>
+{template 'common/footer'}

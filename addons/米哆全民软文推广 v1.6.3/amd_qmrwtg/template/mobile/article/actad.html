@@ -1,0 +1,825 @@
+{template 'header'}
+
+<style>
+.mui-content{ padding-bottom: 50px; }
+#tabs {
+    overflow: hidden;
+    margin-left: -4%;
+    height: 36px;
+     background: #fff;
+
+}
+.tab-link {
+    width: 16%;
+    margin-left: 4%;
+    box-sizing: border-box;
+    float: left;
+    text-align: center;
+    color: #333;
+    font-size: 12px;
+    height: 36px;
+    line-height: 36px;
+}
+#tabs .active {
+    border-bottom: 2px solid #0894ec;
+    color: #0894ec;
+}
+.tabpage{position: absolute; top:10px; left: 0; right: 0; height: 530px; background: #efeff4;z-index: 1}
+.tabpage.active{ z-index: 10 }
+
+
+
+/*广告*/
+.adbox{ margin: 6px; padding: 6px; background: #fff }
+
+
+.img-text{ position:relative; padding-left: 60px; min-height:56px; }
+.img-text .img{ position: absolute;left: 0; top:0; width:56px; height:56px; background: #f2f2f2}
+.img-text .img img{ height: 100%; width: 100%; }
+.i-t-title{ height: 30px; line-height: 30px; font-size: 16px;overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis; }
+.i-t-desc{height: 26px; line-height: 20px; font-size: 14px;overflow: hidden;
+white-space: nowrap;text-overflow: ellipsis;padding-right: 30px; color: #666 }
+#ad input{ font-size: .7rem; }
+.ms { padding:4px 10px; font-size:12px; color: #ff6600 }
+
+.ad-s-con {margin: 6px; padding: 8px; background: #fff; position: relative;}
+.ad-tip{ position: absolute;bottom: 0; right: 1px; font-size: 12px; border:1px solid #4cd964;color:#4cd964; padding: 0 4px; }
+
+.adimg{ height: 56px; width: 100%; overflow: hidden; }
+.adimg img{ width: 100%; height: 56px; }
+.gz .img-text{ padding-right:3rem }
+.gz .img img{ border-radius: 50% }
+.img-text .r-btn{ height: 24px; line-height: 24px; position: absolute;top:50%; margin-top: -12px; right: 0 }
+.img-text .r-btn button{ height: 24px; line-height: 24px; padding: 0 6px; }
+
+.wxewm{ height: 80px!important; padding: 10px;  }
+.wxewm label{ height: 60px; line-height: 60px; padding:0; padding-left: 10px; }
+.ewmbox{ height: 56px; width: 56px; background: #f2f2f2; float: right;margin-right: 15px;}
+.ewmbox img{ width: 56px; height: 56px; }
+
+  .mp-box{ height: 80px; padding-left:60px; position: relative; }
+  .mp-left{ position: absolute; top:0;left: 0; }
+  .mp-face{ width: 56px; height: 56px; margin: 5px 5px 0;  }
+  .mp-face img{ width: 100%; height: 100%; border-radius: 50%;border:1px solid #f2f2f2; }
+  .mp-name{ height: 20px; line-height: 20px; font-size: 14px; color: #666; text-align: center; }
+  .mp-right{ padding: 6px; margin-left: 6px;}
+  .mp-info{ height: 40px; }
+  .company{ font-size: 14px; }
+  .job{ font-size: 12px; color: #999 }
+
+  .ontact{ height:36px; line-height: 36px; margin-top: 4px }
+  .ontact span{ text-align: center; }
+ .ontact span .mui-icon { display: inline-block; width: 32px; height: 32px; background: #ccc; line-height: 32px; border-radius:16px; color: #fff; }
+
+.adewm{ height: 2rem; width: 2rem;}
+.adewm img{ width:2rem; height: 2rem; }
+
+
+.b1 {
+    background-color: #03a9f4!important;
+}
+.b3 {
+    background-color: #ffc107!important;
+}
+.b9 {
+    background-color: #16c2c2!important;
+}
+
+
+/* */
+
+.add-map{ padding: 10px; background: #fff; margin-top: 4px;}
+.add-map .tname{ font-size: 14rem; }
+.add-map .tname .info{ color: #f6383a; font-size: 12rem }
+.main-img{  width: 100%;
+  font-size: 0;
+  text-align: left;  }
+
+.imgbox{
+  position: relative;
+  display: inline-block;
+  width: 25%;
+  height: 0;
+  padding-bottom: 25%;
+  
+}
+.imgbox .con{
+    position: absolute; top:2px; left: 2px; bottom: 2px; right: 2px;overflow: hidden;
+
+    background: url(/static/icon/add.png) no-repeat center;
+
+    background-size: 100%;
+}
+.imgbox .con img{ width: 100%; height: 100% }
+#jialst .guige{ margin: .3rem; position: relative;padding-right: 3rem;}
+.del-card{ position: absolute;right: 0; top:0; bottom: 0; width: 3rem; text-align: center; }
+.del-card .myicon{ height: 2rem; line-height: 2rem; position: absolute;top:50%; margin: -1rem;width: 2rem;font-size: 1.2rem; color: #f6383a}
+
+
+.mui-input-row label{ font-size: 14px; font-weight: 400; color: #666 }
+.wxts {
+    padding: 10px;
+    font-size: 12px;
+    color: #ff6600;
+    background: #fff;
+}
+.sub{ width: 80%; margin-top: 10px;}
+
+.webuploader-pick{ width: 100%; height: 100%; padding: 0; }
+
+
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.4);
+    display: none;
+    z-index: 1001;
+    cursor: pointer;
+}
+.fixedDiv{
+    position: fixed; top: 50%;height: 250px; margin-top: -125px; width: 100%;
+    background: #fff; z-index: 1002; display: none;
+}
+.tinsert_head{ text-align:left; height: 44px; line-height: 44px; padding-left: 10px; border-bottom: 1px solid #ccc;}
+
+
+.tinsert_body {
+    padding:8px;
+    position: relative;
+}
+.text_ct {
+    width:100%;
+    height:140px;
+    font-size:15px;
+ 
+    resize:none;
+    margin:0;
+    padding:0;
+    border:none;
+    user-select:auto;
+   
+}
+.tinsert_foot {
+    background:#e8e8e8;
+    height: 44px;
+    line-height: 44px;
+    border-top: 1px solid #ccc;
+}
+.boxYes {
+    float:right;
+    height:44px;
+    width:50%;
+    font-size:16px;
+    border:0;
+    color:#dd4c3a;
+    cursor:pointer;
+    background:#fff;
+    border-left:1px solid #ddd;
+    font-weight:700;
+    border-radius: 0;
+}
+.boxNo {
+    float:left;
+    height:44px;
+    width:50%;
+    font-size:16px;
+    border:0;
+    color:#aaa;
+    cursor:pointer;
+    background:#fff;
+    font-weight:700;
+   border-radius: 0;
+
+}
+</style>
+<div class="fixedDiv text_title">
+  <div class="tinsert_head">
+    修改内容
+    
+  </div>
+  <div class="tinsert_body">
+    <textarea class="text_ct" placeholder="请输入内容文字" id="text_ct"></textarea>
+
+  </div>
+  <div class="boxCheck2 tinsert_foot">
+    <button type="button" class="boxYes">提交</button>
+    <button type="button" class="boxNo">取消</button>
+  </div>
+</div>
+
+<div class="mask"></div>
+
+
+
+    <div id="tabs">
+              <span class="tab-link  active">图文广告</span>
+              <span class="tab-link">图片广告</span>
+              <span class="tab-link">关注广告</span>
+              <span class="tab-link">电话广告</span>
+              <span class="tab-link">名片广告</span>
+      </div>
+   <div class="mui-content" style="margin-top: 36px;">
+
+		    <!--  -->
+		    <div id="tab0" class="tabpage active">
+
+
+
+
+
+
+
+
+			                 <div class="ad-style">
+					                <div class="ms">广告样式效果：</div>
+						                <div class="ad-s-con">
+						                         <div class="img-text">
+						                                 <div class="img" id="img1">
+			                                                 <img src="{if $ad1['img']==''}{$user['headimgurl']}{else}{$ad1['img']}{/if}">
+						                                 </div>
+						                                 <div class="i-t-con">
+								                                 <div class="i-t-title savead" id="title1">{if $ad1['title']==''}{$store['name']}{else}{$ad1['title']}{/if}</div>
+								                                 <div class="i-t-desc  savead" id="desc1">{if $ad1['depict']==''}一款助您成功测好软件{else}{$ad1['depict']}{/if}</div>
+								                        </div>
+						                         </div>
+						                         <div class="ad-tip">推广</div>
+						                </div>
+							       </div>
+							
+
+					     <form class="mui-input-group">
+							<div class="mui-input-row">
+								<label>跳转链接</label>
+								<input type="text" placeholder="默认跳转个人名片页" id="url1" value=" {if $ad1['url']==''} {php echo cardurl()} {else} {$ad1['url']}{/if}">
+							</div>
+							<div class="wxts">点击广告样式效果既可以修改(图片点击即可修改)</div>
+							
+						</form>
+								   
+			
+					<div class="mui-button-row">
+						<button type="button" class="mui-btn mui-btn-primary sub" onclick="add(1)">确认</button>
+					</div>     
+					   
+
+
+
+
+
+
+
+
+
+
+
+		    </div>
+		    <!--  -->
+		    <div id="tab1" class="tabpage">
+
+
+
+
+
+                      <div class="ad-style">
+		                <div class="ms">广告样式效果：</div>
+			                <div class="ad-s-con">
+			                         <div class="adimg" id="img2">
+                                         <img src="{if $ad2['img']==''}{$public}/img/banner.jpg{else}{$ad2['img']}{/if}">
+			                         </div>
+			                         
+			                </div>
+				       </div>
+
+                       <form class="mui-input-group">
+							<div class="mui-input-row">
+								<label>跳转链接</label>
+								<input type="text" placeholder="点击跳转链接" id="url2" value="{if $ad2['url']==''} {php echo cardurl()} {else} {$ad2['url']}{/if}">
+							</div>
+							<div class="wxts">点击图片即可修改</div>
+							
+						</form>
+								   
+			
+					<div class="mui-button-row">
+						<button type="button" class="mui-btn mui-btn-primary sub" onclick="add(2)">确认</button>
+					</div>     
+
+
+
+
+
+
+
+
+
+
+
+		    </div>
+		     <!--  -->
+		    <div id="tab2" class="tabpage">
+
+
+
+
+
+
+                     <div class="ad-style">
+		                <div class="ms">广告样式效果：</div>
+			                <div class="ad-s-con  gz">
+			                         <div class="img-text">
+			                                 <div class="img" id="img3">
+                                                 <img src="{if $ad3['img']==''}{$user['headimgurl']}{else}{$ad3['img']}{/if}">
+			                                 </div>
+			                                 <div class="i-t-con">
+					                                 <div class="i-t-title savead" id="title3">{if $ad3['title']==''}{$store['name']}{else}{$ad3['title']}{/if}</div>
+					                                 <div class="i-t-desc savead" id="desc3">{if $ad3['depict']==''}一款助您成功测好软件{else}{$ad3['depict']}{/if}</div>
+					                        </div>
+					                        <div class="r-btn">
+		                                           <button type="button" class="mui-btn mui-btn-success mui-btn-outlined">关注</button>
+					                        </div>
+			                         </div>
+			                         
+			                </div>
+				       </div>
+
+                          <form class="mui-input-group">
+							<div class="mui-input-row">
+								<label>公众号链接：</label>
+								<input type="text" placeholder="公众号历史消息的链接" id="url3" value="{$ad3['url']}">
+							</div>
+							<div class="mui-input-row wxewm">
+								<label>公众号二维码：</label>
+
+								<div class="ewmbox" id="ewm3">
+                                  <img src="{if $ad3['ewm']==''}{$public}/img/ewm.png{else}{$ad3['ewm']}{/if}">
+								</div>
+								
+							</div>
+							<div class="wxts">公众号链接可以查看公众号历史消息的链接</div>
+							
+						</form>
+								   
+			
+					<div class="mui-button-row">
+						<button type="button" class="mui-btn mui-btn-primary sub" onclick="add(3)">确认</button>
+					</div>     
+
+                   
+
+
+
+
+
+
+
+
+		    </div>
+		    <!--  -->
+		    <div id="tab3" class="tabpage">
+
+
+
+
+
+
+            <div class="ad-style">
+		                <div class="ms">广告样式效果：</div>
+			                <div class="ad-s-con  gz">
+			                         <div class="img-text">
+			                                 <div class="img" id="img4">
+                                                 <img src="{if $ad4['img']==''}{$user['headimgurl']}{else}{$ad4['img']}{/if}">
+			                                 </div>
+			                                 <div class="i-t-con">
+					                                 <div class="i-t-title  savead" id="title4">{if $ad4['title']==''}{$store['name']}{else}{$ad4['title']}{/if}</div>
+					                                 <div class="i-t-desc  savead" id="desc4">{if $ad4['depict']==''}一款助您成功测好软件{else}{$ad4['depict']}{/if}</div>
+					                        </div>
+					                        <div class="r-btn">
+		                                           <button type="button" class="mui-btn mui-btn-success mui-btn-outlined">拨打</button>
+					                        </div>
+			                         </div>
+			                         
+			                </div>
+				       </div>
+
+                           <form class="mui-input-group">
+							<div class="mui-input-row">
+								<label>电话号码</label>
+								<input type="tel" placeholder="手机号码" id="phone4" value="{$ad4['phone']}">
+							</div>
+							
+							<div class="wxts">点击广告样式效果既可以修改(图片点击即可修改)</div>
+							
+						</form>
+								   
+			
+					<div class="mui-button-row">
+						<button type="button" class="mui-btn mui-btn-primary sub" onclick="add(4)">确认</button>
+					</div>     
+
+
+
+
+
+
+
+
+
+
+
+		    </div>
+		     <!--  -->
+		    <div id="tab4" class="tabpage">
+
+
+
+
+
+
+
+                 <div class="ad-style">
+		                <div class="ms">广告样式效果：</div>
+			                <div class="ad-s-con mp">
+			                         <div class="mp-box">
+
+                                         <div class="mp-left">
+                                              <div class="mp-face" id="img5">
+                                                  <img src="{if $ad5['img']==''}{$user['headimgurl']}{else}{$ad5['img']}{/if}">
+			                                  </div>
+                                              <div class="mp-name  savead" id="name5">
+                                              <?php
+                                                   
+                                                   if($ad5['name']==''){
+
+                                                     
+                                                     if($user['name']==''){
+                                                        
+                                                       // echo $user['nickname'].1;
+                                                       echo 111;
+
+                                                     }else{
+
+                                                          echo $user['name'];
+
+                                                     }
+                                                   }else{
+                                                      echo $ad5['name'];
+
+                                                   }
+                                              ?>
+                                              </div>
+                                         </div>
+                                         <div class="mp-right">
+                                            <div class="mp-info">
+                                               <div class="company  savead" id="company5">{if $ad5['company']==''}{if $user['company']==''}xxx有限公司{else}{$user['company']}{/if}{else}{$ad5['company']}{/if}</div>
+                                               <div class="job  savead" id="job5">{if $ad5['job']==''}{if $user['job']==''}销售经理{else}{$user['job']}{/if}{else}{$ad5['job']}{/if}</div>
+                                            </div>
+                                            <div class="ontact mui-row">
+                                               <span class="mui-col-xs-4">
+                                                   <span class="mui-icon mui-icon-phone b9"></span>
+                                               </span>
+                                               <span class="mui-col-xs-4">
+                                                   <span class="mui-icon mui-icon-weixin b3"></span>
+                                               </span>
+                                               <span class="mui-col-xs-4">
+                                                      <span class="mui-icon mui-icon-qq b9"></span>
+                                               </span>
+                                            </div>
+
+                                         </div>
+
+
+
+			                         </div>
+			                         
+			                </div>
+				       </div>
+
+                         <form class="mui-input-group">
+							<div class="mui-input-row">
+								<label>手机号</label>
+								<input type="tel" placeholder="手机号码" id="phone5" value="{if $ad5['phone']==''}{$user['phone']}{else}{$ad5['phone']}{/if}">
+							</div>
+							<div class="mui-input-row">
+								<label>QQ号</label>
+								<input type="text" placeholder="qq号码" id="qq5"  value="{if $ad5['qq']==''}{$user['qq']}{else}{$ad5['qq']}{/if}">
+							</div>
+							<div class="mui-input-row">
+								<label>微信号</label>
+								<input type="text" placeholder="微信号码" id="weixin5"  value="{if $ad5['weixin']==''}{$user['weixin']}{else}{$ad5['weixin']}{/if}">
+							</div>
+							<div class="mui-input-row">
+								<label>跳转链接</label>
+								<input type="text" placeholder="点击跳转链接" id="url5"  value="{if $ad4['url']==''} {php echo cardurl()} {else} {$ad4['url']}{/if}">
+							</div>
+							<div class="mui-input-row wxewm">
+								<label>微信二维码：</label>
+
+								<div class="ewmbox" id="ewm5">
+                        <img src="{if $ad5['ewm']==''}{$public}/img/ewm.png{else}{$ad5['ewm']}{/if}" >
+								</div>
+								
+							</div>
+							
+							<div class="wxts">点击广告样式效果既可以修改(图片点击即可修改)</div>
+							
+						</form>
+								   
+			
+					<div class="mui-button-row">
+						<button type="button" class="mui-btn mui-btn-primary sub" onclick="add(5)">确认</button>
+					</div>     
+
+
+
+
+
+
+
+
+
+
+
+
+
+		    </div>
+
+
+   </div>
+
+{if $_GPC['type']==1}
+{template 'actnav'}
+{else}
+{template 'videonav'}
+{/if}
+{template 'footer'}
+<script>
+
+  $('.tab-link').click(function(){
+
+         var t=$(this);
+         t.addClass('active').siblings().removeClass('active');
+
+         $('#tab'+t.index()).addClass('active').siblings().removeClass('active');
+
+
+
+  })
+
+
+
+   util.image($('#img1'), function(r){
+         $('#img1 img').attr('src',r.url);
+	    },{
+		    crop:true,
+		    multiple:false,
+		    preview:true,
+		    aspectRatio:1/1
+	   }
+    );
+
+util.image($('#img2'), function(r){
+		         $('#img2 img').attr('src',r.url);
+			    },{
+				    crop:true,
+				    multiple:false,
+				    preview:true,
+				    aspectRatio:69/10
+			   }
+		    );
+   util.image($('#img3'), function(r){
+		         $('#img3 img').attr('src',r.url);
+			    },{
+				    crop:true,
+				    multiple:false,
+				    preview:true,
+				    aspectRatio:1/1
+			   }
+		    );
+   
+   util.image($('#img4'), function(r){
+		         $('#img4 img').attr('src',r.url);
+			    },{
+				    crop:true,
+				    multiple:false,
+				    preview:true,
+				    aspectRatio:1/1
+			   }
+		    );
+   
+   util.image($('#img5'), function(r){
+		         $('#img5 img').attr('src',r.url);
+			    },{
+				    crop:true,
+				    multiple:false,
+				    preview:true,
+				    aspectRatio:1/1
+			   }
+		    );
+   util.image($('#ewm3'), function(r){
+		         $('#ewm3 img').attr('src',r.url);
+			    },{
+				    crop:true,
+				    multiple:false,
+				    preview:true,
+				    aspectRatio:1/1
+			   }
+		    );
+    util.image($('#ewm5'), function(r){
+		         $('#ewm5 img').attr('src',r.url);
+			    },{
+				    crop:true,
+				    multiple:false,
+				    preview:true,
+				    aspectRatio:1/1
+			   }
+		    );
+function savead(r){
+
+  if (!vip('不能添加广告')) {
+
+    return false;
+
+  }
+
+   if(r.img==''){
+
+   	 
+
+   	  	toast("请上传图片");
+   	  	return false;
+   	  
+   }
+   if(r.title!=undefined){
+
+   	  $.trim(r.title);
+
+   	  if(r.title==''){
+
+   	  	toast("标题不能为空");
+   	  	return false;
+   	  }
+   }
+
+   if(r.desc!=undefined){
+        $.trim(r.desc);
+   	  if(r.desc==''){
+
+   	  	toast("描述不能为空");
+   	  	return false;
+   	  }
+   }
+   if(r.name!=undefined){
+         $.trim(r.name);
+   	  if(r.name==''){
+
+   	    toast("姓名不能为空");
+   	  	return false;
+   	  }
+   }
+ if(r.company!=undefined){
+         $.trim(r.company);
+   	  if(r.company==''){
+
+   	  	toast("公司名称不能为空");
+   	  	return false;
+   	  }
+   }
+ if(r.job!=undefined){
+         $.trim(r.job);
+   	  if(r.job==''){
+
+   	  	toast("职位不能为空");
+   	  	return false;
+   	  }
+   }
+  
+if(r.phone!=undefined){
+     
+     if(r.phone==''){
+
+     	 toast("手机号码不能为空");
+        return false; 
+     }
+
+	if(!(/^1[3|4|5|7|8|9][0-9]\d{4,8}$/.test(r.phone))){ 
+       
+        toast("手机号码格式错误");
+        return false; 
+    } 
+
+}
+if(r.qq!=undefined){
+
+     if(r.qq==''){
+
+     	 toast("qq号码不能为空");
+        return false; 
+     }
+
+
+    
+}
+
+
+
+
+$.post('',r,function(r){
+  var r=json(r);
+	if(r){
+
+		util.toast('保存成功');
+	}
+   
+
+})
+
+
+
+}
+
+function add(i){
+
+
+  	
+  	var data={};
+    
+     switch(parseInt(i))
+		{
+			case 1:
+			  data.img=$('#img1 img').attr('src');
+			  data.title=$('#title1').text();
+			  data.depict=$('#desc1').text();
+			  data.url=$('#url1').val();
+			  
+			  break;
+			case 2:
+			  data.img=$('#img2 img').attr('src');
+			  data.url=$('#url2').val();
+			  break;
+
+			case 3:
+			  data.img=$('#img3 img').attr('src');
+			  data.title=$('#title3').text();
+			  data.depict=$('#desc3').text();
+			  data.url=$('#url3').val();
+			  data.ewm=$('#ewm3 img').attr('src');
+			  break;
+			 case 4:
+			  data.img=$('#img4 img').attr('src');
+			  data.title=$('#title4').text();
+			  data.depict=$('#desc4').text();
+			  data.phone=$('#phone4').val();
+			  break;
+		
+		      case 5:
+			  data.img=$('#img5 img').attr('src');
+			  data.name=$('#name5').text();
+			  data.company=$('#company5').text();
+			  data.job=$('#job5').text();
+			  data.phone=$('#phone5').val();
+			  data.weixin=$('#weixin5').val();
+			  data.qq=$('#qq5').val();
+			  data.url=$('#url5').val();
+			  data.ewm=$('#ewm5 img').attr('src');
+			  break;
+		
+		
+		}
+          data.type=i;
+		  savead(data);
+
+  }
+
+ var tims;
+
+  $('.savead').click(function(){
+
+     var t=$(this);
+     tims=t;
+     $('#text_ct').val($.trim(t.text()));
+
+     $('.fixedDiv').show();
+     $('.mask').show();
+
+  })
+
+  $('.boxNo').click(function(){
+
+     $('.fixedDiv').hide();
+     $('.mask').hide();
+
+  })
+
+   $('.boxYes').click(function(){
+
+     tims.text($('#text_ct').val());
+     $('.fixedDiv').hide();
+     $('.mask').hide();
+
+  })
+</script> 

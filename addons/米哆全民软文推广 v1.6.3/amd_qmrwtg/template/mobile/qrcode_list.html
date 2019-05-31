@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no" />
+    <title>我邀请的用户</title>
+    <script src="//cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="{RES}res/app/lib/layer/layer.js"></script>
+<link rel="stylesheet" href="{RES}new_style/css/base.css" />
+	<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+
+	{php echo register_jssdk();}
+</head>
+<script>
+	var pindex = 1;
+		function pageLoadCommon(a, b) {
+				a.scroll(function() {
+				distanceScrollCount = document.body.scrollHeight;
+				distanceScroll = document.body.scrollTop;
+				topicPageHight = document.body.clientHeight;
+				1 >= distanceScrollCount - distanceScroll - topicPageHight && b()
+			})
+		}
+		function userLoad(pindex){
+			$.post(location.href,{'pindex':pindex},function(res){
+				if(jQuery.isEmptyObject(res.list)) {
+					$("#next").html('已加载全部');
+					return false;
+				} else{
+					var html = "";
+					for(var i=0;i<res.list.length;i++){
+						html+=' <li class="user-msg flexs"><div class="img"><img class="user-img" src="'+res.list[i].avatar+'" alt=""></div> <div class="info sub"><h2>'+res.list[i].nickname+'</h2></div></li>';
+					}
+					$(".user-box").append(html);
+					$("#next").html('<span class="loadding"></span>正在加载...');
+				}
+			})
+		}
+		pageLoadCommon($(document), function() {
+			pindex++;
+			userLoad(pindex);
+		});
+
+</script>
+<style type="text/css">
+			.still {
+				width: inherit;
+				height: 40px;
+				background: inherit;
+				-webkit-border-radius: inherit;
+				border-radius: inherit;
+				line-height: 40px;
+				color: #888;
+				margin: 0;
+				text-align: center;
+			}
+			
+			.loadding {
+				width: 16px;
+				height: 16px;
+				border: 2px solid #afafaf;
+				border-top: 2px solid #ddd;
+				border-radius: 50%;
+				display: inline-block;
+				vertical-align: -2px;
+				-webkit-animation: loadding 1s infinite linear;
+				animation: loadding 1s infinite linear;
+			}
+			
+			@keyframes loadding {
+				0% {
+					-webkit-transform: rotate(0deg);
+					transform: rotate(0deg);
+				}
+				100% {
+					-webkit-transform: rotate(360deg);
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+<body onbeforeunload="visit_log()">
+	<style>
+	*{padding:0;margin:0;}
+	body{background: #f5f5f5;}
+	.tab-title{display: -webkit-box;display: -webkit-flex;  display: -ms-flexbox; display: flex; width: 100%;text-align:center;line-height:40px;}
+    .tab-title .tab-title-list{ -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1;}
+	.tab-title-list.active{border-bottom:1px solid #09bb07;color:#09bb07;}
+	</style>
+
+<style>
+        .flexs{ display: -webkit-box;display: -webkit-flex;  display: -ms-flexbox; display: flex;/* width: 100%;*/}
+        .flexs .sub{ -webkit-box-flex: 1; -webkit-flex: 1; -ms-flex: 1; flex: 1;}
+		.user-title{padding-left:15px;line-height:30px;}
+		.user-title:before{content:"";display:inline-block;width:6px;height:14px;background:#09bb07;margin-right:10px;border-radius:4px;}
+        /*.user-box{padding:0 15px;}*/
+        .user-msg{padding:15px;margin-bottom: 10px;background: #fff;}
+        .user-msg:nth-child(n+2){border-top: 1px solid #eee;}
+        .user-img{width: 40px;height: 40px;border-radius: 50%;margin-right: 10px;}
+        .user-msg .info{display:flex;justify-content: space-between;}
+        .user-msg .info h2{font-size: 16px;line-height: 43px;}
+        .user-msg .info p{font-size: 14px; color:#888;line-height: 43px;}
+        .my-link{color: #666;text-decoration: none;}
+        .my-link:nth-child(n+2){margin-left: 5px;}
+.topm{ height:50px; width:100%; line-height:24px; background:#fff; margin-bottom:10px}
+		.topm p{ width:100%; float:left; text-align:center;line-height24px; margin-top:10px;}
+		.topm p span{ color:#F00; font-size:24px; }
+		.user-msg img{ margin:10px; margin-left:20px} 
+		.user-msg .info p{ margin-right:15px;}
+</style>
+<div  class="topm">
+<p>邀请总人数：<span>{$total}</span></p>
+</div>
+<ul class="user-box">
+	
+{loop $list $row}
+    <li class="user-msg flexs">
+    	<div class="img">
+			 <img class="user-img" src="{$row['avatar']}" alt="">
+    	</div>
+        <div class="info sub">
+			<h2>{$row['nickname']}</h2>
+			 <p><?php if($row['ishold']){?>★<?php }else{ ?><?php } ?></p>
+        </div>
+    </li>
+	
+{/loop}
+</ul>
+<div class="still tc mt10" id="next">
+		{if (int)$total > $psize}
+				<span class="loadding"></span> 正在加载...{else} 已加载全部{/if}
+</div>
+ {template footer}
+	<script>
+    $(function() {
+
+        wx.ready(function () {
+            shareMeta = {
+                imgUrl: "{$shareimg}",
+                link: "{$shareurl}",
+                desc: "{$sharedesc}",
+                title: "{$sharetitle}",
+                success: function () {
+$.get("<?php echo $this->getcurwebsite().'/app/'.substr($this->createmobileurl('sharerecord',array('userid'=>$curuser['id'],'advid'=>$_GPC['advid'],'artid'=>0,'frompage'=>$_GPC['do']),true),2); ?>", function(res){});
+                },
+                cancel: function () {
+                    // alert("分享失败，可能是网络问题，一会儿再试试？");
+                }
+            };
+            wx.onMenuShareTimeline(shareMeta);
+            wx.onMenuShareAppMessage(shareMeta);
+            wx.onMenuShareWeibo(shareMeta);
+            wx.onMenuShareQQ(shareMeta);
+            wx.onMenuShareQZone(shareMeta);
+        });
+    });
+</script>		
+</body>
+</html>

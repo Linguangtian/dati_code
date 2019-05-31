@@ -1,0 +1,157 @@
+{template 'header'}
+{php $public=MODULE_URL.'style/res/app';}
+<style>
+
+ body {
+        -webkit-touch-callout: none;
+        font-family: -apple-system-font,BlinkMacSystemFont,"Helvetica Neue","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei",Arial,sans-serif;
+        color: #333;
+        background-color: #fff;
+        letter-spacing: .034em;
+      }
+      *{margin: 0; padding: 0;}
+      h1, h2, h3, h4, h5, h6 {
+          font-weight: 400;
+          font-size: 16px;
+      }
+      .jscontent{
+          
+           overflow: hidden; 
+          color: #333;
+          font-size: 17px;
+          word-wrap: break-word;
+          -webkit-hyphens: auto;
+          -ms-hyphens: auto;
+          hyphens: auto;
+          text-align: justify;
+  }
+    .jscontent *{ 
+        max-width: 100%!important;
+        box-sizing: border-box!important;
+        -webkit-box-sizing: border-box!important;
+        word-wrap: break-word!important;
+      }
+</style>
+<link rel="stylesheet" href="{$public}/css/actinfo.css">
+
+
+<!-- <div style=" position: fixed;z-index: -100; background: #303133; height: 50px; top:0; left: 0; width: 100%; text-align: center; padding-top: 10px; color: #727377; font-size: 12px;">此网页由 mp.weixin.qq.com 提供</div> -->
+<div class="content" {if $_GPC['type']=='1'} style="overflow: scroll;height:100%;" {/if}>
+
+    <h2 class="title">{$act['title']}</h2>
+	<div class="info">
+	    <em class="text">{php echo date('Y-m-d',$act['createtime'])}</em>
+	    {if $act['author']}<em class="text">{$act['author']}</em>{/if}
+	    <span class="text" style="cursor:pointer;">{$user['nickname']}</span>
+	</div>
+
+	<div class="jscontent">
+
+      {$act['content']}
+	</div>
+
+
+
+
+
+</div>
+<?php if($isself){ ?>
+<div style="height: 60px;"></div>
+<!--底部菜单 start-->
+
+<link rel="stylesheet" href="{RES}new_style/font/iconfont.css" />
+<style>
+.foot{position: fixed;bottom: 0;left: 0;width:100%;}
+.foot a{color:#888;line-height: 24px;display: block;padding: 6px 0 5px;}
+.foot a.active{color:rgba(8,186,6,1);}
+.foot i{font-size: 26px;}
+[class*=flex] {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;/* width: 100%;*/
+padding:0;
+margin:0
+}
+[class*=flex] .sub {
+-webkit-box-flex: 1;
+-webkit-flex: 1;
+-ms-flex: 1;
+flex: 1;
+overflow: hidden;
+text-align:center
+}
+.disb{ display:block}
+.foot {
+	box-shadow: inherit;
+ 
+	background:#d33d3e;
+	position:fixed;
+	width:100%;
+	bottom:0;
+}
+.foot a{ color:#fff}
+.foot a.active{ color:#fff}
+</style>
+
+<div class="foot tc bWhite">
+  <ul class="flex">
+    <li class="sub"> <a {if $_GPC['do']!='index'}class="active"{/if} href="{php echo $this->createmobileurl('new_index')}"> <i class="iconfont icon-shouye disb"></i> 首页 </a> </li>
+
+    <li class="sub"> <a {if $_GPC['do']!='cai'}class="active"{/if} href="{php echo $this->createmobileurl('cai')}"> <i class="iconfont icon-wenzhang disb"></i> 采集软文 </a> </li>
+ <li class="sub"> <a {if $_GPC['do']!='myactlst'}class="active"{/if} href="{php echo $this->createmobileurl('myactlst')}"> <i class="iconfont icon-wenzhang disb"></i> 我的文章 </a> </li>
+    <li class="sub"> <a {if $_GPC['do']=='center'}class="active"{/if} href="{php echo $this->createmobileurl('center')}"> <i class="iconfont icon-gerenzhongxin disb"></i> 个人中心 </a> </li>
+  </ul>
+</div>
+
+<!--底部菜单 start--> 
+<script type="text/javascript">
+
+ window.alert = function(name){
+  var iframe = document.createElement("IFRAME");
+  iframe.style.display="none";
+  iframe.setAttribute("src", 'data:text/plain,');
+  document.documentElement.appendChild(iframe);
+  window.frames[0].window.alert(name);
+  iframe.parentNode.removeChild(iframe);
+ };
+window.confirm = function (message) {
+   var iframe = document.createElement("IFRAME");
+   iframe.style.display = "none";
+   iframe.setAttribute("src", 'data:text/plain,');
+   document.documentElement.appendChild(iframe);
+   var alertFrame = window.frames[0];
+   var result = alertFrame.window.confirm(message);
+   iframe.parentNode.removeChild(iframe);
+   return result;
+ };
+</script>
+ <?php } ?>           
+<script>
+
+
+
+wx.config(jssdkconfig);
+     
+    wx.ready(function () {
+
+    
+             var share={
+              title: "{$act['fx_title']}", // 分享标题
+              desc: "{$act['fx_desp']}", // 分享描述
+              link: "{$url}", // 分享链接
+              imgUrl:"{$act['fx_img']}", // 分享图标
+              success:function(){
+                
+              }
+           };
+
+           wx.onMenuShareAppMessage(share);
+             wx.onMenuShareTimeline(share);
+             wx.onMenuShareQQ(share);
+             wx.onMenuShareQZone(share);
+             wx.onMenuShareWeibo(share);
+
+           
+    });
+</script>

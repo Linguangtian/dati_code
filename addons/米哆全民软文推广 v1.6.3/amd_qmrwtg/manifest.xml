@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.9hym.cn" versionCode="0.8,1.0">
+	<application setting="false">
+		<name><![CDATA[米哆全民软文推广]]></name>
+		<identifie><![CDATA[amd_qmrwtg]]></identifie>
+		<version><![CDATA[1.6.3]]></version>
+		<type><![CDATA[activity]]></type>
+		<ability><![CDATA[米哆全民软文推广]]></ability>
+		<description><![CDATA[全民软文推广，无孔不入，深入人心的文章推广，让你在不知不觉中推广成交]]></description>
+		<author><![CDATA[9号源码论坛]]></author>
+		<url><![CDATA[http://www.9hym.cn/]]></url>
+	</application>
+	<platform>
+		<subscribes>
+			<message type="subscribe" />
+			<message type="qr" />
+		</subscribes>
+		<handles>
+			<message type="text" />
+			<message type="subscribe" />
+			<message type="qr" />
+		</handles>
+		<rule embed="true" />
+		<card embed="false" />
+		<supports>
+			<item type="app" />
+		</supports>
+        <plugins></plugins> 
+        <plugin-main name="" />
+	</platform>
+	<bindings>
+		<cover>
+			<entry title="软文入口" do="new_index" state="new_index" direct="false"/>
+			<entry title="个人中心" do="center" state="center" direct="false"/>
+			<entry title="微信版一键转换" do="cai" state="cai" direct="false"/>
+			<entry title="充值会员" do="myintro" state="myintro" direct="false"/>
+			<entry title="展业海报" do="myadvs" state="myadvs" direct="false"/>
+		</cover>
+		<menu>
+			<entry title="首页导航管理" do="index_menu" state="index_menu" direct="false"/>
+			<entry title="幻灯片管理" do="adv" state="adv" direct="false"/>
+			<entry title="会员管理" do="member" state="member" direct="false"/>
+			<entry title="用户管理" do="users" state="users" direct="false"/>
+			<entry title="软文管理" do="article" state="article" direct="false"/>
+			<entry title="软文分类" do="catagroy" state="catagroy" direct="false"/>
+			<entry title="财务统计" do="statistic" state="statistic" direct="false"/>
+			<entry title="支付设置" do="payset" state="payset" direct="false"/>
+			<entry title="留言管理" do="discuss2" state="discuss2" direct="false"/>
+			<entry title="海报分组" do="postertypemanage" state="postertypemanage" direct="false"/>
+			<entry title="海报管理" do="posters" state="posters" direct="false"/>
+			<entry title="意见反馈" do="feedbacks" state="feedbacks" direct="false"/>
+			<entry title="参数设置" do="setting" state="setting" direct="false"/>
+			<entry title="提现管理" do="finance" state="finance" direct="false"/>
+			<entry title="品牌管理" do="brandsemanage" state="brandsemanage" direct="false"/>
+			<entry title="分享设置" do="share" state="share" direct="false"/>
+		</menu>
+	</bindings>
+	<permissions>
+	</permissions>
+	<install><![CDATA[]]></install>
+	<uninstall><![CDATA[DROP TABLE IF EXISTS `ims_amd_qmrwtg`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_adv`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_author`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_brands`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_category`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_collect`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_dis`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_diszan`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_feedbacks`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_group`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_income`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_menu`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_messages`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_money_record`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_payment`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_poster_type`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_posters`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_recharge`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_serialize`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_serializedis`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_serializefb`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_shang`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_share`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_sharep`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_user`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_user_share_log`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_view_details`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_viewlog`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtg_vipconfig`;
+DROP TABLE IF EXISTS `ims_amd_qmrwtglike`;
+]]></uninstall>
+	<upgrade><![CDATA[upgrade.php]]></upgrade>
+
+</manifest>
