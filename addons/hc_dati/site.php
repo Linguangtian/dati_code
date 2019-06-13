@@ -8,7 +8,7 @@
 
  * www.qitu pic
 
- * @url 
+ * @url
 
  */
 
@@ -789,7 +789,6 @@ class Hc_datiModuleSite extends WeModuleSite
         include $this->template("web/canyu");
 
     }
-
 
 
     public function doWebJiangpin()
@@ -1696,13 +1695,41 @@ class Hc_datiModuleSite extends WeModuleSite
 
                 $data['timu'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
 
-                $data['a']= $objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue();
+                if($objPHPExcel->getActiveSheet()->getCell("B".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue()-25569) * 24*60*60;
+                    $data['a']=date('Y-m-d', $time);
 
-                $data['b']= $objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue();
+                }else{
+                    $data['a']= $objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue();
+                }
 
-                $data['c']= $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
+                if($objPHPExcel->getActiveSheet()->getCell("C".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue()-25569) * 24*60*60;
+                    $data['b']=date('Y-m-d', $time);
 
-                $data['d']= $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
+                }else{
+                    $data['b']= $objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue();
+                }
+
+
+
+                if($objPHPExcel->getActiveSheet()->getCell("D".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue()-25569) * 24*60*60;
+                    $data['c']=date('Y-m-d', $time);
+
+                }else{
+                    $data['c']= $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
+                }
+
+                if($objPHPExcel->getActiveSheet()->getCell("E".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue()-25569) * 24*60*60;
+                    $data['d']=date('Y-m-d', $time);
+
+                }else{
+                    $data['d']= $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
+                }
+
+
 
                 $data['fenlei']= $_GPC['fenlei'];
 
@@ -1808,13 +1835,41 @@ class Hc_datiModuleSite extends WeModuleSite
 
                 $data['timu'] = $objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue();
 
-                $data['a']= $objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue();
 
-                $data['b']= $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
+                if($objPHPExcel->getActiveSheet()->getCell("B".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue()-25569) * 24*60*60;
+                    $data['a']=date('Y-m-d', $time);
 
-                $data['c']= $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
+                }else{
+                    $data['a']= $objPHPExcel->getActiveSheet()->getCell("B".$i)->getValue();
+                }
 
-                $data['d']= $objPHPExcel->getActiveSheet()->getCell("F".$i)->getValue();
+                if($objPHPExcel->getActiveSheet()->getCell("C".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue()-25569) * 24*60*60;
+                    $data['b']=date('Y-m-d', $time);
+
+                }else{
+                    $data['b']= $objPHPExcel->getActiveSheet()->getCell("C".$i)->getValue();
+                }
+
+
+
+                if($objPHPExcel->getActiveSheet()->getCell("D".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue()-25569) * 24*60*60;
+                    $data['c']=date('Y-m-d', $time);
+
+                }else{
+                    $data['c']= $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
+                }
+
+                if($objPHPExcel->getActiveSheet()->getCell("E".$i)->getdataType()=='n'){
+                    $time = ($objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue()-25569) * 24*60*60;
+                    $data['d']=date('Y-m-d', $time);
+
+                }else{
+                    $data['d']= $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
+                }
+
 
                 $data['fenlei']= 0;
 
@@ -1922,7 +1977,7 @@ class Hc_datiModuleSite extends WeModuleSite
 
     }
 
-public function getMessage($formid) {
+    public function getMessage($formid) {
         global $_GPC, $_W;
         $user=pdo_get('dati_users', array('user_id' => $formid['user_id']));
         $setup = pdo_get('dati_setup', array('uniacid' => $_W['uniacid']));
@@ -2857,9 +2912,9 @@ public function getMessage($formid) {
 //            echo "<pre>";die;
         echo "结算成功，请关闭";
     }
-  
-  
-  public function getMessagejiesuan($formid) {
+
+
+    public function getMessagejiesuan($formid) {
         global $_GPC, $_W;
         $user=pdo_get('dati_users', array('user_id' => $formid['user_id']));
         $setup = pdo_get('dati_setup', array('uniacid' => $_W['uniacid']));

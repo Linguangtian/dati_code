@@ -7,7 +7,7 @@
 
  * QQ466421811
 
- * @url 
+ * @url
 
  */
 
@@ -96,6 +96,7 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
     }
 
     public function doPageHome(){
+
         ob_end_clean();
         global $_GPC, $_W;
         $user_id=$_GPC['user_id'];
@@ -196,8 +197,8 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
         }
         $this->result(0, '获取成功', $goods);
     }
-  
-  
+
+
    public function doPageFormid(){
         ob_end_clean();
         global $_GPC, $_W;
@@ -268,14 +269,14 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
         $setup=pdo_get('dati_setup', array('uniacid' => $_GPC['i']));
         $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' . $account['key'] . '&secret=' . $account['secret'] . '&js_code=' . $code . '&grant_type=authorization_code';
         $result = $this->get_url_content($url);
- 
+
         $result = json_decode($result, true);
         $sessionKey=$result['session_key'];
         $pc=new WXBizDataCrypt($appid, $sessionKey);
         $encryptedData=$_GPC['encryptedData'];
         $iv=$_GPC['iv'];
         $dd=$pc->decryptData( $encryptedData, $iv, $data );
-      
+
         $aa = json_decode($data, true);
         $openGId=$aa['openGId'];
         $timestamp=$aa['watermark']['timestamp'];
@@ -286,7 +287,7 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
         $zf['openGId']=$openGId;
         $zf['timestamp']=$timestamp;
         $stact=0;
-        
+
         if(!empty($openGId)){
             $cishu=pdo_getall('dati_zhuanfa', array('openid' => $openid,'uniacid' => $_GPC['i'],'time'=>date('Y-m-d',$timestamp)));
             $zhuanfa=pdo_get('dati_zhuanfa', array('openid' => $openid,'openGId'=>$openGId,'time'=>date('Y-m-d',$timestamp),'uniacid' => $_GPC['i']));
@@ -426,7 +427,9 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
         $data['shuzi']=$setup['shuzi'];
         $data['shibai_mp3']=$_W['siteroot'].'/addons/hc_dati/shibai.mp3';
         $data['dui_mp3']=$_W['siteroot'].'/addons/hc_dati/dui.mp3';
+        $data['dui_mp31']=$_W['siteroot'].'/addons/hc_dati/dui1.mp3';
         $data['cuo_mp3']=$_W['siteroot'].'/addons/hc_dati/cuo.mp3';
+        $data['cuo_mp31']=$_W['siteroot'].'/addons/hc_dati/cuo1.mp3';
         $data['kaishi_mp3']=$_W['siteroot'].'/addons/hc_dati/kaishi.mp3';
         $data['cid']=$cid;
         $data['toubu']=$setup['youxi_toubu'];
@@ -481,8 +484,10 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
     }
 
     public function doPageDati1(){
+
         ob_end_clean();
         global $_GPC, $_W;
+
         $setup=pdo_get('dati_setup', array('uniacid' => $_GPC['i']));
         $tifhu=$_GPC['tifhu'];
         $fenlei_id=$_GPC['id'];
@@ -518,6 +523,7 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
             $timu['time']=$setup['yinyue_time'];
         }
         $timu['yinyue_end_time']=$setup['yinyue_end_time'];
+
         $this->result(0, '获取成功', $timu);
     }
 
@@ -608,7 +614,7 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
               $daluan[$i]['yinyue']=$setup['qiniu_url'].$daluan[$i]['yinyue'];
               }else{
                 $daluan[$i]['yinyue']=$_W['attachurl'].$daluan[$i]['yinyue'];
-              }  
+              }
             }
         }
 
@@ -622,11 +628,47 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
         cache_delete($cid);
         $data['number']=$_GPC['numbera'];
         $data['status']=$_GPC['status'];
+
+        $data['cost_time']=$_GPC['cost_time'];
+
+
+        $data['success_num']=$_GPC['successNum'];
         $data['endtime']=time();
         $canyu=pdo_get('dati_canyu', array('id' => $cid));
         $user=pdo_get('dati_users', array('user_id' => $canyu['user_id']));
+
         if($data['status']==1){
-            pdo_update('dati_users', array('dati_success'=>$user['dati_success']+1), array('user_id' => $canyu['user_id']));
+            if( $data['success_num']&&$data['number']){
+
+                $data['accuracy_rate']=sprintf("%.4f",substr(sprintf("%.6f", $data['success_num']/$data['number']),0,-2))*100;
+                if( $data['accuracy_rate']==100){
+                    //发送奖金
+                }
+                if($data['accuracy_rate']>$user['accuracy_rate']){
+                    pdo_update('dati_users', array('dati_success'=>$user['dati_success']+1,'accuracy_rate'=>$data['accuracy_rate'],'updata_time'=>date('Y-m-d H:i:s',time())), array('user_id' => $canyu['user_id']));
+
+                }elseif ($data['accuracy_rate']==$user['accuracy_rate']){
+                    //比时间
+
+                }else{
+                    pdo_update('dati_users', array('dati_success'=>$user['dati_success']+1), array('user_id' => $canyu['user_id']));
+                }
+
+            }else{
+                //旧的
+                pdo_update('dati_users', array('dati_success'=>$user['dati_success']+1), array('user_id' => $canyu['user_id']));
+            }
+
+            $log_data=array('user_id'=>$canyu['user_id'],
+                            'create_time'=>date('Y-m-d H:i:s',time()),
+                            'success_num'=>$data['success_num'],
+                            'timu_num'=>$data['number'],
+                            'accuracy_rate'=>$data['accuracy_rate'],
+                            'cost_time'=>$data['cost_time']
+                );
+            //插入记录表
+            pdo_insert('dati_log', $log_data);
+
         }
         if($user['dati_zuida']<$data['number']){
             pdo_update('dati_users', array('dati_zuida'=>$data['number']), array('user_id' => $canyu['user_id']));
@@ -1321,16 +1363,24 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
 
     function createImg($user_id){
         global $_GPC, $_W;
+        $user_id= 1;
+
         $setup=pdo_get('dati_setup', array('uniacid' => $_GPC['i']));
         ob_clean();
 //        header("Content-type: image/png");
+
         $user=pdo_get('dati_users', array('user_id' => $user_id));
+
         //原始图像
         $dst = $_W['siteroot']."addons/hc_dati/tupian.png";
         //得到原始图片信息
         $dst_im = @imagecreatefrompng($dst);
         //创建小程序码图片
+
         $src = $_W['siteroot'].$this->getQRCode($user_id);//获取小程序码地址
+
+
+
         $src_im = imagecreatefrompng($src);//生成小程序码
         list($width, $height) = getimagesize($src); //获取小程序码图片大小
         $new_x = 150;
@@ -1373,9 +1423,12 @@ class Hc_datiModuleWxapp extends WeModuleWxapp {
         // 获取access_token
         $accessTokenObject = json_decode(file_get_contents('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$_W['account']['key'].'&secret='.$_W['account']['secret']));
         // 拼接微信服务端获取二维码需要的url，见文档https://mp.weixin.qq.com/debug/wxadoc/dev/api/qrcode.html
+
         $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=' . $accessTokenObject->access_token;
         $json = '{"scene": "/user_id/'.$user_id.'", "width": 50, "page": ""}';
+
         $data=$this->api_notice_increment($url,$json);
+
         $filename = dirname(__FILE__)."/erweima.png";
         $local_file = fopen($filename, 'w');
         if (false !== $local_file) {

@@ -39,7 +39,8 @@ if ($do == 'get_not_installed_modules') {
 		}
 	}
 
-
+header('Location:./index.php?c=module&a=permission&m=hc_dati&version_id=1');
+echo 11;exit;
 
 if ($do == 'platform') {
 	define('FRAME', 'account');
@@ -128,6 +129,8 @@ if ($do == 'ext') {
 			}
 		}
 	}
+
+
 	template('home/welcome-ext');
 }
 
@@ -152,6 +155,9 @@ if ($do == 'get_fans_kpi') {
 
 if ($do == 'get_last_modules') {
 		$last_modules = welcome_get_last_modules();
+
+    header('Location:./index.php?c=module&a=permission&m=hc_dati&version_id=1');
+    echo 11;exit;
 	if (is_error($last_modules)) {
 		iajax(1, $last_modules['message'], '');
 	} else {

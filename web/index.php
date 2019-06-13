@@ -51,8 +51,11 @@ if (!empty($handle)) {
 		}
 	}
 }
+
+
 if (!in_array($controller, $controllers)) {
-	$controller = 'home';
+	
+    $controller = 'home';
 }
 
 $init = IA_ROOT . "/web/source/{$controller}/__init.php";
@@ -99,6 +102,7 @@ if (is_array($acl[$controller]['direct']) && in_array($action, $acl[$controller]
 	exit();
 }
 checklogin();
+
 if ($_W['role'] != ACCOUNT_MANAGE_NAME_FOUNDER) {
 	if ($_W['role'] == ACCOUNT_MANAGE_NAME_UNBIND_USER) {
 		itoast('', url('user/third-bind'));
@@ -116,6 +120,7 @@ if ($_W['role'] != ACCOUNT_MANAGE_NAME_FOUNDER) {
 		message('不能访问, 需要相应的权限才能访问！');
 	}
 }
+
 require _forward($controller, $action);
 
 define('ENDTIME', microtime());
@@ -131,6 +136,8 @@ if ((ENDTIME - STARTTIME) > $_W['config']['setting']['maxtimeurl']) {
 	);
 	pdo_insert('core_performance', $data);
 }
+
+
 function _forward($c, $a) {
 	$file = IA_ROOT . '/web/source/' . $c . '/' . $a . '.ctrl.php';
 	if (!file_exists($file)) {
@@ -171,3 +178,4 @@ function _calc_current_frames(&$frames) {
 		}
 	}
 }
+
